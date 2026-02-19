@@ -1,0 +1,394 @@
+module JS.Temporal.PlainDate
+  ( PlainDate
+  -- * Construction
+  , new
+  , from
+  , from_
+  -- * Properties
+  , year
+  , month
+  , day
+  , monthCode
+  , dayOfWeek
+  , dayOfYear
+  , weekOfYear
+  , yearOfWeek
+  , daysInMonth
+  , daysInYear
+  , daysInWeek
+  , monthsInYear
+  , inLeapYear
+  , calendarId
+  , era
+  , eraYear
+  -- * Arithmetic
+  , add
+  , add_
+  , subtract
+  , subtract_
+  -- * Manipulation
+  , with
+  , withCalendar
+  -- * Difference
+  , until
+  , until_
+  , since
+  , since_
+  -- * Comparison
+  , compare
+  , equals
+  -- * Serialization
+  , toString
+  , toString_
+  -- * Options
+  , ToOverflowOptions
+  , ToDifferenceOptions
+  , ToToStringOptions
+  ) where
+
+import Prelude hiding (add, compare)
+
+import ConvertableOptions (class ConvertOption, class ConvertOptionsWithDefaults)
+import ConvertableOptions as ConvertableOptions
+import Data.Function.Uncurried (Fn2)
+import Data.Function.Uncurried as Function.Uncurried
+import Data.Maybe (Maybe)
+import Data.Nullable (Nullable, toMaybe)
+import Effect (Effect)
+import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3)
+import Effect.Uncurried as Effect.Uncurried
+import JS.Temporal.CalendarName (CalendarName)
+import JS.Temporal.CalendarName as CalendarName
+import JS.Temporal.Duration (Duration)
+import JS.Temporal.Internal (intToOrdering)
+import JS.Temporal.Overflow (Overflow)
+import JS.Temporal.Overflow as Overflow
+import JS.Temporal.RoundingMode (RoundingMode)
+import JS.Temporal.RoundingMode as RoundingMode
+import JS.Temporal.TemporalUnit (TemporalUnit)
+import JS.Temporal.TemporalUnit as TemporalUnit
+import Prim.Row (class Union)
+import Unsafe.Coerce as Unsafe.Coerce
+
+foreign import data PlainDate :: Type
+
+-- Construction
+
+foreign import _new :: EffectFn3 Int Int Int PlainDate
+
+new :: Int -> Int -> Int -> Effect PlainDate
+new = Effect.Uncurried.runEffectFn3 _new
+
+type OverflowOptions = (overflow :: String)
+
+data ToOverflowOptions = ToOverflowOptions
+
+defaultOverflowOptions :: { | OverflowOptions }
+defaultOverflowOptions = Unsafe.Coerce.unsafeCoerce {}
+
+instance ConvertOption ToOverflowOptions "overflow" Overflow String where
+  convertOption _ _ = Overflow.toString
+
+instance ConvertOption ToOverflowOptions "overflow" String String where
+  convertOption _ _ = identity
+
+foreign import _from :: forall r. EffectFn2 { | r } String PlainDate
+
+from
+  :: forall provided
+   . ConvertOptionsWithDefaults
+       ToOverflowOptions
+       { | OverflowOptions }
+       { | provided }
+       { | OverflowOptions }
+  => { | provided }
+  -> String
+  -> Effect PlainDate
+from providedOptions str =
+  Effect.Uncurried.runEffectFn2
+    _from
+    ( ConvertableOptions.convertOptionsWithDefaults
+        ToOverflowOptions
+        defaultOverflowOptions
+        providedOptions
+    )
+    str
+
+foreign import _fromNoOpts :: EffectFn1 String PlainDate
+
+from_ :: String -> Effect PlainDate
+from_ = Effect.Uncurried.runEffectFn1 _fromNoOpts
+
+-- Properties
+
+foreign import year :: PlainDate -> Int
+foreign import month :: PlainDate -> Int
+foreign import day :: PlainDate -> Int
+foreign import monthCode :: PlainDate -> String
+foreign import dayOfWeek :: PlainDate -> Int
+foreign import dayOfYear :: PlainDate -> Int
+foreign import daysInMonth :: PlainDate -> Int
+foreign import daysInYear :: PlainDate -> Int
+foreign import daysInWeek :: PlainDate -> Int
+foreign import monthsInYear :: PlainDate -> Int
+foreign import inLeapYear :: PlainDate -> Boolean
+foreign import calendarId :: PlainDate -> String
+
+foreign import _weekOfYear :: PlainDate -> Nullable Int
+
+weekOfYear :: PlainDate -> Maybe Int
+weekOfYear = toMaybe <<< _weekOfYear
+
+foreign import _yearOfWeek :: PlainDate -> Nullable Int
+
+yearOfWeek :: PlainDate -> Maybe Int
+yearOfWeek = toMaybe <<< _yearOfWeek
+
+foreign import _era :: PlainDate -> Nullable String
+
+era :: PlainDate -> Maybe String
+era = toMaybe <<< _era
+
+foreign import _eraYear :: PlainDate -> Nullable Int
+
+eraYear :: PlainDate -> Maybe Int
+eraYear = toMaybe <<< _eraYear
+
+-- Arithmetic
+
+foreign import _add :: forall r. EffectFn3 { | r } Duration PlainDate PlainDate
+
+add
+  :: forall provided
+   . ConvertOptionsWithDefaults
+       ToOverflowOptions
+       { | OverflowOptions }
+       { | provided }
+       { | OverflowOptions }
+  => { | provided }
+  -> Duration
+  -> PlainDate
+  -> Effect PlainDate
+add providedOptions duration plainDate =
+  Effect.Uncurried.runEffectFn3
+    _add
+    ( ConvertableOptions.convertOptionsWithDefaults
+        ToOverflowOptions
+        defaultOverflowOptions
+        providedOptions
+    )
+    duration
+    plainDate
+
+foreign import _addNoOpts :: EffectFn2 Duration PlainDate PlainDate
+
+add_ :: Duration -> PlainDate -> Effect PlainDate
+add_ = Effect.Uncurried.runEffectFn2 _addNoOpts
+
+foreign import _subtract :: forall r. EffectFn3 { | r } Duration PlainDate PlainDate
+
+subtract
+  :: forall provided
+   . ConvertOptionsWithDefaults
+       ToOverflowOptions
+       { | OverflowOptions }
+       { | provided }
+       { | OverflowOptions }
+  => { | provided }
+  -> Duration
+  -> PlainDate
+  -> Effect PlainDate
+subtract providedOptions duration plainDate =
+  Effect.Uncurried.runEffectFn3
+    _subtract
+    ( ConvertableOptions.convertOptionsWithDefaults
+        ToOverflowOptions
+        defaultOverflowOptions
+        providedOptions
+    )
+    duration
+    plainDate
+
+foreign import _subtractNoOpts :: EffectFn2 Duration PlainDate PlainDate
+
+subtract_ :: Duration -> PlainDate -> Effect PlainDate
+subtract_ = Effect.Uncurried.runEffectFn2 _subtractNoOpts
+
+-- Manipulation
+
+type WithFields =
+  ( year :: Int
+  , month :: Int
+  , day :: Int
+  , monthCode :: String
+  )
+
+foreign import _with :: forall r. EffectFn2 { | r } PlainDate PlainDate
+
+with
+  :: forall fields rest
+   . Union fields rest WithFields
+  => { | fields }
+  -> PlainDate
+  -> Effect PlainDate
+with = Effect.Uncurried.runEffectFn2 _with
+
+foreign import _withCalendar :: EffectFn2 String PlainDate PlainDate
+
+withCalendar :: String -> PlainDate -> Effect PlainDate
+withCalendar = Effect.Uncurried.runEffectFn2 _withCalendar
+
+-- Difference
+
+type DifferenceOptions =
+  ( largestUnit :: String
+  , smallestUnit :: String
+  , roundingIncrement :: Int
+  , roundingMode :: String
+  )
+
+data ToDifferenceOptions = ToDifferenceOptions
+
+defaultDifferenceOptions :: { | DifferenceOptions }
+defaultDifferenceOptions = Unsafe.Coerce.unsafeCoerce {}
+
+instance ConvertOption ToDifferenceOptions "largestUnit" TemporalUnit String where
+  convertOption _ _ = TemporalUnit.toString
+
+instance ConvertOption ToDifferenceOptions "largestUnit" String String where
+  convertOption _ _ = identity
+
+instance ConvertOption ToDifferenceOptions "smallestUnit" TemporalUnit String where
+  convertOption _ _ = TemporalUnit.toString
+
+instance ConvertOption ToDifferenceOptions "smallestUnit" String String where
+  convertOption _ _ = identity
+
+instance ConvertOption ToDifferenceOptions "roundingIncrement" Int Int where
+  convertOption _ _ = identity
+
+instance ConvertOption ToDifferenceOptions "roundingMode" RoundingMode String where
+  convertOption _ _ = RoundingMode.toString
+
+instance ConvertOption ToDifferenceOptions "roundingMode" String String where
+  convertOption _ _ = identity
+
+foreign import _until :: forall r. EffectFn3 { | r } PlainDate PlainDate Duration
+
+until
+  :: forall provided
+   . ConvertOptionsWithDefaults
+       ToDifferenceOptions
+       { | DifferenceOptions }
+       { | provided }
+       { | DifferenceOptions }
+  => { | provided }
+  -> PlainDate
+  -> PlainDate
+  -> Effect Duration
+until providedOptions other plainDate =
+  Effect.Uncurried.runEffectFn3
+    _until
+    ( ConvertableOptions.convertOptionsWithDefaults
+        ToDifferenceOptions
+        defaultDifferenceOptions
+        providedOptions
+    )
+    other
+    plainDate
+
+foreign import _untilNoOpts :: EffectFn2 PlainDate PlainDate Duration
+
+until_ :: PlainDate -> PlainDate -> Effect Duration
+until_ = Effect.Uncurried.runEffectFn2 _untilNoOpts
+
+foreign import _since :: forall r. EffectFn3 { | r } PlainDate PlainDate Duration
+
+since
+  :: forall provided
+   . ConvertOptionsWithDefaults
+       ToDifferenceOptions
+       { | DifferenceOptions }
+       { | provided }
+       { | DifferenceOptions }
+  => { | provided }
+  -> PlainDate
+  -> PlainDate
+  -> Effect Duration
+since providedOptions other plainDate =
+  Effect.Uncurried.runEffectFn3
+    _since
+    ( ConvertableOptions.convertOptionsWithDefaults
+        ToDifferenceOptions
+        defaultDifferenceOptions
+        providedOptions
+    )
+    other
+    plainDate
+
+foreign import _sinceNoOpts :: EffectFn2 PlainDate PlainDate Duration
+
+since_ :: PlainDate -> PlainDate -> Effect Duration
+since_ = Effect.Uncurried.runEffectFn2 _sinceNoOpts
+
+-- Comparison
+
+foreign import _compare :: Fn2 PlainDate PlainDate Int
+
+compare :: PlainDate -> PlainDate -> Ordering
+compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
+
+foreign import _equals :: Fn2 PlainDate PlainDate Boolean
+
+equals :: PlainDate -> PlainDate -> Boolean
+equals a b = Function.Uncurried.runFn2 _equals a b
+
+-- Serialization
+
+foreign import toString_ :: PlainDate -> String
+
+type ToStringOptions = (calendarName :: String)
+
+data ToToStringOptions = ToToStringOptions
+
+defaultToStringOptions :: { | ToStringOptions }
+defaultToStringOptions = Unsafe.Coerce.unsafeCoerce {}
+
+instance ConvertOption ToToStringOptions "calendarName" CalendarName String where
+  convertOption _ _ = CalendarName.toString
+
+instance ConvertOption ToToStringOptions "calendarName" String String where
+  convertOption _ _ = identity
+
+foreign import _toString :: forall r. Fn2 { | r } PlainDate String
+
+toString
+  :: forall provided
+   . ConvertOptionsWithDefaults
+       ToToStringOptions
+       { | ToStringOptions }
+       { | provided }
+       { | ToStringOptions }
+  => { | provided }
+  -> PlainDate
+  -> String
+toString providedOptions plainDate =
+  Function.Uncurried.runFn2
+    _toString
+    ( ConvertableOptions.convertOptionsWithDefaults
+        ToToStringOptions
+        defaultToStringOptions
+        providedOptions
+    )
+    plainDate
+
+-- Instances
+
+instance Eq PlainDate where
+  eq = equals
+
+instance Ord PlainDate where
+  compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
+
+instance Show PlainDate where
+  show = toString_

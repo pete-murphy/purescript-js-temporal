@@ -1,0 +1,384 @@
+module JS.Temporal.PlainTime
+  ( PlainTime
+  -- * Construction
+  , new
+  , from
+  , from_
+  -- * Properties
+  , hour
+  , minute
+  , second
+  , millisecond
+  , microsecond
+  , nanosecond
+  -- * Arithmetic
+  , add
+  , subtract
+  -- * Manipulation
+  , with
+  -- * Difference
+  , until
+  , until_
+  , since
+  , since_
+  -- * Round
+  , round
+  -- * Comparison
+  , compare
+  , equals
+  -- * Serialization
+  , toString
+  , toString_
+  -- * Options
+  , ToOverflowOptions
+  , ToDifferenceOptions
+  , ToRoundOptions
+  , ToToStringOptions
+  ) where
+
+import Prelude hiding (add, compare)
+
+import ConvertableOptions (class ConvertOption, class ConvertOptionsWithDefaults)
+import ConvertableOptions as ConvertableOptions
+import Data.Function.Uncurried (Fn2)
+import Data.Function.Uncurried as Function.Uncurried
+import Effect (Effect)
+import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3)
+import Effect.Uncurried as Effect.Uncurried
+import Foreign (Foreign)
+import Foreign as Foreign
+import JS.Temporal.Duration (Duration)
+import JS.Temporal.Internal (intToOrdering)
+import JS.Temporal.Overflow (Overflow)
+import JS.Temporal.Overflow as Overflow
+import JS.Temporal.RoundingMode (RoundingMode)
+import JS.Temporal.RoundingMode as RoundingMode
+import JS.Temporal.TemporalUnit (TemporalUnit)
+import JS.Temporal.TemporalUnit as TemporalUnit
+import Prim.Row (class Union)
+import Unsafe.Coerce as Unsafe.Coerce
+
+foreign import data PlainTime :: Type
+
+-- Construction
+
+type PlainTimeComponents =
+  ( hour :: Int
+  , minute :: Int
+  , second :: Int
+  , millisecond :: Int
+  , microsecond :: Int
+  , nanosecond :: Int
+  )
+
+foreign import _new :: forall r. EffectFn1 { | r } PlainTime
+
+new
+  :: forall provided rest
+   . Union provided rest PlainTimeComponents
+  => { | provided }
+  -> Effect PlainTime
+new = Effect.Uncurried.runEffectFn1 _new
+
+type OverflowOptions = (overflow :: String)
+
+data ToOverflowOptions = ToOverflowOptions
+
+defaultOverflowOptions :: { | OverflowOptions }
+defaultOverflowOptions = Unsafe.Coerce.unsafeCoerce {}
+
+instance ConvertOption ToOverflowOptions "overflow" Overflow String where
+  convertOption _ _ = Overflow.toString
+
+instance ConvertOption ToOverflowOptions "overflow" String String where
+  convertOption _ _ = identity
+
+foreign import _from :: forall r. EffectFn2 { | r } String PlainTime
+
+from
+  :: forall provided
+   . ConvertOptionsWithDefaults
+       ToOverflowOptions
+       { | OverflowOptions }
+       { | provided }
+       { | OverflowOptions }
+  => { | provided }
+  -> String
+  -> Effect PlainTime
+from providedOptions str =
+  Effect.Uncurried.runEffectFn2
+    _from
+    ( ConvertableOptions.convertOptionsWithDefaults
+        ToOverflowOptions
+        defaultOverflowOptions
+        providedOptions
+    )
+    str
+
+foreign import _fromNoOpts :: EffectFn1 String PlainTime
+
+from_ :: String -> Effect PlainTime
+from_ = Effect.Uncurried.runEffectFn1 _fromNoOpts
+
+-- Properties
+
+foreign import hour :: PlainTime -> Int
+foreign import minute :: PlainTime -> Int
+foreign import second :: PlainTime -> Int
+foreign import millisecond :: PlainTime -> Int
+foreign import microsecond :: PlainTime -> Int
+foreign import nanosecond :: PlainTime -> Int
+
+-- Arithmetic
+
+foreign import _add :: EffectFn2 Duration PlainTime PlainTime
+
+add :: Duration -> PlainTime -> Effect PlainTime
+add = Effect.Uncurried.runEffectFn2 _add
+
+foreign import _subtract :: EffectFn2 Duration PlainTime PlainTime
+
+subtract :: Duration -> PlainTime -> Effect PlainTime
+subtract = Effect.Uncurried.runEffectFn2 _subtract
+
+-- Manipulation
+
+type WithFields =
+  ( hour :: Int
+  , minute :: Int
+  , second :: Int
+  , millisecond :: Int
+  , microsecond :: Int
+  , nanosecond :: Int
+  )
+
+foreign import _with :: forall r. EffectFn2 { | r } PlainTime PlainTime
+
+with
+  :: forall fields rest
+   . Union fields rest WithFields
+  => { | fields }
+  -> PlainTime
+  -> Effect PlainTime
+with = Effect.Uncurried.runEffectFn2 _with
+
+-- Difference
+
+type DifferenceOptions =
+  ( largestUnit :: String
+  , smallestUnit :: String
+  , roundingIncrement :: Int
+  , roundingMode :: String
+  )
+
+data ToDifferenceOptions = ToDifferenceOptions
+
+defaultDifferenceOptions :: { | DifferenceOptions }
+defaultDifferenceOptions = Unsafe.Coerce.unsafeCoerce {}
+
+instance ConvertOption ToDifferenceOptions "largestUnit" TemporalUnit String where
+  convertOption _ _ = TemporalUnit.toString
+
+instance ConvertOption ToDifferenceOptions "largestUnit" String String where
+  convertOption _ _ = identity
+
+instance ConvertOption ToDifferenceOptions "smallestUnit" TemporalUnit String where
+  convertOption _ _ = TemporalUnit.toString
+
+instance ConvertOption ToDifferenceOptions "smallestUnit" String String where
+  convertOption _ _ = identity
+
+instance ConvertOption ToDifferenceOptions "roundingIncrement" Int Int where
+  convertOption _ _ = identity
+
+instance ConvertOption ToDifferenceOptions "roundingMode" RoundingMode String where
+  convertOption _ _ = RoundingMode.toString
+
+instance ConvertOption ToDifferenceOptions "roundingMode" String String where
+  convertOption _ _ = identity
+
+foreign import _until :: forall r. EffectFn3 { | r } PlainTime PlainTime Duration
+
+until
+  :: forall provided
+   . ConvertOptionsWithDefaults
+       ToDifferenceOptions
+       { | DifferenceOptions }
+       { | provided }
+       { | DifferenceOptions }
+  => { | provided }
+  -> PlainTime
+  -> PlainTime
+  -> Effect Duration
+until providedOptions other plainTime =
+  Effect.Uncurried.runEffectFn3
+    _until
+    ( ConvertableOptions.convertOptionsWithDefaults
+        ToDifferenceOptions
+        defaultDifferenceOptions
+        providedOptions
+    )
+    other
+    plainTime
+
+foreign import _untilNoOpts :: EffectFn2 PlainTime PlainTime Duration
+
+until_ :: PlainTime -> PlainTime -> Effect Duration
+until_ = Effect.Uncurried.runEffectFn2 _untilNoOpts
+
+foreign import _since :: forall r. EffectFn3 { | r } PlainTime PlainTime Duration
+
+since
+  :: forall provided
+   . ConvertOptionsWithDefaults
+       ToDifferenceOptions
+       { | DifferenceOptions }
+       { | provided }
+       { | DifferenceOptions }
+  => { | provided }
+  -> PlainTime
+  -> PlainTime
+  -> Effect Duration
+since providedOptions other plainTime =
+  Effect.Uncurried.runEffectFn3
+    _since
+    ( ConvertableOptions.convertOptionsWithDefaults
+        ToDifferenceOptions
+        defaultDifferenceOptions
+        providedOptions
+    )
+    other
+    plainTime
+
+foreign import _sinceNoOpts :: EffectFn2 PlainTime PlainTime Duration
+
+since_ :: PlainTime -> PlainTime -> Effect Duration
+since_ = Effect.Uncurried.runEffectFn2 _sinceNoOpts
+
+-- Round
+
+type RoundOptions =
+  ( smallestUnit :: String
+  , roundingIncrement :: Int
+  , roundingMode :: String
+  )
+
+data ToRoundOptions = ToRoundOptions
+
+defaultRoundOptions :: { | RoundOptions }
+defaultRoundOptions = Unsafe.Coerce.unsafeCoerce {}
+
+instance ConvertOption ToRoundOptions "smallestUnit" TemporalUnit String where
+  convertOption _ _ = TemporalUnit.toString
+
+instance ConvertOption ToRoundOptions "smallestUnit" String String where
+  convertOption _ _ = identity
+
+instance ConvertOption ToRoundOptions "roundingIncrement" Int Int where
+  convertOption _ _ = identity
+
+instance ConvertOption ToRoundOptions "roundingMode" RoundingMode String where
+  convertOption _ _ = RoundingMode.toString
+
+instance ConvertOption ToRoundOptions "roundingMode" String String where
+  convertOption _ _ = identity
+
+foreign import _round :: forall r. EffectFn2 { | r } PlainTime PlainTime
+
+round
+  :: forall provided
+   . ConvertOptionsWithDefaults
+       ToRoundOptions
+       { | RoundOptions }
+       { | provided }
+       { | RoundOptions }
+  => { | provided }
+  -> PlainTime
+  -> Effect PlainTime
+round providedOptions plainTime =
+  Effect.Uncurried.runEffectFn2
+    _round
+    ( ConvertableOptions.convertOptionsWithDefaults
+        ToRoundOptions
+        defaultRoundOptions
+        providedOptions
+    )
+    plainTime
+
+-- Comparison
+
+foreign import _compare :: Fn2 PlainTime PlainTime Int
+
+compare :: PlainTime -> PlainTime -> Ordering
+compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
+
+foreign import _equals :: Fn2 PlainTime PlainTime Boolean
+
+equals :: PlainTime -> PlainTime -> Boolean
+equals a b = Function.Uncurried.runFn2 _equals a b
+
+-- Serialization
+
+foreign import toString_ :: PlainTime -> String
+
+type ToStringOptions =
+  ( fractionalSecondDigits :: Foreign
+  , smallestUnit :: String
+  , roundingMode :: String
+  )
+
+data ToToStringOptions = ToToStringOptions
+
+defaultToStringOptions :: { | ToStringOptions }
+defaultToStringOptions = Unsafe.Coerce.unsafeCoerce {}
+
+instance ConvertOption ToToStringOptions "fractionalSecondDigits" Int Foreign where
+  convertOption _ _ = Foreign.unsafeToForeign
+
+instance ConvertOption ToToStringOptions "fractionalSecondDigits" String Foreign where
+  convertOption _ _ = Foreign.unsafeToForeign
+
+instance ConvertOption ToToStringOptions "smallestUnit" TemporalUnit String where
+  convertOption _ _ = TemporalUnit.toString
+
+instance ConvertOption ToToStringOptions "smallestUnit" String String where
+  convertOption _ _ = identity
+
+instance ConvertOption ToToStringOptions "roundingMode" RoundingMode String where
+  convertOption _ _ = RoundingMode.toString
+
+instance ConvertOption ToToStringOptions "roundingMode" String String where
+  convertOption _ _ = identity
+
+foreign import _toString :: forall r. Fn2 { | r } PlainTime String
+
+toString
+  :: forall provided
+   . ConvertOptionsWithDefaults
+       ToToStringOptions
+       { | ToStringOptions }
+       { | provided }
+       { | ToStringOptions }
+  => { | provided }
+  -> PlainTime
+  -> String
+toString providedOptions plainTime =
+  Function.Uncurried.runFn2
+    _toString
+    ( ConvertableOptions.convertOptionsWithDefaults
+        ToToStringOptions
+        defaultToStringOptions
+        providedOptions
+    )
+    plainTime
+
+-- Instances
+
+instance Eq PlainTime where
+  eq = equals
+
+instance Ord PlainTime where
+  compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
+
+instance Show PlainTime where
+  show = toString_

@@ -36,6 +36,8 @@ module JS.Temporal.PlainDate
   , with_
   , withCalendar
   -- * Conversions
+  , fromDate
+  , toDate
   , toPlainYearMonth
   , toPlainMonthDay
   , toPlainDateTime
@@ -59,7 +61,10 @@ import ConvertableOptions (class ConvertOption, class ConvertOptionsWithDefaults
 import ConvertableOptions as ConvertableOptions
 import Data.Function.Uncurried (Fn1, Fn2)
 import Data.Function.Uncurried as Function.Uncurried
-import Data.Maybe (Maybe)
+import Data.Date (Date)
+import Data.Date as Date
+import Data.Enum (fromEnum, toEnum)
+import Data.Maybe (Maybe, fromJust)
 import Data.Nullable (Nullable, toMaybe)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3)
@@ -79,6 +84,7 @@ import JS.Temporal.PlainTime.Internal (PlainTime)
 import JS.Temporal.PlainYearMonth.Internal (PlainYearMonth)
 import JS.Temporal.ZonedDateTime.Internal (ZonedDateTime)
 import JS.Temporal.TemporalUnit as TemporalUnit
+import Partial.Unsafe (unsafePartial)
 import Prim.Row (class Union)
 import Unsafe.Coerce as Unsafe.Coerce
 
@@ -381,6 +387,20 @@ since_ :: PlainDate -> PlainDate -> Effect Duration
 since_ = Effect.Uncurried.runEffectFn2 _sinceNoOpts
 
 -- Conversions
+
+-- | Converts a purescript-datetime `Date` to a `PlainDate`.
+-- | See docs/purescript-datetime-interop.md.
+fromDate :: Date -> Effect PlainDate
+fromDate date = new (fromEnum (Date.year date)) (fromEnum (Date.month date)) (fromEnum (Date.day date))
+
+-- | Converts a `PlainDate` to a purescript-datetime `Date`.
+-- | See docs/purescript-datetime-interop.md.
+toDate :: PlainDate -> Date
+toDate plainDate =
+  Date.canonicalDate
+    (unsafePartial fromJust (toEnum (year plainDate)))
+    (unsafePartial fromJust (toEnum (month plainDate)))
+    (unsafePartial fromJust (toEnum (day plainDate)))
 
 foreign import _toPlainYearMonth :: Fn1 PlainDate PlainYearMonth
 

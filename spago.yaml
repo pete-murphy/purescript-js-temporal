@@ -3,11 +3,13 @@ package:
   dependencies:
     - console
     - convertable-options
+    - datetime
     - effect
     - foreign
     - functions
     - js-bigints
     - maybe
+    - newtype
     - nullable
     - prelude
     - unsafe-coerce
@@ -15,7 +17,11 @@ package:
     main: Test.Main
     dependencies:
       - assert
+      - datetime
       - foldable-traversable
+      - gen
+      - newtype
+      - quickcheck
 workspace:
   packageSet:
     registry: 73.1.0

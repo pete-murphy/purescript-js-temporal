@@ -52,6 +52,8 @@ module JS.Temporal.PlainDateTime
   -- * Serialization
   , toString
   -- * Conversions
+  , fromDateTime
+  , toDateTime
   , toPlainDate
   , toPlainTime
   , toZonedDateTime
@@ -66,6 +68,8 @@ import Prelude hiding (add, compare)
 
 import ConvertableOptions (class ConvertOption, class ConvertOptionsWithDefaults)
 import ConvertableOptions as ConvertableOptions
+import Data.DateTime (DateTime(..))
+import Data.DateTime as DateTime
 import Data.Function.Uncurried (Fn2, Fn1)
 import Data.Function.Uncurried as Function.Uncurried
 import Data.Maybe (Maybe)
@@ -76,8 +80,8 @@ import Effect.Uncurried as Effect.Uncurried
 import Foreign (Foreign)
 import Foreign as Foreign
 import JS.Temporal.CalendarName (CalendarName)
-import JS.Temporal.PlainDate.Internal (PlainDate)
-import JS.Temporal.PlainTime.Internal (PlainTime)
+import JS.Temporal.PlainDate as PlainDate
+import JS.Temporal.PlainTime as PlainTime
 import JS.Temporal.ZonedDateTime.Internal (ZonedDateTime)
 import JS.Temporal.CalendarName as CalendarName
 import JS.Temporal.Duration.Internal (Duration)
@@ -87,7 +91,9 @@ import JS.Temporal.RoundingMode (RoundingMode)
 import JS.Temporal.RoundingMode as RoundingMode
 import JS.Temporal.TemporalUnit (TemporalUnit)
 import JS.Temporal.TemporalUnit as TemporalUnit
+import JS.Temporal.PlainDate.Internal (PlainDate)
 import JS.Temporal.PlainDateTime.Internal (PlainDateTime)
+import JS.Temporal.PlainTime.Internal (PlainTime)
 import Prim.Row (class Union)
 import Unsafe.Coerce as Unsafe.Coerce
 
@@ -532,6 +538,22 @@ toString providedOptions plainDateTime =
 -- Instances (Eq, Ord, Show from Internal)
 
 -- Conversions
+
+-- | Converts a purescript-datetime `DateTime` to a `PlainDateTime`.
+-- | See docs/purescript-datetime-interop.md.
+fromDateTime :: DateTime -> Effect PlainDateTime
+fromDateTime dateTime = do
+  plainDate <- PlainDate.fromDate (DateTime.date dateTime)
+  plainTime <- PlainTime.fromTime (DateTime.time dateTime)
+  pure (PlainDate.toPlainDateTime plainTime plainDate)
+
+-- | Converts a `PlainDateTime` to a purescript-datetime `DateTime`.
+-- | See docs/purescript-datetime-interop.md.
+toDateTime :: PlainDateTime -> DateTime
+toDateTime plainDateTime =
+  DateTime
+    (PlainDate.toDate (toPlainDate plainDateTime))
+    (PlainTime.toTime (toPlainTime plainDateTime))
 
 foreign import _toPlainDate :: Fn1 PlainDateTime PlainDate
 

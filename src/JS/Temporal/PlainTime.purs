@@ -28,6 +28,9 @@ module JS.Temporal.PlainTime
   , since_
   -- * Round
   , round
+  -- * Conversions
+  , fromTime
+  , toTime
   -- * Serialization
   , toString
   -- * Options
@@ -41,7 +44,11 @@ import Prelude hiding (add, compare)
 
 import ConvertableOptions (class ConvertOption, class ConvertOptionsWithDefaults)
 import ConvertableOptions as ConvertableOptions
+import Data.Enum (fromEnum, toEnum)
+import Data.Maybe (fromJust)
 import Data.Function.Uncurried (Fn2)
+import Data.Time (Time(..))
+import Data.Time as Time
 import Data.Function.Uncurried as Function.Uncurried
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3)
@@ -56,6 +63,7 @@ import JS.Temporal.RoundingMode as RoundingMode
 import JS.Temporal.TemporalUnit (TemporalUnit)
 import JS.Temporal.TemporalUnit as TemporalUnit
 import JS.Temporal.PlainTime.Internal (PlainTime)
+import Partial.Unsafe (unsafePartial)
 import Prim.Row (class Union)
 import Unsafe.Coerce as Unsafe.Coerce
 
@@ -289,6 +297,33 @@ foreign import _sinceNoOpts :: EffectFn2 PlainTime PlainTime Duration
 -- | Same as since with default options.
 since_ :: PlainTime -> PlainTime -> Effect Duration
 since_ = Effect.Uncurried.runEffectFn2 _sinceNoOpts
+
+-- Conversions
+
+-- | Converts a purescript-datetime `Time` to a `PlainTime`. Microsecond and
+-- | nanosecond components are set to zero.
+-- | See docs/purescript-datetime-interop.md.
+fromTime :: Time -> Effect PlainTime
+fromTime time =
+  new
+    { hour: fromEnum (Time.hour time)
+    , minute: fromEnum (Time.minute time)
+    , second: fromEnum (Time.second time)
+    , millisecond: fromEnum (Time.millisecond time)
+    }
+
+-- | Converts a `PlainTime` to a purescript-datetime `Time`.
+-- | Microsecond and nanosecond are dropped (treated as zero).
+-- | See docs/purescript-datetime-interop.md.
+toTime :: PlainTime -> Time
+toTime plain =
+  unsafePartial fromJust
+    ( Time
+        <$> toEnum (hour plain)
+        <*> toEnum (minute plain)
+        <*> toEnum (second plain)
+        <*> toEnum (millisecond plain)
+    )
 
 -- Round
 

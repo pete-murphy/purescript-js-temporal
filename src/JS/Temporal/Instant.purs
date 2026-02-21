@@ -24,6 +24,8 @@ module JS.Temporal.Instant
   -- * Round
   , round
   -- * Conversions
+  , fromDateTimeInstant
+  , toDateTimeInstant
   , toZonedDateTimeISO
   -- * Serialization
   , toString
@@ -36,6 +38,11 @@ module JS.Temporal.Instant
 import Prelude hiding (add, compare)
 
 import ConvertableOptions (class ConvertOption, class ConvertOptionsWithDefaults)
+import Data.DateTime.Instant (Instant) as DateTime.Instant
+import Data.DateTime.Instant as DateTime.Instant
+import Data.Maybe (Maybe)
+import Data.Time.Duration (Milliseconds(..))
+import Data.Newtype (unwrap)
 import ConvertableOptions as ConvertableOptions
 import Data.Function.Uncurried (Fn2)
 import Data.Function.Uncurried as Function.Uncurried
@@ -248,6 +255,17 @@ round providedOptions instant =
     instant
 
 -- Conversions
+
+-- | Converts a purescript-datetime `Instant` to a Temporal `Instant`.
+-- | See docs/purescript-datetime-interop.md.
+fromDateTimeInstant :: DateTime.Instant.Instant -> Effect Instant
+fromDateTimeInstant instant = fromEpochMilliseconds (unwrap (DateTime.Instant.unInstant instant))
+
+-- | Converts a Temporal `Instant` to a purescript-datetime `Instant`.
+-- | Returns `Nothing` if the value is outside the datetime Instant range.
+-- | See docs/purescript-datetime-interop.md.
+toDateTimeInstant :: Instant -> Maybe DateTime.Instant.Instant
+toDateTimeInstant instant = DateTime.Instant.instant (Milliseconds (epochMilliseconds instant))
 
 foreign import _toZonedDateTimeISO :: Fn2 String Instant ZonedDateTime
 

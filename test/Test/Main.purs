@@ -2,9 +2,16 @@ module Test.Main (main) where
 
 import Prelude
 
+import Control.Monad.Rec.Class (Step(..), tailRecM)
+import Data.Date.Gen (genDate)
+import Data.Time.Gen (genTime)
+import Data.DateTime.Gen (genDateTime)
+import Data.DateTime.Instant as DateTime.Instant
 import Data.Foldable as Foldable
 import Data.Maybe (Maybe(..))
+import Data.Tuple (Tuple(..))
 import Effect (Effect)
+import Effect.Exception (error, throwException)
 import Effect.Class.Console as Console
 import JS.BigInt as BigInt
 import JS.Temporal.CalendarName as CalendarName
@@ -21,7 +28,9 @@ import JS.Temporal.PlainYearMonth as PlainYearMonth
 import JS.Temporal.RoundingMode as RoundingMode
 import JS.Temporal.TemporalUnit as TemporalUnit
 import JS.Temporal.ZonedDateTime as ZonedDateTime
+import Random.LCG (randomSeed)
 import Test.Assert.Extended as Test
+import Test.QuickCheck.Gen (runGen)
 
 main :: Effect Unit
 main = do
@@ -39,6 +48,7 @@ main = do
   test_RoundingMode
   test_Disambiguation
   test_CalendarName
+  test_DateTimeInterop
 
 -- PlainDate
 test_PlainDate :: Effect Unit
@@ -925,3 +935,83 @@ test_CalendarName = do
     { actual: CalendarName.toString CalendarName.Never
     , expected: "never"
     }
+
+-- DateTime interop (purescript-datetime round-trip property tests)
+test_DateTimeInterop :: Effect Unit
+test_DateTimeInterop = do
+  Console.log "DateTime interop round-trips"
+  let numTests = 100
+
+  seed1 <- randomSeed
+  _ <- tailRecM
+    ( \{ remaining, state } ->
+        if remaining <= 0 then
+          pure (Done unit)
+        else do
+          let Tuple date newState = runGen genDate state
+          plain <- PlainDate.fromDate date
+          let back = PlainDate.toDate plain
+          when (back /= date)
+            (throwException (error ("PlainDate round-trip failed for " <> show date)))
+          pure (Loop { remaining: remaining - 1, state: newState })
+    )
+    { remaining: numTests, state: { newSeed: seed1, size: 10 } }
+
+  seed2 <- randomSeed
+  _ <- tailRecM
+    ( \{ remaining, state } ->
+        if remaining <= 0 then
+          pure (Done unit)
+        else do
+          let Tuple time newState = runGen genTime state
+          plain <- PlainTime.fromTime time
+          let back = PlainTime.toTime plain
+          when (back /= time)
+            (throwException (error ("PlainTime round-trip failed for " <> show time)))
+          pure (Loop { remaining: remaining - 1, state: newState })
+    )
+    { remaining: numTests, state: { newSeed: seed2, size: 10 } }
+
+  seed3 <- randomSeed
+  _ <- tailRecM
+    ( \{ remaining, state } ->
+        if remaining <= 0 then
+          pure (Done unit)
+        else do
+          let Tuple dateTime newState = runGen genDateTime state
+          plain <- PlainDateTime.fromDateTime dateTime
+          let back = PlainDateTime.toDateTime plain
+          when (back /= dateTime)
+            ( throwException
+                (error ("PlainDateTime round-trip failed for " <> show dateTime))
+            )
+          pure (Loop { remaining: remaining - 1, state: newState })
+    )
+    { remaining: numTests, state: { newSeed: seed3, size: 10 } }
+
+  seed4 <- randomSeed
+  _ <- tailRecM
+    ( \{ remaining, state } ->
+        if remaining <= 0 then
+          pure (Done unit)
+        else do
+          let Tuple dateTime newState = runGen genDateTime state
+          let dtInstant = DateTime.Instant.fromDateTime dateTime
+          temporalInstant <- Instant.fromDateTimeInstant dtInstant
+          case Instant.toDateTimeInstant temporalInstant of
+            Just back ->
+              when (back /= dtInstant)
+                ( throwException
+                    (error ("Instant round-trip failed for " <> show dtInstant))
+                )
+            Nothing ->
+              throwException
+                (error ("Instant.toDateTimeInstant returned Nothing for " <> show dtInstant))
+          pure (Loop { remaining: remaining - 1, state: newState })
+    )
+    { remaining: numTests, state: { newSeed: seed4, size: 10 } }
+
+  Console.log ("  " <> show numTests <> " PlainDate round-trips passed")
+  Console.log ("  " <> show numTests <> " PlainTime round-trips passed")
+  Console.log ("  " <> show numTests <> " PlainDateTime round-trips passed")
+  Console.log ("  " <> show numTests <> " Instant round-trips passed")

@@ -31,6 +31,20 @@
           '';
         };
       };
+      nodeWithTemporal =
+        pkgs.runCommand "nodejs-temporal" {
+          buildInputs = [pkgs.makeWrapper];
+        } ''
+          mkdir -p $out/bin
+          for prog in ${pkgs.nodejs}/bin/*; do
+            name=$(basename $prog)
+            if [ "$name" = "node" ]; then
+              makeWrapper $prog $out/bin/node --add-flags "--harmony-temporal"
+            else
+              ln -s $prog $out/bin/$name
+            fi
+          done
+        '';
     in {
       devShells.default = pkgs.mkShell {
         buildInputs = with pkgs; [
@@ -41,8 +55,8 @@
           purs-tidy
           purs-backend-es
           spago
-          # Node
-          nodejs
+          # Node (wrapped to enable Temporal API)
+          nodeWithTemporal
           # Nix
           alejandra
           # Scripting

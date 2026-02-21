@@ -39,7 +39,8 @@ nextWeeklyOccurrence now weekday eventTime eventTimeZone = do
 
 main :: Effect Unit
 main = do
-  eventTime <- PlainTime.from_ "08:45"
-  rightBefore <- ZonedDateTime.from_ "2020-03-26T15:30+00:00[Europe/London]"
-  next <- nextWeeklyOccurrence rightBefore 4 eventTime "America/Los_Angeles"
-  Console.log ("Next Thursday 8:45 LA time: " <> ZonedDateTime.toString_ next)
+  Console.log "TODO: Fix"
+-- eventTime <- PlainTime.from_ "08:45"
+-- rightBefore <- ZonedDateTime.from_ "2020-03-26T15:30+00:00[Europe/London]"
+-- next <- nextWeeklyOccurrence rightBefore 4 eventTime "America/Los_Angeles"
+-- Console.log ("Next Thursday 8:45 LA time: " <> ZonedDateTime.toString_ next)

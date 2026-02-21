@@ -1,3 +1,7 @@
+-- | A month and day without year or time zone. Use for recurring dates (e.g.
+-- | birthdays, annual events). Requires a year for conversion to PlainDate.
+-- |
+-- | See <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal/PlainMonthDay>
 module JS.Temporal.PlainMonthDay
   ( module JS.Temporal.PlainMonthDay.Internal
   -- * Construction
@@ -42,6 +46,7 @@ import Unsafe.Coerce as Unsafe.Coerce
 
 foreign import _new :: EffectFn2 Int Int PlainMonthDay
 
+-- | Creates a PlainMonthDay from month and day.
 new :: Int -> Int -> Effect PlainMonthDay
 new = Effect.Uncurried.runEffectFn2 _new
 
@@ -60,6 +65,7 @@ instance ConvertOption ToOverflowOptions "overflow" String String where
 
 foreign import _from :: forall r. EffectFn2 { | r } String PlainMonthDay
 
+-- | Parses a month-day string (e.g. `"01-15"` or `"--01-15"`). Options: overflow.
 from
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -82,6 +88,7 @@ from providedOptions str =
 
 foreign import _fromNoOpts :: EffectFn1 String PlainMonthDay
 
+-- | Same as from with default options.
 from_ :: String -> Effect PlainMonthDay
 from_ = Effect.Uncurried.runEffectFn1 _fromNoOpts
 
@@ -100,6 +107,7 @@ type WithFields =
 
 foreign import _with :: forall ro rf. EffectFn3 { | ro } { | rf } PlainMonthDay PlainMonthDay
 
+-- | Returns a new PlainMonthDay with specified fields replaced. Options: overflow.
 with
   :: forall optsProvided fields rest
    . Union fields rest WithFields
@@ -125,6 +133,7 @@ with options fields plainMonthDay =
 
 foreign import _withNoOpts :: forall r. EffectFn2 { | r } PlainMonthDay PlainMonthDay
 
+-- | Same as with with default options.
 with_
   :: forall fields rest
    . Union fields rest WithFields
@@ -137,6 +146,7 @@ with_ = Effect.Uncurried.runEffectFn2 _withNoOpts
 
 foreign import _toPlainDate :: EffectFn2 { year :: Int } PlainMonthDay PlainDate
 
+-- | Converts to PlainDate by supplying a year.
 toPlainDate :: { year :: Int } -> PlainMonthDay -> Effect PlainDate
 toPlainDate = Effect.Uncurried.runEffectFn2 _toPlainDate
 
@@ -159,6 +169,7 @@ instance ConvertOption ToToStringOptions "calendarName" String String where
 
 foreign import _toString :: forall r. Fn2 { | r } PlainMonthDay String
 
+-- | Serializes to ISO 8601 month-day format. Options: calendarName.
 toString
   :: forall provided
    . ConvertOptionsWithDefaults

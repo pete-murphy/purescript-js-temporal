@@ -1,3 +1,8 @@
+-- | A calendar date (year, month, day) without time or time zone. Use for
+-- | date-only values (e.g. birthdays, all-day events). Uses ISO 8601 calendar
+-- | by default.
+-- |
+-- | See <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal/PlainDate>
 module JS.Temporal.PlainDate
   ( module JS.Temporal.PlainDate.Internal
   -- * Construction
@@ -81,6 +86,7 @@ import Unsafe.Coerce as Unsafe.Coerce
 
 foreign import _new :: EffectFn3 Int Int Int PlainDate
 
+-- | Creates a PlainDate from year, month, day. Throws if invalid.
 new :: Int -> Int -> Int -> Effect PlainDate
 new = Effect.Uncurried.runEffectFn3 _new
 
@@ -99,6 +105,7 @@ instance ConvertOption ToOverflowOptions "overflow" String String where
 
 foreign import _from :: forall r. EffectFn2 { | r } String PlainDate
 
+-- | Parses a date string (e.g. `"2024-01-15"`). Options: overflow.
 from
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -121,6 +128,7 @@ from providedOptions str =
 
 foreign import _fromNoOpts :: EffectFn1 String PlainDate
 
+-- | Same as from with default options.
 from_ :: String -> Effect PlainDate
 from_ = Effect.Uncurried.runEffectFn1 _fromNoOpts
 
@@ -163,6 +171,7 @@ eraYear = toMaybe <<< _eraYear
 
 foreign import _add :: forall r. EffectFn3 { | r } Duration PlainDate PlainDate
 
+-- | Adds a duration to a date. Supports calendar durations. Options: overflow.
 add
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -187,11 +196,13 @@ add providedOptions duration plainDate =
 
 foreign import _addNoOpts :: EffectFn2 Duration PlainDate PlainDate
 
+-- | Same as add with default options.
 add_ :: Duration -> PlainDate -> Effect PlainDate
 add_ = Effect.Uncurried.runEffectFn2 _addNoOpts
 
 foreign import _subtract :: forall r. EffectFn3 { | r } Duration PlainDate PlainDate
 
+-- | Subtracts a duration from a date. Options: overflow.
 subtract
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -216,6 +227,7 @@ subtract providedOptions duration plainDate =
 
 foreign import _subtractNoOpts :: EffectFn2 Duration PlainDate PlainDate
 
+-- | Same as subtract with default options.
 subtract_ :: Duration -> PlainDate -> Effect PlainDate
 subtract_ = Effect.Uncurried.runEffectFn2 _subtractNoOpts
 
@@ -230,6 +242,7 @@ type WithFields =
 
 foreign import _with :: forall ro rf. EffectFn3 { | ro } { | rf } PlainDate PlainDate
 
+-- | Returns a new PlainDate with specified fields replaced. Options: overflow.
 with
   :: forall optsProvided fields rest
    . Union fields rest WithFields
@@ -255,6 +268,7 @@ with options fields plainDate =
 
 foreign import _withNoOpts :: forall r. EffectFn2 { | r } PlainDate PlainDate
 
+-- | Same as with with default options.
 with_
   :: forall fields rest
    . Union fields rest WithFields
@@ -265,6 +279,7 @@ with_ = Effect.Uncurried.runEffectFn2 _withNoOpts
 
 foreign import _withCalendar :: EffectFn2 String PlainDate PlainDate
 
+-- | Returns a new PlainDate with the given calendar (e.g. `"iso8601"`).
 withCalendar :: String -> PlainDate -> Effect PlainDate
 withCalendar = Effect.Uncurried.runEffectFn2 _withCalendar
 
@@ -305,6 +320,7 @@ instance ConvertOption ToDifferenceOptions "roundingMode" String String where
 
 foreign import _until :: forall r. EffectFn3 { | r } PlainDate PlainDate Duration
 
+-- | Duration from this date until the other. Options: largestUnit, smallestUnit, roundingIncrement, roundingMode.
 until
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -329,11 +345,13 @@ until providedOptions other plainDate =
 
 foreign import _untilNoOpts :: EffectFn2 PlainDate PlainDate Duration
 
+-- | Same as until with default options.
 until_ :: PlainDate -> PlainDate -> Effect Duration
 until_ = Effect.Uncurried.runEffectFn2 _untilNoOpts
 
 foreign import _since :: forall r. EffectFn3 { | r } PlainDate PlainDate Duration
 
+-- | Duration from the other date to this one (inverse of until).
 since
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -358,6 +376,7 @@ since providedOptions other plainDate =
 
 foreign import _sinceNoOpts :: EffectFn2 PlainDate PlainDate Duration
 
+-- | Same as since with default options.
 since_ :: PlainDate -> PlainDate -> Effect Duration
 since_ = Effect.Uncurried.runEffectFn2 _sinceNoOpts
 
@@ -365,21 +384,25 @@ since_ = Effect.Uncurried.runEffectFn2 _sinceNoOpts
 
 foreign import _toPlainYearMonth :: Fn1 PlainDate PlainYearMonth
 
+-- | Drops the day component.
 toPlainYearMonth :: PlainDate -> PlainYearMonth
 toPlainYearMonth = Function.Uncurried.runFn1 _toPlainYearMonth
 
 foreign import _toPlainMonthDay :: Fn1 PlainDate PlainMonthDay
 
+-- | Drops the year component.
 toPlainMonthDay :: PlainDate -> PlainMonthDay
 toPlainMonthDay = Function.Uncurried.runFn1 _toPlainMonthDay
 
 foreign import _toPlainDateTime :: Fn2 PlainTime PlainDate PlainDateTime
 
+-- | Combines a PlainTime with this date to form a PlainDateTime.
 toPlainDateTime :: PlainTime -> PlainDate -> PlainDateTime
 toPlainDateTime = Function.Uncurried.runFn2 _toPlainDateTime
 
 foreign import _toZonedDateTime :: EffectFn2 String PlainDate ZonedDateTime
 
+-- | Converts to ZonedDateTime at midnight in the given time zone.
 toZonedDateTime :: String -> PlainDate -> Effect ZonedDateTime
 toZonedDateTime = Effect.Uncurried.runEffectFn2 _toZonedDateTime
 
@@ -400,6 +423,7 @@ instance ConvertOption ToToStringOptions "calendarName" String String where
 
 foreign import _toString :: forall r. Fn2 { | r } PlainDate String
 
+-- | Serializes to ISO 8601 date format. Options: calendarName.
 toString
   :: forall provided
    . ConvertOptionsWithDefaults

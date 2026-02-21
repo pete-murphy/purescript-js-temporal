@@ -1,3 +1,4 @@
+-- | Opaque wrapper for `Temporal.Duration`. Re-exported from `JS.Temporal.Duration`.
 module JS.Temporal.Duration.Internal
   ( Duration
   , toString_
@@ -5,6 +6,7 @@ module JS.Temporal.Duration.Internal
 
 import Prelude
 
+-- | A Temporal duration (opaque type).
 foreign import data Duration :: Type
 
 foreign import years :: Duration -> Int

@@ -1,3 +1,8 @@
+-- | A date and time with time zone, representing a unique instant plus a
+-- | time zone and calendar. Use when you need an absolute point in time
+-- | with human-readable components in a specific zone.
+-- |
+-- | See <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal/ZonedDateTime>
 module JS.Temporal.ZonedDateTime
   ( module JS.Temporal.ZonedDateTime.Internal
   -- * Construction
@@ -113,6 +118,7 @@ import Unsafe.Coerce as Unsafe.Coerce
 
 foreign import _new :: EffectFn2 BigInt String ZonedDateTime
 
+-- | Creates a ZonedDateTime from epoch nanoseconds and a time zone ID.
 new :: BigInt -> String -> Effect ZonedDateTime
 new = Effect.Uncurried.runEffectFn2 _new
 
@@ -147,6 +153,7 @@ instance ConvertOption ToFromOptions "offset" String String where
 
 foreign import _from :: forall r. EffectFn2 { | r } String ZonedDateTime
 
+-- | Parses an ISO 8601 string with time zone (e.g. `"2024-01-15T12:00-05:00[America/New_York]"`). Options: overflow, disambiguation, offset.
 from
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -169,6 +176,7 @@ from providedOptions str =
 
 foreign import _fromNoOpts :: EffectFn1 String ZonedDateTime
 
+-- | Same as from with default options.
 from_ :: String -> Effect ZonedDateTime
 from_ = Effect.Uncurried.runEffectFn1 _fromNoOpts
 
@@ -245,6 +253,7 @@ instance ConvertOption ToArithmeticOptions "disambiguation" String String where
 
 foreign import _add :: forall r. EffectFn3 { | r } Duration ZonedDateTime ZonedDateTime
 
+-- | Adds a duration. Supports calendar durations. Options: overflow.
 add
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -269,6 +278,7 @@ add providedOptions duration zonedDateTime =
 
 foreign import _addNoOpts :: EffectFn2 Duration ZonedDateTime ZonedDateTime
 
+-- | Same as add with default options.
 add_ :: Duration -> ZonedDateTime -> Effect ZonedDateTime
 add_ = Effect.Uncurried.runEffectFn2 _addNoOpts
 
@@ -518,6 +528,7 @@ round providedOptions zonedDateTime =
 
 foreign import _startOfDay :: EffectFn1 ZonedDateTime ZonedDateTime
 
+-- | Returns the start of the calendar day in this time zone.
 startOfDay :: ZonedDateTime -> Effect ZonedDateTime
 startOfDay = Effect.Uncurried.runEffectFn1 _startOfDay
 
@@ -529,6 +540,7 @@ foreign import _getTimeZoneTransition
        ZonedDateTime
        (Maybe ZonedDateTime)
 
+-- | Gets the next or previous time zone transition. Direction: `"next"` or `"previous"`.
 getTimeZoneTransition :: String -> ZonedDateTime -> Maybe ZonedDateTime
 getTimeZoneTransition direction zonedDateTime =
   Function.Uncurried.runFn4 _getTimeZoneTransition Nothing Just direction zonedDateTime
@@ -537,11 +549,13 @@ getTimeZoneTransition direction zonedDateTime =
 
 foreign import _toInstant :: Fn1 ZonedDateTime Instant
 
+-- | Extracts the absolute instant (no time zone).
 toInstant :: ZonedDateTime -> Instant
 toInstant = Function.Uncurried.runFn1 _toInstant
 
 foreign import _toPlainDateTime :: Fn1 ZonedDateTime PlainDateTime
 
+-- | Extracts date and time in the zoned wall-clock view (drops time zone).
 toPlainDateTime :: ZonedDateTime -> PlainDateTime
 toPlainDateTime = Function.Uncurried.runFn1 _toPlainDateTime
 
@@ -613,6 +627,7 @@ instance ConvertOption ToToStringOptions "roundingMode" String String where
 
 foreign import _toString :: forall r. Fn2 { | r } ZonedDateTime String
 
+-- | Serializes to ISO 8601 format with time zone. Options: calendarName, timeZoneName, offset, fractionalSecondDigits, smallestUnit, roundingMode.
 toString
   :: forall provided
    . ConvertOptionsWithDefaults

@@ -1,3 +1,8 @@
+-- | A date and time (year, month, day, hour, minute, etc.) without time zone.
+-- | Use for wall-clock times that are not tied to a specific instant (e.g. "Jan 15,
+-- | 2024 at 3pm"). Combine with a time zone to get a ZonedDateTime.
+-- |
+-- | See <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal/PlainDateTime>
 module JS.Temporal.PlainDateTime
   ( module JS.Temporal.PlainDateTime.Internal
   -- * Construction
@@ -102,6 +107,7 @@ type PlainDateTimeComponents =
 
 foreign import _new :: forall r. EffectFn1 { | r } PlainDateTime
 
+-- | Creates a PlainDateTime from component fields. Corresponds to `Temporal.PlainDateTime()`.
 new
   :: forall provided rest
    . Union provided rest PlainDateTimeComponents
@@ -124,6 +130,7 @@ instance ConvertOption ToOverflowOptions "overflow" String String where
 
 foreign import _from :: forall r. EffectFn2 { | r } String PlainDateTime
 
+-- | Parses a date-time string (e.g. `"2024-01-15T15:30:00"`). Options: overflow.
 from
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -146,6 +153,7 @@ from providedOptions str =
 
 foreign import _fromNoOpts :: EffectFn1 String PlainDateTime
 
+-- | Same as from with default options.
 from_ :: String -> Effect PlainDateTime
 from_ = Effect.Uncurried.runEffectFn1 _fromNoOpts
 
@@ -195,6 +203,7 @@ foreign import nanosecond :: PlainDateTime -> Int
 
 foreign import _add :: forall r. EffectFn3 { | r } Duration PlainDateTime PlainDateTime
 
+-- | Adds a duration. Supports calendar durations. Options: overflow.
 add
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -219,11 +228,13 @@ add providedOptions duration plainDateTime =
 
 foreign import _addNoOpts :: EffectFn2 Duration PlainDateTime PlainDateTime
 
+-- | Same as add with default options.
 add_ :: Duration -> PlainDateTime -> Effect PlainDateTime
 add_ = Effect.Uncurried.runEffectFn2 _addNoOpts
 
 foreign import _subtract :: forall r. EffectFn3 { | r } Duration PlainDateTime PlainDateTime
 
+-- | Subtracts a duration. Options: overflow.
 subtract
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -248,6 +259,7 @@ subtract providedOptions duration plainDateTime =
 
 foreign import _subtractNoOpts :: EffectFn2 Duration PlainDateTime PlainDateTime
 
+-- | Same as subtract with default options.
 subtract_ :: Duration -> PlainDateTime -> Effect PlainDateTime
 subtract_ = Effect.Uncurried.runEffectFn2 _subtractNoOpts
 
@@ -496,6 +508,7 @@ instance ConvertOption ToToStringOptions "roundingMode" String String where
 
 foreign import _toString :: forall r. Fn2 { | r } PlainDateTime String
 
+-- | Serializes to ISO 8601 format. Options: fractionalSecondDigits, smallestUnit, roundingMode, calendarName.
 toString
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -522,15 +535,18 @@ toString providedOptions plainDateTime =
 
 foreign import _toPlainDate :: Fn1 PlainDateTime PlainDate
 
+-- | Extracts the date component.
 toPlainDate :: PlainDateTime -> PlainDate
 toPlainDate = Function.Uncurried.runFn1 _toPlainDate
 
 foreign import _toPlainTime :: Fn1 PlainDateTime PlainTime
 
+-- | Extracts the time component.
 toPlainTime :: PlainDateTime -> PlainTime
 toPlainTime = Function.Uncurried.runFn1 _toPlainTime
 
 foreign import _toZonedDateTime :: EffectFn2 String PlainDateTime ZonedDateTime
 
+-- | Interprets this date-time as occurring in the given time zone.
 toZonedDateTime :: String -> PlainDateTime -> Effect ZonedDateTime
 toZonedDateTime = Effect.Uncurried.runEffectFn2 _toZonedDateTime

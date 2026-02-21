@@ -1,3 +1,8 @@
+-- | A point in time with nanosecond precision, represented as nanoseconds since
+-- | the Unix epoch (1970-01-01T00:00:00Z). No time zone or calendar. Use
+-- | toZonedDateTimeISO to interpret in a time zone.
+-- |
+-- | See <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal/Instant>
 module JS.Temporal.Instant
   ( module JS.Temporal.Instant.Internal
   -- * Construction
@@ -53,21 +58,25 @@ import Unsafe.Coerce as Unsafe.Coerce
 
 foreign import _new :: EffectFn1 BigInt Instant
 
+-- | Creates an Instant from epoch nanoseconds. Corresponds to `Temporal.Instant()`.
 new :: BigInt -> Effect Instant
 new = Effect.Uncurried.runEffectFn1 _new
 
 foreign import _from :: EffectFn1 String Instant
 
+-- | Parses an ISO 8601 instant string (e.g. `"2024-01-15T12:00:00Z"`). Throws on invalid input.
 from :: String -> Effect Instant
 from = Effect.Uncurried.runEffectFn1 _from
 
 foreign import _fromEpochMilliseconds :: EffectFn1 Number Instant
 
+-- | Creates an Instant from epoch milliseconds.
 fromEpochMilliseconds :: Number -> Effect Instant
 fromEpochMilliseconds = Effect.Uncurried.runEffectFn1 _fromEpochMilliseconds
 
 foreign import _fromEpochNanoseconds :: EffectFn1 BigInt Instant
 
+-- | Creates an Instant from epoch nanoseconds.
 fromEpochNanoseconds :: BigInt -> Effect Instant
 fromEpochNanoseconds = Effect.Uncurried.runEffectFn1 _fromEpochNanoseconds
 
@@ -80,11 +89,13 @@ foreign import epochNanoseconds :: Instant -> BigInt
 
 foreign import _add :: EffectFn2 Duration Instant Instant
 
+-- | Adds a duration to an instant. Throws for calendar durations.
 add :: Duration -> Instant -> Effect Instant
 add = Effect.Uncurried.runEffectFn2 _add
 
 foreign import _subtract :: EffectFn2 Duration Instant Instant
 
+-- | Subtracts a duration from an instant. Throws for calendar durations.
 subtract :: Duration -> Instant -> Effect Instant
 subtract = Effect.Uncurried.runEffectFn2 _subtract
 
@@ -125,6 +136,7 @@ instance ConvertOption ToDifferenceOptions "roundingMode" String String where
 
 foreign import _until :: forall r. EffectFn3 { | r } Instant Instant Duration
 
+-- | Returns the duration from this instant until the other. Options: largestUnit, smallestUnit, roundingIncrement, roundingMode.
 until
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -149,11 +161,13 @@ until providedOptions other instant =
 
 foreign import _untilNoOpts :: EffectFn2 Instant Instant Duration
 
+-- | Same as until with default options.
 until_ :: Instant -> Instant -> Effect Duration
 until_ = Effect.Uncurried.runEffectFn2 _untilNoOpts
 
 foreign import _since :: forall r. EffectFn3 { | r } Instant Instant Duration
 
+-- | Returns the duration from the other instant to this one (inverse of until).
 since
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -178,6 +192,7 @@ since providedOptions other instant =
 
 foreign import _sinceNoOpts :: EffectFn2 Instant Instant Duration
 
+-- | Same as since with default options.
 since_ :: Instant -> Instant -> Effect Duration
 since_ = Effect.Uncurried.runEffectFn2 _sinceNoOpts
 
@@ -211,6 +226,7 @@ instance ConvertOption ToRoundOptions "roundingMode" String String where
 
 foreign import _round :: forall r. EffectFn2 { | r } Instant Instant
 
+-- | Rounds the instant to the given smallest unit. Options: smallestUnit, roundingIncrement, roundingMode.
 round
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -235,6 +251,7 @@ round providedOptions instant =
 
 foreign import _toZonedDateTimeISO :: Fn2 String Instant ZonedDateTime
 
+-- | Converts the instant to a ZonedDateTime in the given time zone (e.g. `"America/New_York"`).
 toZonedDateTimeISO :: String -> Instant -> ZonedDateTime
 toZonedDateTimeISO = Function.Uncurried.runFn2 _toZonedDateTimeISO
 
@@ -275,6 +292,7 @@ instance ConvertOption ToToStringOptions "timeZone" String String where
 
 foreign import _toString :: forall r. Fn2 { | r } Instant String
 
+-- | Serializes the instant to ISO 8601 format. Options: fractionalSecondDigits, smallestUnit, roundingMode, timeZone.
 toString
   :: forall provided
    . ConvertOptionsWithDefaults

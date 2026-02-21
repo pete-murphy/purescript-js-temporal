@@ -1,3 +1,4 @@
+-- | Opaque wrapper for `Temporal.Instant`. Re-exported from `JS.Temporal.Instant`.
 module JS.Temporal.Instant.Internal
   ( Instant
   , equals
@@ -10,6 +11,7 @@ import Data.Function.Uncurried as Function.Uncurried
 import JS.Temporal.Internal (intToOrdering)
 import Prelude hiding (compare)
 
+-- | A point in time (opaque type).
 foreign import data Instant :: Type
 
 foreign import _equals :: Fn2 Instant Instant Boolean

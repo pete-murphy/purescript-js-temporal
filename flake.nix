@@ -29,6 +29,10 @@
           run-check-format = ''
             purs-tidy check src test
           '';
+
+          run-docs = ''
+            spago docs -f html
+          '';
         };
       };
       nodeWithTemporal =

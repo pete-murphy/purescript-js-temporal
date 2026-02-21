@@ -1,3 +1,7 @@
+-- | Rounding modes for Temporal `round`, `until`, `since`, and `total` operations.
+-- | Used to control how values are rounded when converting between units or
+-- | truncating sub-unit precision. See
+-- | <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal#rounding>
 module JS.Temporal.RoundingMode
   ( RoundingMode(..)
   , toString
@@ -7,6 +11,7 @@ module JS.Temporal.RoundingMode
 import Prelude
 import Data.Maybe (Maybe(..))
 
+-- | How to round when a value falls between two representable units.
 data RoundingMode
   = Ceil
   | Floor
@@ -20,6 +25,7 @@ data RoundingMode
 
 derive instance Eq RoundingMode
 
+-- | Converts a RoundingMode to its JavaScript string value (e.g. `HalfEven` → `"halfEven"`).
 toString :: RoundingMode -> String
 toString = case _ of
   Ceil -> "ceil"
@@ -32,6 +38,7 @@ toString = case _ of
   HalfTrunc -> "halfTrunc"
   HalfEven -> "halfEven"
 
+-- | Parses a JavaScript rounding mode string. Returns Nothing for unknown values.
 fromString :: String -> Maybe RoundingMode
 fromString = case _ of
   "ceil" -> Just Ceil

@@ -1,3 +1,7 @@
+-- | Units of time used in Temporal arithmetic, rounding, and difference operations.
+-- | Calendar units (year, month, week) require a calendar reference for conversion;
+-- | time units (day and smaller) represent fixed durations.
+-- | See <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal#temporal_units>
 module JS.Temporal.TemporalUnit
   ( TemporalUnit(..)
   , toString
@@ -7,6 +11,7 @@ module JS.Temporal.TemporalUnit
 import Prelude
 import Data.Maybe (Maybe(..))
 
+-- | A unit of time: calendar units (Year, Month, Week), day, or sub-day units.
 data TemporalUnit
   = Year
   | Month
@@ -21,6 +26,7 @@ data TemporalUnit
 
 derive instance Eq TemporalUnit
 
+-- | Converts a TemporalUnit to its JavaScript string value (e.g. `Microsecond` → `"microsecond"`).
 toString :: TemporalUnit -> String
 toString = case _ of
   Year -> "year"
@@ -34,6 +40,7 @@ toString = case _ of
   Microsecond -> "microsecond"
   Nanosecond -> "nanosecond"
 
+-- | Parses a JavaScript temporal unit string. Returns Nothing for unknown values.
 fromString :: String -> Maybe TemporalUnit
 fromString = case _ of
   "year" -> Just Year

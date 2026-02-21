@@ -1,3 +1,12 @@
+-- | A duration representing the difference between two time points. Can be used
+-- | in date/time arithmetic. Represented as years, months, weeks, days, hours,
+-- | minutes, seconds, milliseconds, microseconds, and nanoseconds.
+-- |
+-- | Calendar durations (years, months, weeks) require a reference date for
+-- | arithmetic; use PlainDate/PlainDateTime.add/subtract for those. Non-calendar
+-- | durations can be added/subtracted directly.
+-- |
+-- | See <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal/Duration>
 module JS.Temporal.Duration
   ( module JS.Temporal.Duration.Internal
   -- * Construction
@@ -60,6 +69,7 @@ import Unsafe.Coerce as Unsafe.Coerce
 
 -- Construction
 
+-- | Row type for duration component fields. All fields optional in `new` and `with`.
 type DurationComponents =
   ( years :: Int
   , months :: Int
@@ -75,6 +85,8 @@ type DurationComponents =
 
 foreign import _new :: forall r. EffectFn1 { | r } Duration
 
+-- | Creates a Duration from component fields. At least one component must be
+-- | provided. Mixed signs are invalid. Corresponds to `Temporal.Duration()`.
 new
   :: forall provided rest
    . Union provided rest DurationComponents
@@ -84,6 +96,8 @@ new = Effect.Uncurried.runEffectFn1 _new
 
 foreign import _from :: EffectFn1 String Duration
 
+-- | Parses an ISO 8601 duration string (e.g. `"PT1H30M"`). Throws on invalid
+-- | input. Corresponds to `Temporal.Duration.from()`.
 from :: String -> Effect Duration
 from = Effect.Uncurried.runEffectFn1 _from
 
@@ -99,26 +113,40 @@ foreign import seconds :: Duration -> Int
 foreign import milliseconds :: Duration -> Int
 foreign import microseconds :: Duration -> Int
 foreign import nanoseconds :: Duration -> Int
+
+-- | Returns 1 if positive, -1 if negative, 0 if zero.
 foreign import sign :: Duration -> Int
+
+-- | True if all components are zero.
 foreign import blank :: Duration -> Boolean
 
 -- Arithmetic
 
 foreign import _add :: EffectFn2 Duration Duration Duration
 
+-- | Adds two durations. Result is balanced to the largest unit of the inputs.
+-- | Throws if either duration contains calendar units (years, months, weeks).
+-- | Corresponds to `Temporal.Duration.prototype.add()`.
 add :: Duration -> Duration -> Effect Duration
 add = Effect.Uncurried.runEffectFn2 _add
 
 foreign import _subtract :: EffectFn2 Duration Duration Duration
 
+-- | Subtracts the second duration from the first. Same balancing/constraints as add.
+-- | Corresponds to `Temporal.Duration.prototype.subtract()`.
 subtract :: Duration -> Duration -> Effect Duration
 subtract = Effect.Uncurried.runEffectFn2 _subtract
 
+-- | Reverses the sign of the duration. Pure, does not throw.
 foreign import negated :: Duration -> Duration
+
+-- | Returns the duration with positive sign. Pure, does not throw.
 foreign import abs :: Duration -> Duration
 
 foreign import _with :: forall r. EffectFn2 { | r } Duration Duration
 
+-- | Returns a new duration with specified fields replaced. Mixed signs invalid.
+-- | Corresponds to `Temporal.Duration.prototype.with()`.
 with
   :: forall provided rest
    . Union provided rest DurationComponents
@@ -131,11 +159,16 @@ with = Effect.Uncurried.runEffectFn2 _with
 
 foreign import _compare :: EffectFn2 Duration Duration Int
 
+-- | Compares two durations. Returns LT if first is shorter, GT if longer, EQ if equal.
+-- | Throws for calendar durations without relativeTo. Corresponds to
+-- | `Temporal.Duration.compare()`.
 compare :: Duration -> Duration -> Effect Ordering
 compare a b = intToOrdering <$> Effect.Uncurried.runEffectFn2 _compare a b
 
 -- Round
 
+-- | Options for `round`: largestUnit, smallestUnit, roundingIncrement, roundingMode,
+-- | relativeTo (PlainDate/PlainDateTime/ZonedDateTime for calendar units).
 type DurationRoundOptions =
   ( largestUnit :: String
   , smallestUnit :: String
@@ -178,6 +211,8 @@ instance ConvertOption ToDurationRoundOptions "relativeTo" String Foreign where
 
 foreign import _round :: forall r. EffectFn2 { | r } Duration Duration
 
+-- | Rounds the duration to the given smallest/largest units. Use relativeTo for
+-- | calendar durations. Corresponds to `Temporal.Duration.prototype.round()`.
 round
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -200,6 +235,7 @@ round providedOptions duration =
 
 -- Total
 
+-- | Options for `total`: unit (required), relativeTo for calendar units.
 type DurationTotalOptions =
   ( unit :: String
   , relativeTo :: Foreign
@@ -224,6 +260,8 @@ instance ConvertOption ToDurationTotalOptions "relativeTo" String Foreign where
 
 foreign import _total :: forall r. EffectFn2 { | r } Duration Number
 
+-- | Returns the total length of the duration in the given unit. Use relativeTo
+-- | for calendar durations. Corresponds to `Temporal.Duration.prototype.total()`.
 total
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -248,6 +286,7 @@ total providedOptions duration =
 
 foreign import _toString :: forall r. Fn2 { | r } Duration String
 
+-- | Options: fractionalSecondDigits, smallestUnit.
 type DurationToStringOptions =
   ( fractionalSecondDigits :: Foreign
   , smallestUnit :: String
@@ -270,6 +309,7 @@ instance ConvertOption ToDurationToStringOptions "smallestUnit" TemporalUnit Str
 instance ConvertOption ToDurationToStringOptions "smallestUnit" String String where
   convertOption _ _ = identity
 
+-- | Serializes the duration to ISO 8601 format (e.g. `"PT1H30M"`).
 toString
   :: forall provided
    . ConvertOptionsWithDefaults

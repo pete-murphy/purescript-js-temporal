@@ -1,3 +1,7 @@
+-- | A year and month without day or time zone. Use for month-level values
+-- | (e.g. "January 2024"). Requires a reference day for some operations.
+-- |
+-- | See <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal/PlainYearMonth>
 module JS.Temporal.PlainYearMonth
   ( module JS.Temporal.PlainYearMonth.Internal
   -- * Construction
@@ -67,6 +71,7 @@ import Unsafe.Coerce as Unsafe.Coerce
 
 foreign import _new :: EffectFn2 Int Int PlainYearMonth
 
+-- | Creates a PlainYearMonth from year and month.
 new :: Int -> Int -> Effect PlainYearMonth
 new = Effect.Uncurried.runEffectFn2 _new
 
@@ -85,6 +90,7 @@ instance ConvertOption ToOverflowOptions "overflow" String String where
 
 foreign import _from :: forall r. EffectFn2 { | r } String PlainYearMonth
 
+-- | Parses a year-month string (e.g. `"2024-01"`). Options: overflow.
 from
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -106,6 +112,7 @@ from providedOptions str =
 
 foreign import _fromNoOpts :: EffectFn1 String PlainYearMonth
 
+-- | Same as from with default options.
 from_ :: String -> Effect PlainYearMonth
 from_ = Effect.Uncurried.runEffectFn1 _fromNoOpts
 
@@ -134,6 +141,7 @@ eraYear = toMaybe <<< _eraYear
 
 foreign import _add :: forall r. EffectFn3 { | r } Duration PlainYearMonth PlainYearMonth
 
+-- | Adds a duration. Options: overflow.
 add
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -158,11 +166,13 @@ add providedOptions duration plainYearMonth =
 
 foreign import _addNoOpts :: EffectFn2 Duration PlainYearMonth PlainYearMonth
 
+-- | Same as add with default options.
 add_ :: Duration -> PlainYearMonth -> Effect PlainYearMonth
 add_ = Effect.Uncurried.runEffectFn2 _addNoOpts
 
 foreign import _subtract :: forall r. EffectFn3 { | r } Duration PlainYearMonth PlainYearMonth
 
+-- | Subtracts a duration. Options: overflow.
 subtract
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -187,6 +197,7 @@ subtract providedOptions duration plainYearMonth =
 
 foreign import _subtractNoOpts :: EffectFn2 Duration PlainYearMonth PlainYearMonth
 
+-- | Same as subtract with default options.
 subtract_ :: Duration -> PlainYearMonth -> Effect PlainYearMonth
 subtract_ = Effect.Uncurried.runEffectFn2 _subtractNoOpts
 
@@ -200,6 +211,7 @@ type WithFields =
 
 foreign import _with :: forall ro rf. EffectFn3 { | ro } { | rf } PlainYearMonth PlainYearMonth
 
+-- | Returns a new PlainYearMonth with specified fields replaced. Options: overflow.
 with
   :: forall optsProvided fields rest
    . Union fields rest WithFields
@@ -225,6 +237,7 @@ with options fields plainYearMonth =
 
 foreign import _withNoOpts :: forall r. EffectFn2 { | r } PlainYearMonth PlainYearMonth
 
+-- | Same as with with default options.
 with_
   :: forall fields rest
    . Union fields rest WithFields
@@ -237,6 +250,7 @@ with_ = Effect.Uncurried.runEffectFn2 _withNoOpts
 
 foreign import _toPlainDate :: EffectFn2 { day :: Int } PlainYearMonth PlainDate
 
+-- | Converts to PlainDate by supplying a day.
 toPlainDate :: { day :: Int } -> PlainYearMonth -> Effect PlainDate
 toPlainDate = Effect.Uncurried.runEffectFn2 _toPlainDate
 
@@ -277,6 +291,7 @@ instance ConvertOption ToDifferenceOptions "roundingMode" String String where
 
 foreign import _until :: forall r. EffectFn3 { | r } PlainYearMonth PlainYearMonth Duration
 
+-- | Duration from this year-month until the other.
 until
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -301,11 +316,13 @@ until providedOptions other plainYearMonth =
 
 foreign import _untilNoOpts :: EffectFn2 PlainYearMonth PlainYearMonth Duration
 
+-- | Same as until with default options.
 until_ :: PlainYearMonth -> PlainYearMonth -> Effect Duration
 until_ = Effect.Uncurried.runEffectFn2 _untilNoOpts
 
 foreign import _since :: forall r. EffectFn3 { | r } PlainYearMonth PlainYearMonth Duration
 
+-- | Duration from the other year-month to this one.
 since
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -330,6 +347,7 @@ since providedOptions other plainYearMonth =
 
 foreign import _sinceNoOpts :: EffectFn2 PlainYearMonth PlainYearMonth Duration
 
+-- | Same as since with default options.
 since_ :: PlainYearMonth -> PlainYearMonth -> Effect Duration
 since_ = Effect.Uncurried.runEffectFn2 _sinceNoOpts
 
@@ -352,6 +370,7 @@ instance ConvertOption ToToStringOptions "calendarName" String String where
 
 foreign import _toString :: forall r. Fn2 { | r } PlainYearMonth String
 
+-- | Serializes to ISO 8601 year-month format. Options: calendarName.
 toString
   :: forall provided
    . ConvertOptionsWithDefaults

@@ -1,3 +1,7 @@
+-- | A wall-clock time (hour, minute, second, etc.) without date or time zone.
+-- | Use for recurring times (e.g. "3:30 PM") or when combining with PlainDate.
+-- |
+-- | See <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal/PlainTime>
 module JS.Temporal.PlainTime
   ( module JS.Temporal.PlainTime.Internal
   -- * Construction
@@ -68,6 +72,7 @@ type PlainTimeComponents =
 
 foreign import _new :: forall r. EffectFn1 { | r } PlainTime
 
+-- | Creates a PlainTime from component fields. Corresponds to `Temporal.PlainTime()`.
 new
   :: forall provided rest
    . Union provided rest PlainTimeComponents
@@ -90,6 +95,7 @@ instance ConvertOption ToOverflowOptions "overflow" String String where
 
 foreign import _from :: forall r. EffectFn2 { | r } String PlainTime
 
+-- | Parses a time string (e.g. `"15:30:00"`). Options: overflow. Throws on invalid input.
 from
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -112,6 +118,7 @@ from providedOptions str =
 
 foreign import _fromNoOpts :: EffectFn1 String PlainTime
 
+-- | Same as from with default options.
 from_ :: String -> Effect PlainTime
 from_ = Effect.Uncurried.runEffectFn1 _fromNoOpts
 
@@ -128,11 +135,13 @@ foreign import nanosecond :: PlainTime -> Int
 
 foreign import _add :: EffectFn2 Duration PlainTime PlainTime
 
+-- | Adds a duration. Wraps at 24 hours. Throws for calendar durations.
 add :: Duration -> PlainTime -> Effect PlainTime
 add = Effect.Uncurried.runEffectFn2 _add
 
 foreign import _subtract :: EffectFn2 Duration PlainTime PlainTime
 
+-- | Subtracts a duration. Wraps at 24 hours. Throws for calendar durations.
 subtract :: Duration -> PlainTime -> Effect PlainTime
 subtract = Effect.Uncurried.runEffectFn2 _subtract
 
@@ -149,6 +158,7 @@ type WithFields =
 
 foreign import _with :: forall ro rf. EffectFn3 { | ro } { | rf } PlainTime PlainTime
 
+-- | Returns a new PlainTime with specified fields replaced. Options: overflow.
 with
   :: forall optsProvided fields rest
    . Union fields rest WithFields
@@ -174,6 +184,7 @@ with options fields plainTime =
 
 foreign import _withNoOpts :: forall r. EffectFn2 { | r } PlainTime PlainTime
 
+-- | Same as with with default options.
 with_
   :: forall fields rest
    . Union fields rest WithFields
@@ -219,6 +230,7 @@ instance ConvertOption ToDifferenceOptions "roundingMode" String String where
 
 foreign import _until :: forall r. EffectFn3 { | r } PlainTime PlainTime Duration
 
+-- | Duration from this time until the other (positive if other is later same day).
 until
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -243,11 +255,13 @@ until providedOptions other plainTime =
 
 foreign import _untilNoOpts :: EffectFn2 PlainTime PlainTime Duration
 
+-- | Same as until with default options.
 until_ :: PlainTime -> PlainTime -> Effect Duration
 until_ = Effect.Uncurried.runEffectFn2 _untilNoOpts
 
 foreign import _since :: forall r. EffectFn3 { | r } PlainTime PlainTime Duration
 
+-- | Duration from the other time to this one (inverse of until).
 since
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -272,6 +286,7 @@ since providedOptions other plainTime =
 
 foreign import _sinceNoOpts :: EffectFn2 PlainTime PlainTime Duration
 
+-- | Same as since with default options.
 since_ :: PlainTime -> PlainTime -> Effect Duration
 since_ = Effect.Uncurried.runEffectFn2 _sinceNoOpts
 
@@ -305,6 +320,7 @@ instance ConvertOption ToRoundOptions "roundingMode" String String where
 
 foreign import _round :: forall r. EffectFn2 { | r } PlainTime PlainTime
 
+-- | Rounds the time to the given smallest unit.
 round
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -360,6 +376,7 @@ instance ConvertOption ToToStringOptions "roundingMode" String String where
 
 foreign import _toString :: forall r. Fn2 { | r } PlainTime String
 
+-- | Serializes to ISO 8601 time format. Options: fractionalSecondDigits, smallestUnit, roundingMode.
 toString
   :: forall provided
    . ConvertOptionsWithDefaults

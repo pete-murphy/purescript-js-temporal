@@ -1,5 +1,11 @@
 package:
   name: js-temporal
+  publish:
+    license: MIT
+    version: 0.0.1
+    location:
+      githubOwner: pete-murphy
+      githubRepo: purescript-js-temporal
   dependencies:
     - convertable-options: ">=1.0.0 <2.0.0"
     - datetime: ">=6.1.0 <7.0.0"

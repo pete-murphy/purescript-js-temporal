@@ -22,6 +22,7 @@ module JS.Temporal.PlainYearMonth
   , subtract_
   -- * Manipulation
   , with
+  , with_
   -- * Conversions
   , toPlainDate
   -- * Difference
@@ -197,15 +198,40 @@ type WithFields =
   , monthCode :: String
   )
 
-foreign import _with :: forall r. EffectFn2 { | r } PlainYearMonth PlainYearMonth
+foreign import _with :: forall ro rf. EffectFn3 { | ro } { | rf } PlainYearMonth PlainYearMonth
 
 with
+  :: forall optsProvided fields rest
+   . Union fields rest WithFields
+  => ConvertOptionsWithDefaults
+       ToOverflowOptions
+       { | OverflowOptions }
+       { | optsProvided }
+       { | OverflowOptions }
+  => { | optsProvided }
+  -> { | fields }
+  -> PlainYearMonth
+  -> Effect PlainYearMonth
+with options fields plainYearMonth =
+  Effect.Uncurried.runEffectFn3
+    _with
+    ( ConvertableOptions.convertOptionsWithDefaults
+        ToOverflowOptions
+        defaultOverflowOptions
+        options
+    )
+    fields
+    plainYearMonth
+
+foreign import _withNoOpts :: forall r. EffectFn2 { | r } PlainYearMonth PlainYearMonth
+
+with_
   :: forall fields rest
    . Union fields rest WithFields
   => { | fields }
   -> PlainYearMonth
   -> Effect PlainYearMonth
-with = Effect.Uncurried.runEffectFn2 _with
+with_ = Effect.Uncurried.runEffectFn2 _withNoOpts
 
 -- Conversions
 

@@ -28,6 +28,7 @@ module JS.Temporal.PlainDate
   , subtract_
   -- * Manipulation
   , with
+  , with_
   , withCalendar
   -- * Conversions
   , toPlainYearMonth
@@ -227,15 +228,40 @@ type WithFields =
   , monthCode :: String
   )
 
-foreign import _with :: forall r. EffectFn2 { | r } PlainDate PlainDate
+foreign import _with :: forall ro rf. EffectFn3 { | ro } { | rf } PlainDate PlainDate
 
 with
+  :: forall optsProvided fields rest
+   . Union fields rest WithFields
+  => ConvertOptionsWithDefaults
+       ToOverflowOptions
+       { | OverflowOptions }
+       { | optsProvided }
+       { | OverflowOptions }
+  => { | optsProvided }
+  -> { | fields }
+  -> PlainDate
+  -> Effect PlainDate
+with options fields plainDate =
+  Effect.Uncurried.runEffectFn3
+    _with
+    ( ConvertableOptions.convertOptionsWithDefaults
+        ToOverflowOptions
+        defaultOverflowOptions
+        options
+    )
+    fields
+    plainDate
+
+foreign import _withNoOpts :: forall r. EffectFn2 { | r } PlainDate PlainDate
+
+with_
   :: forall fields rest
    . Union fields rest WithFields
   => { | fields }
   -> PlainDate
   -> Effect PlainDate
-with = Effect.Uncurried.runEffectFn2 _with
+with_ = Effect.Uncurried.runEffectFn2 _withNoOpts
 
 foreign import _withCalendar :: EffectFn2 String PlainDate PlainDate
 

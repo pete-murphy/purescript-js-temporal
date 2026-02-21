@@ -10,6 +10,7 @@ module JS.Temporal.PlainMonthDay
   , calendarId
   -- * Manipulation
   , with
+  , with_
   -- * Conversions
   , toPlainDate
   -- * Serialization
@@ -26,7 +27,7 @@ import ConvertableOptions as ConvertableOptions
 import Data.Function.Uncurried (Fn2)
 import Data.Function.Uncurried as Function.Uncurried
 import Effect (Effect)
-import Effect.Uncurried (EffectFn1, EffectFn2)
+import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3)
 import Effect.Uncurried as Effect.Uncurried
 import JS.Temporal.CalendarName (CalendarName)
 import JS.Temporal.CalendarName as CalendarName
@@ -97,15 +98,40 @@ type WithFields =
   , day :: Int
   )
 
-foreign import _with :: forall r. EffectFn2 { | r } PlainMonthDay PlainMonthDay
+foreign import _with :: forall ro rf. EffectFn3 { | ro } { | rf } PlainMonthDay PlainMonthDay
 
 with
+  :: forall optsProvided fields rest
+   . Union fields rest WithFields
+  => ConvertOptionsWithDefaults
+       ToOverflowOptions
+       { | OverflowOptions }
+       { | optsProvided }
+       { | OverflowOptions }
+  => { | optsProvided }
+  -> { | fields }
+  -> PlainMonthDay
+  -> Effect PlainMonthDay
+with options fields plainMonthDay =
+  Effect.Uncurried.runEffectFn3
+    _with
+    ( ConvertableOptions.convertOptionsWithDefaults
+        ToOverflowOptions
+        defaultOverflowOptions
+        options
+    )
+    fields
+    plainMonthDay
+
+foreign import _withNoOpts :: forall r. EffectFn2 { | r } PlainMonthDay PlainMonthDay
+
+with_
   :: forall fields rest
    . Union fields rest WithFields
   => { | fields }
   -> PlainMonthDay
   -> Effect PlainMonthDay
-with = Effect.Uncurried.runEffectFn2 _with
+with_ = Effect.Uncurried.runEffectFn2 _withNoOpts
 
 -- Conversions
 

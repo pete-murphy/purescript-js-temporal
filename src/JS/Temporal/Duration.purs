@@ -21,6 +21,8 @@ module JS.Temporal.Duration
   , subtract
   , negated
   , abs
+  -- * Manipulation
+  , with
   -- * Comparison
   , compare
   -- * Round and Total
@@ -114,6 +116,16 @@ subtract = Effect.Uncurried.runEffectFn2 _subtract
 
 foreign import negated :: Duration -> Duration
 foreign import abs :: Duration -> Duration
+
+foreign import _with :: forall r. EffectFn2 { | r } Duration Duration
+
+with
+  :: forall provided rest
+   . Union provided rest DurationComponents
+  => { | provided }
+  -> Duration
+  -> Effect Duration
+with = Effect.Uncurried.runEffectFn2 _with
 
 -- Comparison
 

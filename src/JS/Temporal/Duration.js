@@ -30,6 +30,10 @@ export function _subtract(other, d) {
 export const negated = (d) => d.negated();
 export const abs = (d) => d.abs();
 
+export function _with(durationLike, d) {
+  return d.with(durationLike);
+}
+
 export function _compare(a, b) {
   return Temporal.Duration.compare(a, b);
 }

@@ -49,6 +49,10 @@ test_PlainDate = do
     { actual: PlainDate.toString {} plainDate
     , expected: "2026-02-21"
     }
+  Test.assertEqual
+    { actual: PlainDate.toString { calendarName: CalendarName.Never } plainDate
+    , expected: "2026-02-21"
+    }
 
   Console.log "PlainDate.from_"
   fromDate <- PlainDate.from_ "2024-01-15"
@@ -62,6 +66,18 @@ test_PlainDate = do
     }
   Test.assertEqual
     { actual: PlainDate.day fromDate
+    , expected: 15
+    }
+
+  Console.log "PlainDate.from with overflow"
+  constrainDate <- PlainDate.from { overflow: Overflow.Constrain } "2024-01-15"
+  Test.assertEqual
+    { actual: PlainDate.day constrainDate
+    , expected: 15
+    }
+  rejectDate <- PlainDate.from { overflow: Overflow.Reject } "2024-01-15"
+  Test.assertEqual
+    { actual: PlainDate.day rejectDate
     , expected: 15
     }
 
@@ -99,6 +115,11 @@ test_PlainDate = do
     { actual: PlainDate.toString {} subtracted
     , expected: "2026-02-14"
     }
+  addedWithOpts <- PlainDate.add { overflow: Overflow.Constrain } duration plainDate
+  Test.assertEqual
+    { actual: PlainDate.toString {} addedWithOpts
+    , expected: "2026-02-28"
+    }
 
   Console.log "PlainDate.until_ / since_"
   otherDate <- PlainDate.new 2026 3 1
@@ -112,11 +133,21 @@ test_PlainDate = do
     { actual: Duration.days sinceDuration
     , expected: (-8)
     }
+  untilWithOpts <- PlainDate.until { largestUnit: TemporalUnit.Day } otherDate plainDate
+  Test.assertEqual
+    { actual: Duration.days untilWithOpts
+    , expected: 8
+    }
 
-  Console.log "PlainDate.with"
-  withDate <- PlainDate.with { day: 1 } plainDate
+  Console.log "PlainDate.with_ / with"
+  withDate <- PlainDate.with_ { day: 1 } plainDate
+  withDateOpts <- PlainDate.with { overflow: Overflow.Constrain } { day: 1 } plainDate
   Test.assertEqual
     { actual: PlainDate.day withDate
+    , expected: 1
+    }
+  Test.assertEqual
+    { actual: PlainDate.day withDateOpts
     , expected: 1
     }
 
@@ -169,9 +200,20 @@ test_PlainTime = do
     , expected: 500
     }
 
+  Console.log "PlainTime.from with overflow"
+  constrainTime <- PlainTime.from { overflow: Overflow.Constrain } "09:15:30.500"
+  Test.assertEqual
+    { actual: PlainTime.hour constrainTime
+    , expected: 9
+    }
+
   Console.log "PlainTime.toString"
   Test.assertEqual
     { actual: PlainTime.toString { fractionalSecondDigits: 3 } plainTime
+    , expected: "14:30:45.123"
+    }
+  Test.assertEqual
+    { actual: PlainTime.toString { smallestUnit: TemporalUnit.Millisecond } plainTime
     , expected: "14:30:45.123"
     }
 
@@ -191,6 +233,7 @@ test_PlainTime = do
   Console.log "PlainTime.until_ / since_"
   otherTime <- PlainTime.new { hour: 16, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 }
   untilDuration <- PlainTime.until_ otherTime plainTime
+  untilWithOpts <- PlainTime.until { smallestUnit: TemporalUnit.Minute } otherTime plainTime
   Test.assertEqual
     { actual: Duration.hours untilDuration
     , expected: 1
@@ -199,12 +242,21 @@ test_PlainTime = do
     { actual: Duration.minutes untilDuration
     , expected: 29
     }
+  Test.assertEqual
+    { actual: Duration.hours untilWithOpts
+    , expected: 1
+    }
 
   Console.log "PlainTime.round"
   rounded <- PlainTime.round { smallestUnit: TemporalUnit.Minute } plainTime
   Test.assertEqual
     { actual: PlainTime.minute rounded
     , expected: 31
+    }
+  roundedWithMode <- PlainTime.round { smallestUnit: TemporalUnit.Second, roundingMode: RoundingMode.Floor } plainTime
+  Test.assertEqual
+    { actual: PlainTime.second roundedWithMode
+    , expected: 45
     }
 
 -- PlainDateTime
@@ -248,6 +300,13 @@ test_PlainDateTime = do
     , expected: 999
     }
 
+  Console.log "PlainDateTime.from with overflow"
+  constrainDateTime <- PlainDateTime.from { overflow: Overflow.Constrain } "2024-12-25T23:59:59.999"
+  Test.assertEqual
+    { actual: PlainDateTime.day constrainDateTime
+    , expected: 25
+    }
+
   Console.log "PlainDateTime.toString with options"
   Test.assertEqual
     { actual: PlainDateTime.toString { fractionalSecondDigits: 3 } plainDateTime
@@ -257,12 +316,17 @@ test_PlainDateTime = do
   Console.log "PlainDateTime.add / subtract"
   duration <- Duration.new { days: 1, hours: 1 }
   added <- PlainDateTime.add_ duration plainDateTime
+  addedWithOpts <- PlainDateTime.add { overflow: Overflow.Constrain } duration plainDateTime
   Test.assertEqual
     { actual: PlainDateTime.day added
     , expected: 22
     }
   Test.assertEqual
     { actual: PlainDateTime.hour added
+    , expected: 15
+    }
+  Test.assertEqual
+    { actual: PlainDateTime.hour addedWithOpts
     , expected: 15
     }
 
@@ -276,11 +340,24 @@ test_PlainDateTime = do
     , expected: "14:30:00"
     }
 
+  Console.log "PlainDateTime.until_ / since_"
+  otherDateTime <- PlainDateTime.from_ "2026-02-22T14:30:00"
+  untilDt <- PlainDateTime.until_ otherDateTime plainDateTime
+  Test.assertEqual
+    { actual: Duration.days untilDt
+    , expected: 1
+    }
+
   Console.log "PlainDateTime.round"
   rounded <- PlainDateTime.round { smallestUnit: TemporalUnit.Hour } plainDateTime
   Test.assertEqual
     { actual: PlainDateTime.hour rounded
     , expected: 15
+    }
+  roundedWithIncrement <- PlainDateTime.round { smallestUnit: TemporalUnit.Minute, roundingIncrement: 15 } plainDateTime
+  Test.assertEqual
+    { actual: PlainDateTime.minute roundedWithIncrement
+    , expected: 30
     }
 
 -- PlainYearMonth
@@ -300,6 +377,10 @@ test_PlainYearMonth = do
     { actual: PlainYearMonth.toString {} plainYearMonth
     , expected: "2026-02"
     }
+  Test.assertEqual
+    { actual: PlainYearMonth.toString { calendarName: CalendarName.Auto } plainYearMonth
+    , expected: "2026-02"
+    }
 
   Console.log "PlainYearMonth.from_"
   fromYearMonth <- PlainYearMonth.from_ "2024-12"
@@ -309,6 +390,13 @@ test_PlainYearMonth = do
     }
   Test.assertEqual
     { actual: PlainYearMonth.month fromYearMonth
+    , expected: 12
+    }
+
+  Console.log "PlainYearMonth.from with overflow"
+  constrainYearMonth <- PlainYearMonth.from { overflow: Overflow.Constrain } "2024-12"
+  Test.assertEqual
+    { actual: PlainYearMonth.month constrainYearMonth
     , expected: 12
     }
 
@@ -328,6 +416,19 @@ test_PlainYearMonth = do
   Test.assertEqual
     { actual: PlainYearMonth.month added
     , expected: 5
+    }
+  addedWithOpts <- PlainYearMonth.add { overflow: Overflow.Constrain } duration plainYearMonth
+  Test.assertEqual
+    { actual: PlainYearMonth.month addedWithOpts
+    , expected: 5
+    }
+
+  Console.log "PlainYearMonth.until_ / since_"
+  otherYearMonth <- PlainYearMonth.from_ "2026-05"
+  untilYm <- PlainYearMonth.until_ otherYearMonth plainYearMonth
+  Test.assertEqual
+    { actual: Duration.months untilYm
+    , expected: 3
     }
 
   Console.log "PlainYearMonth.toPlainDate"
@@ -354,6 +455,10 @@ test_PlainMonthDay = do
     { actual: PlainMonthDay.toString {} plainMonthDay
     , expected: "12-25"
     }
+  Test.assertEqual
+    { actual: PlainMonthDay.toString { calendarName: CalendarName.Never } plainMonthDay
+    , expected: "12-25"
+    }
 
   Console.log "PlainMonthDay.from_"
   fromMonthDay <- PlainMonthDay.from_ "02-29"
@@ -366,6 +471,13 @@ test_PlainMonthDay = do
     , expected: 29
     }
 
+  Console.log "PlainMonthDay.from with overflow"
+  constrainMonthDay <- PlainMonthDay.from { overflow: Overflow.Constrain } "02-29"
+  Test.assertEqual
+    { actual: PlainMonthDay.day constrainMonthDay
+    , expected: 29
+    }
+
   Console.log "PlainMonthDay.toPlainDate"
   toDate <- PlainMonthDay.toPlainDate { year: 2024 } plainMonthDay
   Test.assertEqual
@@ -373,8 +485,8 @@ test_PlainMonthDay = do
     , expected: "2024-12-25"
     }
 
-  Console.log "PlainMonthDay.with"
-  withMonthDay <- PlainMonthDay.with { day: 31 } plainMonthDay
+  Console.log "PlainMonthDay.with_"
+  withMonthDay <- PlainMonthDay.with_ { day: 31 } plainMonthDay
   Test.assertEqual
     { actual: PlainMonthDay.day withMonthDay
     , expected: 31
@@ -471,12 +583,23 @@ test_Duration = do
     , expected: GT
     }
 
+  Console.log "Duration.round"
+  durationToRound <- Duration.new { hours: 1, minutes: 30, seconds: 45 }
+  roundedDuration <- Duration.round { smallestUnit: TemporalUnit.Minute } durationToRound
+  Test.assertEqual
+    { actual: Duration.minutes roundedDuration
+    , expected: 31
+    }
+
   Console.log "Duration.total"
   totalSeconds <- Duration.total { unit: TemporalUnit.Second } duration
   Test.assertEqual
     { actual: totalSeconds
     , expected: 648000.0
     }
+  durationWithMonths <- Duration.new { months: 1, days: 15 }
+  totalDaysWithRelative <- Duration.total { unit: TemporalUnit.Day, relativeTo: "2024-01-01" } durationWithMonths
+  Test.assert (totalDaysWithRelative > 40.0 && totalDaysWithRelative < 50.0)
 
 -- Instant
 test_Instant :: Effect Unit
@@ -519,9 +642,14 @@ test_Instant = do
   Console.log "Instant.until_ / since_"
   otherInstant <- Instant.from "2026-02-21T14:00:00Z"
   untilDuration <- Instant.until_ otherInstant instant
+  untilWithOpts <- Instant.until { largestUnit: TemporalUnit.Hour } otherInstant instant
   Test.assertEqual
     { actual: Duration.seconds untilDuration
     , expected: 7200
+    }
+  Test.assertEqual
+    { actual: Duration.hours untilWithOpts
+    , expected: 2
     }
 
   Console.log "Instant.toZonedDateTimeISO"
@@ -537,6 +665,8 @@ test_Instant = do
     { actual: Instant.toString {} rounded
     , expected: "2026-02-21T12:00:00Z"
     }
+  roundedWithMode <- Instant.round { smallestUnit: TemporalUnit.Second, roundingMode: RoundingMode.Ceil } instant
+  Test.assert (Instant.toString {} roundedWithMode /= "")
 
 -- ZonedDateTime
 test_ZonedDateTime :: Effect Unit
@@ -546,6 +676,13 @@ test_ZonedDateTime = do
   Test.assertEqual
     { actual: ZonedDateTime.year zonedDateTime
     , expected: 2026
+    }
+
+  Console.log "ZonedDateTime.from with overflow"
+  constrainZoned <- ZonedDateTime.from { overflow: Overflow.Constrain } "2026-02-21T12:00:00-08:00[America/Los_Angeles]"
+  Test.assertEqual
+    { actual: ZonedDateTime.day constrainZoned
+    , expected: 21
     }
   Test.assertEqual
     { actual: ZonedDateTime.month zonedDateTime
@@ -569,6 +706,15 @@ test_ZonedDateTime = do
     { actual: ZonedDateTime.offset zonedDateTime
     , expected: "-08:00"
     }
+  Test.assert (PlainDateTime.toString {} (ZonedDateTime.toPlainDateTime zonedDateTime) /= "")
+
+  Console.log "ZonedDateTime.until_ / since_"
+  otherZoned <- ZonedDateTime.from_ "2026-02-22T12:00:00-08:00[America/Los_Angeles]"
+  untilZoned <- ZonedDateTime.until_ otherZoned zonedDateTime
+  Test.assertEqual
+    { actual: Duration.hours untilZoned
+    , expected: 24
+    }
 
   Console.log "ZonedDateTime.add / subtract"
   duration <- Duration.new { days: 1 }
@@ -576,6 +722,18 @@ test_ZonedDateTime = do
   Test.assertEqual
     { actual: ZonedDateTime.day added
     , expected: 22
+    }
+  addedWithOpts <- ZonedDateTime.add { overflow: Overflow.Constrain } duration zonedDateTime
+  Test.assertEqual
+    { actual: ZonedDateTime.day addedWithOpts
+    , expected: 22
+    }
+
+  Console.log "ZonedDateTime.round"
+  roundedZoned <- ZonedDateTime.round { smallestUnit: TemporalUnit.Hour } zonedDateTime
+  Test.assertEqual
+    { actual: ZonedDateTime.hour roundedZoned
+    , expected: 12
     }
 
   Console.log "ZonedDateTime.toInstant / toPlainDateTime"

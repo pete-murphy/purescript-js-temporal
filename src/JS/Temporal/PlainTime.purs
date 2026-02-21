@@ -16,6 +16,7 @@ module JS.Temporal.PlainTime
   , subtract
   -- * Manipulation
   , with
+  , with_
   -- * Difference
   , until
   , until_
@@ -146,15 +147,40 @@ type WithFields =
   , nanosecond :: Int
   )
 
-foreign import _with :: forall r. EffectFn2 { | r } PlainTime PlainTime
+foreign import _with :: forall ro rf. EffectFn3 { | ro } { | rf } PlainTime PlainTime
 
 with
+  :: forall optsProvided fields rest
+   . Union fields rest WithFields
+  => ConvertOptionsWithDefaults
+       ToOverflowOptions
+       { | OverflowOptions }
+       { | optsProvided }
+       { | OverflowOptions }
+  => { | optsProvided }
+  -> { | fields }
+  -> PlainTime
+  -> Effect PlainTime
+with options fields plainTime =
+  Effect.Uncurried.runEffectFn3
+    _with
+    ( ConvertableOptions.convertOptionsWithDefaults
+        ToOverflowOptions
+        defaultOverflowOptions
+        options
+    )
+    fields
+    plainTime
+
+foreign import _withNoOpts :: forall r. EffectFn2 { | r } PlainTime PlainTime
+
+with_
   :: forall fields rest
    . Union fields rest WithFields
   => { | fields }
   -> PlainTime
   -> Effect PlainTime
-with = Effect.Uncurried.runEffectFn2 _with
+with_ = Effect.Uncurried.runEffectFn2 _withNoOpts
 
 -- Difference
 

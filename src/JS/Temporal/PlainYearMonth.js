@@ -37,7 +37,11 @@ export function _subtractNoOpts(duration, pym) {
   return pym.subtract(duration);
 }
 
-export function _with(fields, pym) {
+export function _with(options, fields, pym) {
+  return pym.with(fields, options);
+}
+
+export function _withNoOpts(fields, pym) {
   return pym.with(fields);
 }
 

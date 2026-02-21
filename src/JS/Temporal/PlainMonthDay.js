@@ -14,7 +14,11 @@ export const monthCode = (pmd) => pmd.monthCode;
 export const day = (pmd) => pmd.day;
 export const calendarId = (pmd) => pmd.calendarId;
 
-export function _with(fields, pmd) {
+export function _with(options, fields, pmd) {
+  return pmd.with(fields, options);
+}
+
+export function _withNoOpts(fields, pmd) {
   return pmd.with(fields);
 }
 

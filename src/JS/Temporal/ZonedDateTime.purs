@@ -40,9 +40,11 @@ module JS.Temporal.ZonedDateTime
   , subtract_
   -- * Manipulation
   , with
+  , with_
   , withTimeZone
   , withCalendar
   , withPlainTime
+  , withPlainDate
   -- * Difference
   , until
   , until_
@@ -58,6 +60,8 @@ module JS.Temporal.ZonedDateTime
   , toPlainDateTime
   , toPlainDate
   , toPlainTime
+  , toPlainYearMonth
+  , toPlainMonthDay
   -- * Serialization
   , toString
   -- * Options
@@ -93,6 +97,8 @@ import JS.Temporal.Overflow (Overflow)
 import JS.Temporal.Overflow as Overflow
 import JS.Temporal.Instant.Internal (Instant)
 import JS.Temporal.PlainDate.Internal (PlainDate)
+import JS.Temporal.PlainMonthDay.Internal (PlainMonthDay)
+import JS.Temporal.PlainYearMonth.Internal (PlainYearMonth)
 import JS.Temporal.PlainDateTime.Internal (PlainDateTime)
 import JS.Temporal.PlainTime.Internal (PlainTime)
 import JS.Temporal.RoundingMode (RoundingMode)
@@ -310,15 +316,40 @@ type WithFields =
   , nanosecond :: Int
   )
 
-foreign import _with :: forall r. EffectFn2 { | r } ZonedDateTime ZonedDateTime
+foreign import _with :: forall ro rf. EffectFn3 { | ro } { | rf } ZonedDateTime ZonedDateTime
 
 with
+  :: forall optsProvided fields rest
+   . Union fields rest WithFields
+  => ConvertOptionsWithDefaults
+       ToFromOptions
+       { | FromOptions }
+       { | optsProvided }
+       { | FromOptions }
+  => { | optsProvided }
+  -> { | fields }
+  -> ZonedDateTime
+  -> Effect ZonedDateTime
+with options fields zonedDateTime =
+  Effect.Uncurried.runEffectFn3
+    _with
+    ( ConvertableOptions.convertOptionsWithDefaults
+        ToFromOptions
+        defaultFromOptions
+        options
+    )
+    fields
+    zonedDateTime
+
+foreign import _withNoOpts :: forall r. EffectFn2 { | r } ZonedDateTime ZonedDateTime
+
+with_
   :: forall fields rest
    . Union fields rest WithFields
   => { | fields }
   -> ZonedDateTime
   -> Effect ZonedDateTime
-with = Effect.Uncurried.runEffectFn2 _with
+with_ = Effect.Uncurried.runEffectFn2 _withNoOpts
 
 foreign import _withTimeZone :: EffectFn2 String ZonedDateTime ZonedDateTime
 
@@ -334,6 +365,11 @@ foreign import _withPlainTime :: EffectFn2 PlainTime ZonedDateTime ZonedDateTime
 
 withPlainTime :: PlainTime -> ZonedDateTime -> Effect ZonedDateTime
 withPlainTime = Effect.Uncurried.runEffectFn2 _withPlainTime
+
+foreign import _withPlainDate :: EffectFn2 PlainDate ZonedDateTime ZonedDateTime
+
+withPlainDate :: PlainDate -> ZonedDateTime -> Effect ZonedDateTime
+withPlainDate = Effect.Uncurried.runEffectFn2 _withPlainDate
 
 -- Difference
 
@@ -518,6 +554,16 @@ foreign import _toPlainTime :: Fn1 ZonedDateTime PlainTime
 
 toPlainTime :: ZonedDateTime -> PlainTime
 toPlainTime = Function.Uncurried.runFn1 _toPlainTime
+
+foreign import _toPlainYearMonth :: Fn1 ZonedDateTime PlainYearMonth
+
+toPlainYearMonth :: ZonedDateTime -> PlainYearMonth
+toPlainYearMonth = Function.Uncurried.runFn1 _toPlainYearMonth
+
+foreign import _toPlainMonthDay :: Fn1 ZonedDateTime PlainMonthDay
+
+toPlainMonthDay :: ZonedDateTime -> PlainMonthDay
+toPlainMonthDay = Function.Uncurried.runFn1 _toPlainMonthDay
 
 -- Serialization (toString_ from Internal)
 

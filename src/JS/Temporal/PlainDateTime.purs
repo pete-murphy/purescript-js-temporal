@@ -34,6 +34,9 @@ module JS.Temporal.PlainDateTime
   , subtract_
   -- * Manipulation
   , with
+  , with_
+  , withPlainTime
+  , withCalendar
   -- * Difference
   , until
   , until_
@@ -263,15 +266,50 @@ type WithFields =
   , nanosecond :: Int
   )
 
-foreign import _with :: forall r. EffectFn2 { | r } PlainDateTime PlainDateTime
+foreign import _with :: forall ro rf. EffectFn3 { | ro } { | rf } PlainDateTime PlainDateTime
 
 with
+  :: forall optsProvided fields rest
+   . Union fields rest WithFields
+  => ConvertOptionsWithDefaults
+       ToOverflowOptions
+       { | OverflowOptions }
+       { | optsProvided }
+       { | OverflowOptions }
+  => { | optsProvided }
+  -> { | fields }
+  -> PlainDateTime
+  -> Effect PlainDateTime
+with options fields plainDateTime =
+  Effect.Uncurried.runEffectFn3
+    _with
+    ( ConvertableOptions.convertOptionsWithDefaults
+        ToOverflowOptions
+        defaultOverflowOptions
+        options
+    )
+    fields
+    plainDateTime
+
+foreign import _withNoOpts :: forall r. EffectFn2 { | r } PlainDateTime PlainDateTime
+
+with_
   :: forall fields rest
    . Union fields rest WithFields
   => { | fields }
   -> PlainDateTime
   -> Effect PlainDateTime
-with = Effect.Uncurried.runEffectFn2 _with
+with_ = Effect.Uncurried.runEffectFn2 _withNoOpts
+
+foreign import _withPlainTime :: EffectFn2 PlainTime PlainDateTime PlainDateTime
+
+withPlainTime :: PlainTime -> PlainDateTime -> Effect PlainDateTime
+withPlainTime = Effect.Uncurried.runEffectFn2 _withPlainTime
+
+foreign import _withCalendar :: EffectFn2 String PlainDateTime PlainDateTime
+
+withCalendar :: String -> PlainDateTime -> Effect PlainDateTime
+withCalendar = Effect.Uncurried.runEffectFn2 _withCalendar
 
 -- Difference
 

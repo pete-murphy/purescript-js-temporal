@@ -43,7 +43,11 @@ export function _subtractNoOpts(duration, pd) {
   return pd.subtract(duration);
 }
 
-export function _with(fields, pd) {
+export function _with(options, fields, pd) {
+  return pd.with(fields, options);
+}
+
+export function _withNoOpts(fields, pd) {
   return pd.with(fields);
 }
 

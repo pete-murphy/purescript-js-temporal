@@ -55,6 +55,14 @@ export function _toPlainTime(zdt) {
   return zdt.toPlainTime();
 }
 
+export function _toPlainYearMonth(zdt) {
+  return zdt.toPlainYearMonth();
+}
+
+export function _toPlainMonthDay(zdt) {
+  return zdt.toPlainMonthDay();
+}
+
 export function _add(options, duration, zdt) {
   return zdt.add(duration, options);
 }
@@ -71,7 +79,11 @@ export function _subtractNoOpts(duration, zdt) {
   return zdt.subtract(duration);
 }
 
-export function _with(fields, zdt) {
+export function _with(options, fields, zdt) {
+  return zdt.with(fields, options);
+}
+
+export function _withNoOpts(fields, zdt) {
   return zdt.with(fields);
 }
 
@@ -85,6 +97,10 @@ export function _withCalendar(calendar, zdt) {
 
 export function _withPlainTime(plainTime, zdt) {
   return zdt.withPlainTime(plainTime);
+}
+
+export function _withPlainDate(plainDate, zdt) {
+  return zdt.withPlainDate(plainDate);
 }
 
 export function _until(options, other, zdt) {

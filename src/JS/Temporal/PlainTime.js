@@ -25,7 +25,11 @@ export function _subtract(duration, t) {
   return t.subtract(duration);
 }
 
-export function _with(fields, t) {
+export function _with(options, fields, t) {
+  return t.with(fields, options);
+}
+
+export function _withNoOpts(fields, t) {
   return t.with(fields);
 }
 

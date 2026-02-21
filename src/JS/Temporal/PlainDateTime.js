@@ -49,8 +49,20 @@ export function _subtractNoOpts(duration, pdt) {
   return pdt.subtract(duration);
 }
 
-export function _with(fields, pdt) {
+export function _with(options, fields, pdt) {
+  return pdt.with(fields, options);
+}
+
+export function _withNoOpts(fields, pdt) {
   return pdt.with(fields);
+}
+
+export function _withPlainTime(plainTime, pdt) {
+  return pdt.withPlainTime(plainTime);
+}
+
+export function _withCalendar(calendar, pdt) {
+  return pdt.withCalendar(calendar);
 }
 
 export function _until(options, other, pdt) {

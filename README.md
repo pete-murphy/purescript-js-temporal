@@ -28,7 +28,7 @@ This populates `reference/spec` (tc39 Temporal spec) and `reference/mdn` (MDN Te
 
 ## Examples
 
-The `src/Examples/` directory contains PureScript translations of recipes from the [Temporal Cookbook](https://tc39.es/proposal-temporal/docs/cookbook.html). Run all examples:
+The `examples/` directory is a separate Spago package containing PureScript translations of recipes from the [Temporal Cookbook](https://tc39.es/proposal-temporal/docs/cookbook.html). Run all examples:
 
 ```bash
 nix develop
@@ -38,7 +38,7 @@ just run-examples
 Or run a single example:
 
 ```bash
-spago run -m Examples.Cookbook.CurrentDateTime
+spago run -p js-temporal-examples -m Examples.Cookbook.CurrentDateTime
 ```
 
 ## Setup

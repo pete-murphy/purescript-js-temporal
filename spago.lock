@@ -29,6 +29,20 @@
             "quickcheck"
           ]
         }
+      },
+      "js-temporal-examples": {
+        "path": "examples",
+        "core": {
+          "dependencies": [
+            "console",
+            "effect",
+            "js-temporal",
+            "prelude"
+          ]
+        },
+        "test": {
+          "dependencies": []
+        }
       }
     },
     "package_set": {

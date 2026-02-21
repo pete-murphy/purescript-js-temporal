@@ -54,7 +54,7 @@ Section IDs in the spec (e.g. `id="sec-temporal.plaindate.prototype.add"`) allow
 
 ## Code style
 
-- PureScript: `purs-tidy` formatting. Run `purs-tidy format-in-place src test` to format.
+- PureScript: `purs-tidy` formatting. Run `purs-tidy format-in-place src test examples` to format.
 - Nix files: `alejandra` formatting
 - All side effects in the `Effect` monad
 - FFI: JavaScript files use `.js` alongside `.purs`
@@ -69,5 +69,6 @@ Section IDs in the spec (e.g. `id="sec-temporal.plaindate.prototype.add"`) allow
 
 - `src/JS/Temporal/` — library modules
 - `test/Test/` — tests
+- `examples/` — separate Spago package with Temporal Cookbook examples
 - `spago.yaml` — package config (registry 73.1.0)
 - `flake.nix` — Nix dev environment and scripts

@@ -21,14 +21,15 @@ This provides: `purs`, `spago`, `purs-tidy`, `purs-backend-es`, `nodejs`, `just`
 - **Install dependencies:** `spago install` (or `run-install`)
 - **Run tests:** `spago test` (or `run-test`)
 - **Build:** `spago build`
-- **Check formatting:** `purs-tidy check src test` (or `run-check-format`)
-- **Format code:** `purs-tidy format-in-place src test`
+- **Check formatting:** `purs-tidy check src test examples` (or `run-check-format`)
+- **Format code:** `purs-tidy format-in-place src test examples`
 - **REPL:** `spago repl`
 
 ## Architecture
 
 - `src/` — Library source modules
 - `test/Test/` — Test modules (entry point: `Test.Main`)
+- `examples/` — Separate Spago package; Temporal Cookbook examples (entry: `Examples.Main`)
 - `spago.yaml` — Package config and dependencies (registry 73.1.0)
 - `flake.nix` — Nix dev environment with helper scripts
 

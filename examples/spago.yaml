@@ -1,0 +1,9 @@
+package:
+  name: js-temporal-examples
+  dependencies:
+    - console
+    - effect
+    - js-temporal
+    - prelude
+  run:
+    main: Examples.Main

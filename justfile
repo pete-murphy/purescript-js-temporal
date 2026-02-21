@@ -8,7 +8,7 @@
 
 # Run Temporal Cookbook examples (requires node with Temporal: use `nix develop`)
 run-examples:
-    spago run -m Examples.Main
+    spago run -p js-temporal-examples
 
 @view-docs:
     spago docs -f html

@@ -27,7 +27,7 @@
           '';
 
           run-check-format = ''
-            purs-tidy check src test
+            purs-tidy check src test examples
           '';
 
           run-docs = ''

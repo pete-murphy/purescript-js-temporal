@@ -169,6 +169,17 @@ test_PlainDate = do
     , expected: "2026-02-21T12:30:00"
     }
 
+  Console.log "PlainDate.toZonedDateTime"
+  zoned <- PlainDate.toZonedDateTime "America/New_York" plainDate
+  Test.assertEqual
+    { actual: ZonedDateTime.timeZoneId zoned
+    , expected: "America/New_York"
+    }
+  Test.assertEqual
+    { actual: PlainDate.toString_ (ZonedDateTime.toPlainDate zoned)
+    , expected: "2026-02-21"
+    }
+
 -- PlainTime
 test_PlainTime :: Effect Unit
 test_PlainTime = do

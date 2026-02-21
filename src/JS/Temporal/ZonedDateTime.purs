@@ -69,6 +69,7 @@ module JS.Temporal.ZonedDateTime
   , toPlainMonthDay
   -- * Serialization
   , toString
+  , toString_
   -- * Options
   , ToFromOptions
   , ToArithmeticOptions
@@ -626,6 +627,10 @@ instance ConvertOption ToToStringOptions "roundingMode" String String where
   convertOption _ _ = identity
 
 foreign import _toString :: forall r. Fn2 { | r } ZonedDateTime String
+
+-- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
+toString_ :: ZonedDateTime -> String
+toString_ zonedDateTime = Function.Uncurried.runFn2 _toString defaultToStringOptions zonedDateTime
 
 -- | Serializes to ISO 8601 format with time zone. Options: calendarName, timeZoneName, offset, fractionalSecondDigits, smallestUnit, roundingMode.
 toString

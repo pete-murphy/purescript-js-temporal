@@ -19,6 +19,7 @@ foreign import seconds :: Duration -> Int
 foreign import milliseconds :: Duration -> Int
 foreign import microseconds :: Duration -> Int
 foreign import nanoseconds :: Duration -> Int
+-- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
 foreign import toString_ :: Duration -> String
 
 instance Eq Duration where

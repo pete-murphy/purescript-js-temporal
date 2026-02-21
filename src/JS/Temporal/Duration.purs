@@ -45,6 +45,7 @@ module JS.Temporal.Duration
   , ToDurationToStringOptions
   -- * Serialization
   , toString
+  , toString_
   ) where
 
 import Prelude hiding (add, compare)
@@ -308,6 +309,10 @@ instance ConvertOption ToDurationToStringOptions "smallestUnit" TemporalUnit Str
 
 instance ConvertOption ToDurationToStringOptions "smallestUnit" String String where
   convertOption _ _ = identity
+
+-- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
+toString_ :: Duration -> String
+toString_ duration = Function.Uncurried.runFn2 _toString defaultDurationToStringOptions duration
 
 -- | Serializes the duration to ISO 8601 format (e.g. `"PT1H30M"`).
 toString

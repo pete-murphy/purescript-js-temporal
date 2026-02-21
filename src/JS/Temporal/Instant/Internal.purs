@@ -16,6 +16,7 @@ foreign import data Instant :: Type
 
 foreign import _equals :: Fn2 Instant Instant Boolean
 foreign import _compare :: Fn2 Instant Instant Int
+-- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
 foreign import toString_ :: Instant -> String
 
 equals :: Instant -> Instant -> Boolean

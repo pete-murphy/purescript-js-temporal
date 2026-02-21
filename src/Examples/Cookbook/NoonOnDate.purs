@@ -15,4 +15,4 @@ main = do
   date <- PlainDate.from_ "2020-05-14"
   noon <- PlainTime.from_ "12:00"
   let noonOnDate = PlainDate.toPlainDateTime noon date
-  Console.log ("Noon on 2020-05-14: " <> PlainDateTime.toString {} noonOnDate)
+  Console.log ("Noon on 2020-05-14: " <> PlainDateTime.toString_ noonOnDate)

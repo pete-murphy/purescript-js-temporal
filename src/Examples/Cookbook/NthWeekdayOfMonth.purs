@@ -24,5 +24,5 @@ main :: Effect Unit
 main = do
   myMonth <- PlainYearMonth.from_ "2020-02"
   firstTuesday <- getFirstTuesday myMonth
-  Console.log ("First Tuesday of Feb 2020: " <> PlainDate.toString {} firstTuesday)
+  Console.log ("First Tuesday of Feb 2020: " <> PlainDate.toString_ firstTuesday)
   Console.log ("Day of week: " <> show (PlainDate.dayOfWeek firstTuesday))

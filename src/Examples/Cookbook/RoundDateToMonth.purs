@@ -23,4 +23,4 @@ main = do
   let isCloserToNextMonth = ordering == GT || ordering == EQ
   let nearestMonth = if isCloserToNextMonth then firstOfNextMonth else firstOfCurrentMonth
 
-  Console.log ("Nearest month start: " <> PlainDate.toString {} nearestMonth)
+  Console.log ("Nearest month start: " <> PlainDate.toString_ nearestMonth)

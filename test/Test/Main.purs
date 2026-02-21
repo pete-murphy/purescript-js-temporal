@@ -56,7 +56,7 @@ test_PlainDate = do
   Console.log "PlainDate.new"
   plainDate <- PlainDate.new 2026 2 21
   Test.assertEqual
-    { actual: PlainDate.toString {} plainDate
+    { actual: PlainDate.toString_ plainDate
     , expected: "2026-02-21"
     }
   Test.assertEqual
@@ -117,17 +117,17 @@ test_PlainDate = do
   duration <- Duration.new { days: 7 }
   added <- PlainDate.add_ duration plainDate
   Test.assertEqual
-    { actual: PlainDate.toString {} added
+    { actual: PlainDate.toString_ added
     , expected: "2026-02-28"
     }
   subtracted <- PlainDate.subtract_ duration plainDate
   Test.assertEqual
-    { actual: PlainDate.toString {} subtracted
+    { actual: PlainDate.toString_ subtracted
     , expected: "2026-02-14"
     }
   addedWithOpts <- PlainDate.add { overflow: Overflow.Constrain } duration plainDate
   Test.assertEqual
-    { actual: PlainDate.toString {} addedWithOpts
+    { actual: PlainDate.toString_ addedWithOpts
     , expected: "2026-02-28"
     }
 
@@ -165,7 +165,7 @@ test_PlainDate = do
   plainTime <- PlainTime.new { hour: 12, minute: 30, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 }
   dateTime <- pure (PlainDate.toPlainDateTime plainTime plainDate)
   Test.assertEqual
-    { actual: PlainDateTime.toString {} dateTime
+    { actual: PlainDateTime.toString_ dateTime
     , expected: "2026-02-21T12:30:00"
     }
 
@@ -275,7 +275,7 @@ test_PlainDateTime = do
   Console.log "PlainDateTime.new"
   plainDateTime <- PlainDateTime.new { year: 2026, month: 2, day: 21, hour: 14, minute: 30, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 }
   Test.assertEqual
-    { actual: PlainDateTime.toString {} plainDateTime
+    { actual: PlainDateTime.toString_ plainDateTime
     , expected: "2026-02-21T14:30:00"
     }
 
@@ -342,11 +342,11 @@ test_PlainDateTime = do
 
   Console.log "PlainDateTime.toPlainDate / toPlainTime"
   Test.assertEqual
-    { actual: PlainDate.toString {} (PlainDateTime.toPlainDate plainDateTime)
+    { actual: PlainDate.toString_ (PlainDateTime.toPlainDate plainDateTime)
     , expected: "2026-02-21"
     }
   Test.assertEqual
-    { actual: PlainTime.toString {} (PlainDateTime.toPlainTime plainDateTime)
+    { actual: PlainTime.toString_ (PlainDateTime.toPlainTime plainDateTime)
     , expected: "14:30:00"
     }
 
@@ -384,7 +384,7 @@ test_PlainYearMonth = do
     , expected: 2
     }
   Test.assertEqual
-    { actual: PlainYearMonth.toString {} plainYearMonth
+    { actual: PlainYearMonth.toString_ plainYearMonth
     , expected: "2026-02"
     }
   Test.assertEqual
@@ -444,7 +444,7 @@ test_PlainYearMonth = do
   Console.log "PlainYearMonth.toPlainDate"
   toDate <- PlainYearMonth.toPlainDate { day: 15 } plainYearMonth
   Test.assertEqual
-    { actual: PlainDate.toString {} toDate
+    { actual: PlainDate.toString_ toDate
     , expected: "2026-02-15"
     }
 
@@ -462,7 +462,7 @@ test_PlainMonthDay = do
     , expected: 25
     }
   Test.assertEqual
-    { actual: PlainMonthDay.toString {} plainMonthDay
+    { actual: PlainMonthDay.toString_ plainMonthDay
     , expected: "12-25"
     }
   Test.assertEqual
@@ -491,7 +491,7 @@ test_PlainMonthDay = do
   Console.log "PlainMonthDay.toPlainDate"
   toDate <- PlainMonthDay.toPlainDate { year: 2024 } plainMonthDay
   Test.assertEqual
-    { actual: PlainDate.toString {} toDate
+    { actual: PlainDate.toString_ toDate
     , expected: "2024-12-25"
     }
 
@@ -516,7 +516,7 @@ test_Duration = do
     , expected: 12
     }
   Test.assertEqual
-    { actual: Duration.toString {} duration
+    { actual: Duration.toString_ duration
     , expected: "P7DT12H"
     }
 
@@ -617,7 +617,7 @@ test_Instant = do
   Console.log "Instant.from"
   instant <- Instant.from "2026-02-21T12:00:00Z"
   Test.assertEqual
-    { actual: Instant.toString {} instant
+    { actual: Instant.toString_ instant
     , expected: "2026-02-21T12:00:00Z"
     }
 
@@ -640,12 +640,12 @@ test_Instant = do
   duration <- Duration.new { hours: 1 }
   added <- Instant.add duration instant
   Test.assertEqual
-    { actual: Instant.toString {} added
+    { actual: Instant.toString_ added
     , expected: "2026-02-21T13:00:00Z"
     }
   subtracted <- Instant.subtract duration instant
   Test.assertEqual
-    { actual: Instant.toString {} subtracted
+    { actual: Instant.toString_ subtracted
     , expected: "2026-02-21T11:00:00Z"
     }
 
@@ -672,11 +672,11 @@ test_Instant = do
   Console.log "Instant.round"
   rounded <- Instant.round { smallestUnit: TemporalUnit.Minute } instant
   Test.assertEqual
-    { actual: Instant.toString {} rounded
+    { actual: Instant.toString_ rounded
     , expected: "2026-02-21T12:00:00Z"
     }
   roundedWithMode <- Instant.round { smallestUnit: TemporalUnit.Second, roundingMode: RoundingMode.Ceil } instant
-  Test.assert (Instant.toString {} roundedWithMode /= "")
+  Test.assert (Instant.toString_ roundedWithMode /= "")
 
 -- ZonedDateTime
 test_ZonedDateTime :: Effect Unit
@@ -716,7 +716,7 @@ test_ZonedDateTime = do
     { actual: ZonedDateTime.offset zonedDateTime
     , expected: "-08:00"
     }
-  Test.assert (PlainDateTime.toString {} (ZonedDateTime.toPlainDateTime zonedDateTime) /= "")
+  Test.assert (PlainDateTime.toString_ (ZonedDateTime.toPlainDateTime zonedDateTime) /= "")
 
   Console.log "ZonedDateTime.until_ / since_"
   otherZoned <- ZonedDateTime.from_ "2026-02-22T12:00:00-08:00[America/Los_Angeles]"
@@ -749,12 +749,12 @@ test_ZonedDateTime = do
   Console.log "ZonedDateTime.toInstant / toPlainDateTime"
   instant <- pure (ZonedDateTime.toInstant zonedDateTime)
   Test.assertEqual
-    { actual: Instant.toString {} instant
+    { actual: Instant.toString_ instant
     , expected: "2026-02-21T20:00:00Z"
     }
   plainDateTime <- pure (ZonedDateTime.toPlainDateTime zonedDateTime)
   Test.assertEqual
-    { actual: PlainDateTime.toString {} plainDateTime
+    { actual: PlainDateTime.toString_ plainDateTime
     , expected: "2026-02-21T12:00:00"
     }
 
@@ -785,7 +785,7 @@ test_Now :: Effect Unit
 test_Now = do
   Console.log "Now.instant"
   nowInstant <- Now.instant
-  Test.assert (Instant.toString {} nowInstant /= "")
+  Test.assert (Instant.toString_ nowInstant /= "")
 
   Console.log "Now.plainDateISO"
   plainDate <- Now.plainDateISO

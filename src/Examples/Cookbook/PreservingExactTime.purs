@@ -12,4 +12,4 @@ main :: Effect Unit
 main = do
   source <- ZonedDateTime.from_ "2020-01-09T00:00[America/Chicago]"
   result <- ZonedDateTime.withTimeZone "America/Los_Angeles" source
-  Console.log ("Midnight Chicago in LA: " <> ZonedDateTime.toString {} result)
+  Console.log ("Midnight Chicago in LA: " <> ZonedDateTime.toString_ result)

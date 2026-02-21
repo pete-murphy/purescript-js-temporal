@@ -11,6 +11,7 @@ import Prelude
 foreign import data PlainMonthDay :: Type
 
 foreign import _equals :: Fn2 PlainMonthDay PlainMonthDay Boolean
+-- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
 foreign import toString_ :: PlainMonthDay -> String
 
 equals :: PlainMonthDay -> PlainMonthDay -> Boolean

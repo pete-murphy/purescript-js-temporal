@@ -18,12 +18,12 @@ main = do
   monthsDuration <- Duration.new { months: 1 }
   nextMonth <- PlainDate.add_ monthsDuration date
   thirdOfNextMonth <- PlainDate.with_ { day: 3 } nextMonth
-  Console.log ("Third day of next month: " <> PlainDate.toString {} thirdOfNextMonth)
+  Console.log ("Third day of next month: " <> PlainDate.toString_ thirdOfNextMonth)
 
   lastOfThisMonth <- PlainDate.with_ { day: PlainDate.daysInMonth date } date
-  Console.log ("Last day of this month: " <> PlainDate.toString {} lastOfThisMonth)
+  Console.log ("Last day of this month: " <> PlainDate.toString_ lastOfThisMonth)
 
   eighteenth <- PlainDate.with_ { day: 18 } date
   eightPM <- PlainTime.from_ "20:00"
   let thisMonth18thAt8PM = PlainDate.toPlainDateTime eightPM eighteenth
-  Console.log ("18th at 8 PM: " <> PlainDateTime.toString {} thisMonth18thAt8PM)
+  Console.log ("18th at 8 PM: " <> PlainDateTime.toString_ thisMonth18thAt8PM)

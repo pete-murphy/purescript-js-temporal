@@ -51,6 +51,7 @@ module JS.Temporal.PlainDateTime
   , round
   -- * Serialization
   , toString
+  , toString_
   -- * Conversions
   , fromDateTime
   , toDateTime
@@ -513,6 +514,10 @@ instance ConvertOption ToToStringOptions "roundingMode" String String where
   convertOption _ _ = identity
 
 foreign import _toString :: forall r. Fn2 { | r } PlainDateTime String
+
+-- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
+toString_ :: PlainDateTime -> String
+toString_ plainDateTime = Function.Uncurried.runFn2 _toString defaultToStringOptions plainDateTime
 
 -- | Serializes to ISO 8601 format. Options: fractionalSecondDigits, smallestUnit, roundingMode, calendarName.
 toString

@@ -22,7 +22,7 @@ main = do
   oldLaunchDate <- PlainDate.from_ "2019-06-01"
 
   fifteenDaysDelay <- plusAndRoundToMonthStart oldLaunchDate 15
-  Console.log ("15 days delay: " <> PlainDate.toString {} fifteenDaysDelay)
+  Console.log ("15 days delay: " <> PlainDate.toString_ fifteenDaysDelay)
 
   sixtyDaysDelay <- plusAndRoundToMonthStart oldLaunchDate 60
-  Console.log ("60 days delay: " <> PlainDate.toString {} sixtyDaysDelay)
+  Console.log ("60 days delay: " <> PlainDate.toString_ sixtyDaysDelay)

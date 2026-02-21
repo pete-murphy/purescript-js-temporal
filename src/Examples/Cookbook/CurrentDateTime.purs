@@ -13,7 +13,7 @@ import JS.Temporal.PlainDateTime as PlainDateTime
 main :: Effect Unit
 main = do
   date <- Now.plainDateISO
-  Console.log ("Current date (ISO 8601): " <> PlainDate.toString {} date)
+  Console.log ("Current date (ISO 8601): " <> PlainDate.toString_ date)
 
   plainDateTime <- Now.plainDateTimeISO
-  Console.log ("Current date and time: " <> PlainDateTime.toString {} plainDateTime)
+  Console.log ("Current date and time: " <> PlainDateTime.toString_ plainDateTime)

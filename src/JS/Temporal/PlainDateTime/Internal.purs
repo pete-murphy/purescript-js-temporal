@@ -14,6 +14,7 @@ foreign import data PlainDateTime :: Type
 
 foreign import _equals :: Fn2 PlainDateTime PlainDateTime Boolean
 foreign import _compare :: Fn2 PlainDateTime PlainDateTime Int
+-- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
 foreign import toString_ :: PlainDateTime -> String
 
 equals :: PlainDateTime -> PlainDateTime -> Boolean

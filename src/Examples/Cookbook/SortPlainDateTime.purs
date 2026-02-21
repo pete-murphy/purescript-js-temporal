@@ -24,5 +24,5 @@ main = do
   b <- PlainDateTime.from_ "2020-02-21T13:10:00"
   c <- PlainDateTime.from_ "2020-02-20T15:30:00"
   let results = getSortedLocalDateTimes [ a, b, c ] false
-  let strings = map (PlainDateTime.toString {}) results
+  let strings = map PlainDateTime.toString_ results
   Console.log ("Sorted: " <> intercalate ", " strings)

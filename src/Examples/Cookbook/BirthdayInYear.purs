@@ -13,5 +13,5 @@ main :: Effect Unit
 main = do
   birthday <- PlainMonthDay.from_ "12-15"
   birthdayIn2030 <- PlainMonthDay.toPlainDate { year: 2030 } birthday
-  Console.log ("Birthday in 2030: " <> PlainDate.toString {} birthdayIn2030)
+  Console.log ("Birthday in 2030: " <> PlainDate.toString_ birthdayIn2030)
   Console.log ("Day of week (1=Mon, 7=Sun): " <> show (PlainDate.dayOfWeek birthdayIn2030))

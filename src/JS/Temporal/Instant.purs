@@ -29,6 +29,7 @@ module JS.Temporal.Instant
   , toZonedDateTimeISO
   -- * Serialization
   , toString
+  , toString_
   -- * Options
   , ToDifferenceOptions
   , ToRoundOptions
@@ -309,6 +310,10 @@ instance ConvertOption ToToStringOptions "timeZone" String String where
   convertOption _ _ = identity
 
 foreign import _toString :: forall r. Fn2 { | r } Instant String
+
+-- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
+toString_ :: Instant -> String
+toString_ instant = Function.Uncurried.runFn2 _toString defaultToStringOptions instant
 
 -- | Serializes the instant to ISO 8601 format. Options: fractionalSecondDigits, smallestUnit, roundingMode, timeZone.
 toString

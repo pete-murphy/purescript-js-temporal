@@ -33,6 +33,7 @@ module JS.Temporal.PlainTime
   , toTime
   -- * Serialization
   , toString
+  , toString_
   -- * Options
   , ToOverflowOptions
   , ToDifferenceOptions
@@ -410,6 +411,10 @@ instance ConvertOption ToToStringOptions "roundingMode" String String where
   convertOption _ _ = identity
 
 foreign import _toString :: forall r. Fn2 { | r } PlainTime String
+
+-- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
+toString_ :: PlainTime -> String
+toString_ plainTime = Function.Uncurried.runFn2 _toString defaultToStringOptions plainTime
 
 -- | Serializes to ISO 8601 time format. Options: fractionalSecondDigits, smallestUnit, roundingMode.
 toString

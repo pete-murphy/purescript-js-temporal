@@ -33,10 +33,10 @@ main = do
   labourDay <- PlainMonthDay.from_ "05-01"
 
   noBridge <- bridgePublicHolidays labourDay 2020
-  Console.log ("2020 (no bridge): " <> intercalate ", " (map (PlainDate.toString {}) noBridge))
+  Console.log ("2020 (no bridge): " <> intercalate ", " (map PlainDate.toString_ noBridge))
 
   withBridge <- bridgePublicHolidays labourDay 2018
-  Console.log ("2018 (bridge): " <> intercalate ", " (map (PlainDate.toString {}) withBridge))
+  Console.log ("2018 (bridge): " <> intercalate ", " (map PlainDate.toString_ withBridge))
 
   weekend <- bridgePublicHolidays labourDay 2021
-  Console.log ("2021 (weekend): " <> intercalate ", " (map (PlainDate.toString {}) weekend))
+  Console.log ("2021 (weekend): " <> intercalate ", " (map PlainDate.toString_ weekend))

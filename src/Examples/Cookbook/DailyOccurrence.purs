@@ -32,4 +32,4 @@ main = do
   startDate <- PlainDate.from_ "2017-03-10"
   time <- PlainTime.from_ "08:00"
   occurrences <- calculateFirstFewOccurrences startDate time "America/Los_Angeles" 4
-  traverse_ (\i -> Console.log ("  " <> Instant.toString {} i)) occurrences
+  traverse_ (\i -> Console.log ("  " <> Instant.toString_ i)) occurrences

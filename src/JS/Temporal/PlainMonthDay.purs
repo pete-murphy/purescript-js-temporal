@@ -19,6 +19,7 @@ module JS.Temporal.PlainMonthDay
   , toPlainDate
   -- * Serialization
   , toString
+  , toString_
   -- * Options
   , ToOverflowOptions
   , ToToStringOptions
@@ -168,6 +169,10 @@ instance ConvertOption ToToStringOptions "calendarName" String String where
   convertOption _ _ = identity
 
 foreign import _toString :: forall r. Fn2 { | r } PlainMonthDay String
+
+-- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
+toString_ :: PlainMonthDay -> String
+toString_ plainMonthDay = Function.Uncurried.runFn2 _toString defaultToStringOptions plainMonthDay
 
 -- | Serializes to ISO 8601 month-day format. Options: calendarName.
 toString

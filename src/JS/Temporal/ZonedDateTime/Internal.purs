@@ -14,6 +14,7 @@ foreign import data ZonedDateTime :: Type
 
 foreign import _equals :: Fn2 ZonedDateTime ZonedDateTime Boolean
 foreign import _compare :: Fn2 ZonedDateTime ZonedDateTime Int
+-- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
 foreign import toString_ :: ZonedDateTime -> String
 
 equals :: ZonedDateTime -> ZonedDateTime -> Boolean

@@ -36,6 +36,7 @@ module JS.Temporal.PlainYearMonth
   , since_
   -- * Serialization
   , toString
+  , toString_
   -- * Options
   , ToOverflowOptions
   , ToDifferenceOptions
@@ -369,6 +370,10 @@ instance ConvertOption ToToStringOptions "calendarName" String String where
   convertOption _ _ = identity
 
 foreign import _toString :: forall r. Fn2 { | r } PlainYearMonth String
+
+-- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
+toString_ :: PlainYearMonth -> String
+toString_ plainYearMonth = Function.Uncurried.runFn2 _toString defaultToStringOptions plainYearMonth
 
 -- | Serializes to ISO 8601 year-month format. Options: calendarName.
 toString

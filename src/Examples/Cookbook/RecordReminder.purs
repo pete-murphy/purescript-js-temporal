@@ -25,4 +25,4 @@ main = do
   noticeWindow <- Duration.new { minutes: 1 }
 
   reminderAt <- getInstantBeforeOldRecord raceStart record noticeWindow
-  Console.log ("Reminder at: " <> Instant.toString {} reminderAt)
+  Console.log ("Reminder at: " <> Instant.toString_ reminderAt)

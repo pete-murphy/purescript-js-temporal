@@ -4,55 +4,48 @@
 -- |
 -- | See <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal/PlainDate>
 module JS.Temporal.PlainDate
-  ( module JS.Temporal.PlainDate.Internal
-  -- * Construction
-  , new
-  , from
-  , from_
-  -- * Properties
-  , year
-  , month
-  , day
-  , monthCode
-  , dayOfWeek
-  , dayOfYear
-  , weekOfYear
-  , yearOfWeek
-  , daysInMonth
-  , daysInYear
-  , daysInWeek
-  , monthsInYear
-  , inLeapYear
-  , calendarId
-  , era
-  , eraYear
-  -- * Arithmetic
+  ( ToDifferenceOptions
+  , ToOverflowOptions
+  , ToToStringOptions
   , add
   , add_
-  , subtract
-  , subtract_
-  -- * Manipulation
-  , with
-  , with_
-  , withCalendar
-  -- * Conversions
+  , calendarId
+  , day
+  , dayOfWeek
+  , dayOfYear
+  , daysInMonth
+  , daysInWeek
+  , daysInYear
+  , era
+  , eraYear
+  , from
   , fromDate
-  , toDate
-  , toPlainYearMonth
-  , toPlainMonthDay
-  , toPlainDateTime
-  , toZonedDateTime
-  -- * Difference
-  , until
-  , until_
+  , from_
+  , inLeapYear
+  , module JS.Temporal.PlainDate.Internal
+  , month
+  , monthCode
+  , monthsInYear
+  , new
   , since
   , since_
-  -- * Serialization
+  , subtract
+  , subtract_
+  , toDate
+  , toPlainDateTime
+  , toPlainMonthDay
+  , toZonedDateTime
+  , toPlainYearMonth
   , toString
-  -- * Options
-  , ToOverflowOptions
-  , ToDifferenceOptions
-  , ToToStringOptions
+  , toString_
+  , until
+  , until_
+  , weekOfYear
+  , with
+  , withCalendar
+  , with_
+  , year
+  , yearOfWeek
   ) where
 
 import Prelude hiding (add, compare)
@@ -426,7 +419,7 @@ foreign import _toZonedDateTime :: EffectFn2 String PlainDate ZonedDateTime
 toZonedDateTime :: String -> PlainDate -> Effect ZonedDateTime
 toZonedDateTime = Effect.Uncurried.runEffectFn2 _toZonedDateTime
 
--- Serialization (toString_ from Internal)
+-- Serialization
 
 type ToStringOptions = (calendarName :: String)
 
@@ -442,6 +435,10 @@ instance ConvertOption ToToStringOptions "calendarName" String String where
   convertOption _ _ = identity
 
 foreign import _toString :: forall r. Fn2 { | r } PlainDate String
+
+-- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
+toString_ :: PlainDate -> String
+toString_ plainDate = Function.Uncurried.runFn2 _toString defaultToStringOptions plainDate
 
 -- | Serializes to ISO 8601 date format. Options: calendarName.
 toString

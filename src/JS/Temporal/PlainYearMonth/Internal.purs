@@ -14,6 +14,7 @@ foreign import data PlainYearMonth :: Type
 
 foreign import _equals :: Fn2 PlainYearMonth PlainYearMonth Boolean
 foreign import _compare :: Fn2 PlainYearMonth PlainYearMonth Int
+-- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
 foreign import toString_ :: PlainYearMonth -> String
 
 equals :: PlainYearMonth -> PlainYearMonth -> Boolean

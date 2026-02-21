@@ -1,7 +1,6 @@
 package:
   name: js-temporal
   dependencies:
-    - console
     - convertable-options
     - datetime
     - effect

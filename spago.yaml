@@ -13,7 +13,9 @@ package:
     - unsafe-coerce
   test:
     main: Test.Main
-    dependencies: []
+    dependencies:
+      - assert
+      - foldable-traversable
 workspace:
   packageSet:
     registry: 73.1.0

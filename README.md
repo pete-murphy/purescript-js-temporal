@@ -10,6 +10,8 @@ spago install js-temporal
 
 ## Documentation
 
+Module documentation is [published on Pursuit](https://pursuit.purescript.org/packages/purescript-js-temporal).
+
 Generate HTML documentation with:
 
 ```bash

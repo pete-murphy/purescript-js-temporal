@@ -45,16 +45,10 @@ export function _round(options, i) {
   return i.round(options);
 }
 
-export function _compare(a, b) {
-  return Temporal.Instant.compare(a, b);
-}
-
-export function _equals(a, b) {
-  return a.equals(b);
+export function _toZonedDateTimeISO(timeZone, i) {
+  return i.toZonedDateTimeISO(timeZone);
 }
 
 export function _toString(options, i) {
   return i.toString(options);
 }
-
-export const toString_ = (i) => i.toString();

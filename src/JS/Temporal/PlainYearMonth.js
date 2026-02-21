@@ -41,6 +41,10 @@ export function _with(fields, pym) {
   return pym.with(fields);
 }
 
+export function _toPlainDate(fields, pym) {
+  return pym.toPlainDate(fields);
+}
+
 export function _until(options, other, pym) {
   return pym.until(other, options);
 }

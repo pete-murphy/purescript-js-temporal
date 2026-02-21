@@ -1,5 +1,5 @@
 module JS.Temporal.Duration
-  ( Duration
+  ( module JS.Temporal.Duration.Internal
   -- * Construction
   , new
   , from
@@ -30,12 +30,13 @@ module JS.Temporal.Duration
   , ToDurationRoundOptions
   , DurationTotalOptions
   , ToDurationTotalOptions
+  , DurationToStringOptions
+  , ToDurationToStringOptions
   -- * Serialization
   , toString
-  , toString_
   ) where
 
-import Prelude hiding (abs, add, compare)
+import Prelude hiding (add, compare)
 
 import ConvertableOptions (class ConvertOption, class ConvertOptionsWithDefaults)
 import ConvertableOptions as ConvertableOptions
@@ -51,10 +52,9 @@ import JS.Temporal.RoundingMode (RoundingMode)
 import JS.Temporal.RoundingMode as RoundingMode
 import JS.Temporal.TemporalUnit (TemporalUnit)
 import JS.Temporal.TemporalUnit as TemporalUnit
+import JS.Temporal.Duration.Internal (Duration)
 import Prim.Row (class Union)
 import Unsafe.Coerce as Unsafe.Coerce
-
-foreign import data Duration :: Type
 
 -- Construction
 
@@ -232,9 +232,7 @@ total providedOptions duration =
     )
     duration
 
--- Serialization
-
-foreign import toString_ :: Duration -> String
+-- Serialization (toString_ from Internal)
 
 foreign import _toString :: forall r. Fn2 { | r } Duration String
 
@@ -280,20 +278,4 @@ toString providedOptions duration =
     )
     duration
 
--- Instances
-
-instance Eq Duration where
-  eq a b =
-    years a == years b
-      && months a == months b
-      && weeks a == weeks b
-      && days a == days b
-      && hours a == hours b
-      && minutes a == minutes b
-      && seconds a == seconds b
-      && milliseconds a == milliseconds b
-      && microseconds a == microseconds b
-      && nanoseconds a == nanoseconds b
-
-instance Show Duration where
-  show = toString_
+-- Instances (Eq, Show from Internal)

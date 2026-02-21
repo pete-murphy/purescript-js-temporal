@@ -1,5 +1,5 @@
 module JS.Temporal.Instant
-  ( Instant
+  ( module JS.Temporal.Instant.Internal
   -- * Construction
   , new
   , from
@@ -18,12 +18,10 @@ module JS.Temporal.Instant
   , since_
   -- * Round
   , round
-  -- * Comparison
-  , compare
-  , equals
+  -- * Conversions
+  , toZonedDateTimeISO
   -- * Serialization
   , toString
-  , toString_
   -- * Options
   , ToDifferenceOptions
   , ToRoundOptions
@@ -42,15 +40,14 @@ import Effect.Uncurried as Effect.Uncurried
 import Foreign (Foreign)
 import Foreign as Foreign
 import JS.BigInt (BigInt)
-import JS.Temporal.Duration (Duration)
-import JS.Temporal.Internal (intToOrdering)
+import JS.Temporal.Duration.Internal (Duration)
 import JS.Temporal.RoundingMode (RoundingMode)
 import JS.Temporal.RoundingMode as RoundingMode
 import JS.Temporal.TemporalUnit (TemporalUnit)
 import JS.Temporal.TemporalUnit as TemporalUnit
+import JS.Temporal.Instant.Internal (Instant)
+import JS.Temporal.ZonedDateTime.Internal (ZonedDateTime)
 import Unsafe.Coerce as Unsafe.Coerce
-
-foreign import data Instant :: Type
 
 -- Construction
 
@@ -234,21 +231,14 @@ round providedOptions instant =
     )
     instant
 
--- Comparison
+-- Conversions
 
-foreign import _compare :: Fn2 Instant Instant Int
+foreign import _toZonedDateTimeISO :: Fn2 String Instant ZonedDateTime
 
-compare :: Instant -> Instant -> Ordering
-compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
+toZonedDateTimeISO :: String -> Instant -> ZonedDateTime
+toZonedDateTimeISO = Function.Uncurried.runFn2 _toZonedDateTimeISO
 
-foreign import _equals :: Fn2 Instant Instant Boolean
-
-equals :: Instant -> Instant -> Boolean
-equals a b = Function.Uncurried.runFn2 _equals a b
-
--- Serialization
-
-foreign import toString_ :: Instant -> String
+-- Serialization (toString_ from Internal)
 
 type ToStringOptions =
   ( fractionalSecondDigits :: Foreign
@@ -305,13 +295,4 @@ toString providedOptions instant =
     )
     instant
 
--- Instances
-
-instance Eq Instant where
-  eq = equals
-
-instance Ord Instant where
-  compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
-
-instance Show Instant where
-  show = toString_
+-- Instances (Eq, Ord, Show from Internal)

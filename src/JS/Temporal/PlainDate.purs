@@ -1,5 +1,5 @@
 module JS.Temporal.PlainDate
-  ( PlainDate
+  ( module JS.Temporal.PlainDate.Internal
   -- * Construction
   , new
   , from
@@ -29,17 +29,18 @@ module JS.Temporal.PlainDate
   -- * Manipulation
   , with
   , withCalendar
+  -- * Conversions
+  , toPlainYearMonth
+  , toPlainMonthDay
+  , toPlainDateTime
+  , toZonedDateTime
   -- * Difference
   , until
   , until_
   , since
   , since_
-  -- * Comparison
-  , compare
-  , equals
   -- * Serialization
   , toString
-  , toString_
   -- * Options
   , ToOverflowOptions
   , ToDifferenceOptions
@@ -50,7 +51,7 @@ import Prelude hiding (add, compare)
 
 import ConvertableOptions (class ConvertOption, class ConvertOptionsWithDefaults)
 import ConvertableOptions as ConvertableOptions
-import Data.Function.Uncurried (Fn2)
+import Data.Function.Uncurried (Fn1, Fn2)
 import Data.Function.Uncurried as Function.Uncurried
 import Data.Maybe (Maybe)
 import Data.Nullable (Nullable, toMaybe)
@@ -59,18 +60,21 @@ import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3)
 import Effect.Uncurried as Effect.Uncurried
 import JS.Temporal.CalendarName (CalendarName)
 import JS.Temporal.CalendarName as CalendarName
-import JS.Temporal.Duration (Duration)
-import JS.Temporal.Internal (intToOrdering)
+import JS.Temporal.Duration.Internal (Duration)
 import JS.Temporal.Overflow (Overflow)
 import JS.Temporal.Overflow as Overflow
 import JS.Temporal.RoundingMode (RoundingMode)
 import JS.Temporal.RoundingMode as RoundingMode
 import JS.Temporal.TemporalUnit (TemporalUnit)
+import JS.Temporal.PlainDate.Internal (PlainDate)
+import JS.Temporal.PlainDateTime.Internal (PlainDateTime)
+import JS.Temporal.PlainMonthDay.Internal (PlainMonthDay)
+import JS.Temporal.PlainTime.Internal (PlainTime)
+import JS.Temporal.PlainYearMonth.Internal (PlainYearMonth)
+import JS.Temporal.ZonedDateTime.Internal (ZonedDateTime)
 import JS.Temporal.TemporalUnit as TemporalUnit
 import Prim.Row (class Union)
 import Unsafe.Coerce as Unsafe.Coerce
-
-foreign import data PlainDate :: Type
 
 -- Construction
 
@@ -331,21 +335,29 @@ foreign import _sinceNoOpts :: EffectFn2 PlainDate PlainDate Duration
 since_ :: PlainDate -> PlainDate -> Effect Duration
 since_ = Effect.Uncurried.runEffectFn2 _sinceNoOpts
 
--- Comparison
+-- Conversions
 
-foreign import _compare :: Fn2 PlainDate PlainDate Int
+foreign import _toPlainYearMonth :: Fn1 PlainDate PlainYearMonth
 
-compare :: PlainDate -> PlainDate -> Ordering
-compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
+toPlainYearMonth :: PlainDate -> PlainYearMonth
+toPlainYearMonth = Function.Uncurried.runFn1 _toPlainYearMonth
 
-foreign import _equals :: Fn2 PlainDate PlainDate Boolean
+foreign import _toPlainMonthDay :: Fn1 PlainDate PlainMonthDay
 
-equals :: PlainDate -> PlainDate -> Boolean
-equals a b = Function.Uncurried.runFn2 _equals a b
+toPlainMonthDay :: PlainDate -> PlainMonthDay
+toPlainMonthDay = Function.Uncurried.runFn1 _toPlainMonthDay
 
--- Serialization
+foreign import _toPlainDateTime :: Fn2 PlainTime PlainDate PlainDateTime
 
-foreign import toString_ :: PlainDate -> String
+toPlainDateTime :: PlainTime -> PlainDate -> PlainDateTime
+toPlainDateTime = Function.Uncurried.runFn2 _toPlainDateTime
+
+foreign import _toZonedDateTime :: EffectFn2 String PlainDate ZonedDateTime
+
+toZonedDateTime :: String -> PlainDate -> Effect ZonedDateTime
+toZonedDateTime = Effect.Uncurried.runEffectFn2 _toZonedDateTime
+
+-- Serialization (toString_ from Internal)
 
 type ToStringOptions = (calendarName :: String)
 
@@ -382,13 +394,4 @@ toString providedOptions plainDate =
     )
     plainDate
 
--- Instances
-
-instance Eq PlainDate where
-  eq = equals
-
-instance Ord PlainDate where
-  compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
-
-instance Show PlainDate where
-  show = toString_
+-- Instances (Eq, Ord, Show from Internal)

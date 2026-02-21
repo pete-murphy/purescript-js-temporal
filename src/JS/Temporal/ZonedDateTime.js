@@ -39,6 +39,22 @@ export const hoursInDay = (zdt) => zdt.hoursInDay;
 export const epochMilliseconds = (zdt) => zdt.epochMilliseconds;
 export const epochNanoseconds = (zdt) => zdt.epochNanoseconds;
 
+export function _toInstant(zdt) {
+  return zdt.toInstant();
+}
+
+export function _toPlainDateTime(zdt) {
+  return zdt.toPlainDateTime();
+}
+
+export function _toPlainDate(zdt) {
+  return zdt.toPlainDate();
+}
+
+export function _toPlainTime(zdt) {
+  return zdt.toPlainTime();
+}
+
 export function _add(options, duration, zdt) {
   return zdt.add(duration, options);
 }

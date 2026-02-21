@@ -67,6 +67,22 @@ export function _sinceNoOpts(other, pd) {
   return pd.since(other);
 }
 
+export function _toPlainYearMonth(pd) {
+  return pd.toPlainYearMonth();
+}
+
+export function _toPlainMonthDay(pd) {
+  return pd.toPlainMonthDay();
+}
+
+export function _toPlainDateTime(plainTime, pd) {
+  return pd.toPlainDateTime(plainTime);
+}
+
+export function _toZonedDateTime(timeZone, pd) {
+  return pd.toZonedDateTime(timeZone);
+}
+
 export function _compare(a, b) {
   return Temporal.PlainDate.compare(a, b);
 }

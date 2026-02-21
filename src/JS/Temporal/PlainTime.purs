@@ -1,5 +1,5 @@
 module JS.Temporal.PlainTime
-  ( PlainTime
+  ( module JS.Temporal.PlainTime.Internal
   -- * Construction
   , new
   , from
@@ -23,12 +23,8 @@ module JS.Temporal.PlainTime
   , since_
   -- * Round
   , round
-  -- * Comparison
-  , compare
-  , equals
   -- * Serialization
   , toString
-  , toString_
   -- * Options
   , ToOverflowOptions
   , ToDifferenceOptions
@@ -47,18 +43,16 @@ import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3)
 import Effect.Uncurried as Effect.Uncurried
 import Foreign (Foreign)
 import Foreign as Foreign
-import JS.Temporal.Duration (Duration)
-import JS.Temporal.Internal (intToOrdering)
+import JS.Temporal.Duration.Internal (Duration)
 import JS.Temporal.Overflow (Overflow)
 import JS.Temporal.Overflow as Overflow
 import JS.Temporal.RoundingMode (RoundingMode)
 import JS.Temporal.RoundingMode as RoundingMode
 import JS.Temporal.TemporalUnit (TemporalUnit)
 import JS.Temporal.TemporalUnit as TemporalUnit
+import JS.Temporal.PlainTime.Internal (PlainTime)
 import Prim.Row (class Union)
 import Unsafe.Coerce as Unsafe.Coerce
-
-foreign import data PlainTime :: Type
 
 -- Construction
 
@@ -307,19 +301,7 @@ round providedOptions plainTime =
 
 -- Comparison
 
-foreign import _compare :: Fn2 PlainTime PlainTime Int
-
-compare :: PlainTime -> PlainTime -> Ordering
-compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
-
-foreign import _equals :: Fn2 PlainTime PlainTime Boolean
-
-equals :: PlainTime -> PlainTime -> Boolean
-equals a b = Function.Uncurried.runFn2 _equals a b
-
--- Serialization
-
-foreign import toString_ :: PlainTime -> String
+-- Serialization (toString_ from Internal)
 
 type ToStringOptions =
   ( fractionalSecondDigits :: Foreign
@@ -372,13 +354,4 @@ toString providedOptions plainTime =
     )
     plainTime
 
--- Instances
-
-instance Eq PlainTime where
-  eq = equals
-
-instance Ord PlainTime where
-  compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
-
-instance Show PlainTime where
-  show = toString_
+-- Instances (Eq, Ord, Show from Internal)

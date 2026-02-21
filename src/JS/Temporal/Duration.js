@@ -45,5 +45,3 @@ export function _total(options, d) {
 export function _toString(options, d) {
   return d.toString(options);
 }
-
-export const toString_ = (d) => d.toString();

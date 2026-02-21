@@ -18,12 +18,10 @@ export function _with(fields, pmd) {
   return pmd.with(fields);
 }
 
-export function _equals(a, b) {
-  return a.equals(b);
+export function _toPlainDate(fields, pmd) {
+  return pmd.toPlainDate(fields);
 }
 
 export function _toString(options, pmd) {
   return pmd.toString(options);
 }
-
-export const toString_ = (pmd) => pmd.toString();

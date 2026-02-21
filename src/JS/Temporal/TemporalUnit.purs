@@ -4,6 +4,7 @@ module JS.Temporal.TemporalUnit
   , fromString
   ) where
 
+import Prelude
 import Data.Maybe (Maybe(..))
 
 data TemporalUnit

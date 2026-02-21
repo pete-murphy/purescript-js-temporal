@@ -4,6 +4,7 @@ module JS.Temporal.Disambiguation
   , fromString
   ) where
 
+import Prelude
 import Data.Maybe (Maybe(..))
 
 data Disambiguation

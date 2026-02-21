@@ -1,5 +1,5 @@
 module JS.Temporal.ZonedDateTime
-  ( ZonedDateTime
+  ( module JS.Temporal.ZonedDateTime.Internal
   -- * Construction
   , new
   , from
@@ -53,12 +53,13 @@ module JS.Temporal.ZonedDateTime
   -- * Other
   , startOfDay
   , getTimeZoneTransition
-  -- * Comparison
-  , compare
-  , equals
+  -- * Conversions
+  , toInstant
+  , toPlainDateTime
+  , toPlainDate
+  , toPlainTime
   -- * Serialization
   , toString
-  , toString_
   -- * Options
   , ToFromOptions
   , ToArithmeticOptions
@@ -71,7 +72,7 @@ import Prelude hiding (add, compare)
 
 import ConvertableOptions (class ConvertOption, class ConvertOptionsWithDefaults)
 import ConvertableOptions as ConvertableOptions
-import Data.Function.Uncurried (Fn2, Fn4)
+import Data.Function.Uncurried (Fn1, Fn2, Fn4)
 import Data.Function.Uncurried as Function.Uncurried
 import Data.Maybe (Maybe(..))
 import Data.Nullable (Nullable, toMaybe)
@@ -85,21 +86,22 @@ import JS.Temporal.CalendarName (CalendarName)
 import JS.Temporal.CalendarName as CalendarName
 import JS.Temporal.Disambiguation (Disambiguation)
 import JS.Temporal.Disambiguation as Disambiguation
-import JS.Temporal.Duration (Duration)
-import JS.Temporal.Internal (intToOrdering)
+import JS.Temporal.Duration.Internal (Duration)
 import JS.Temporal.OffsetDisambiguation (OffsetDisambiguation)
 import JS.Temporal.OffsetDisambiguation as OffsetDisambiguation
 import JS.Temporal.Overflow (Overflow)
 import JS.Temporal.Overflow as Overflow
-import JS.Temporal.PlainTime (PlainTime)
+import JS.Temporal.Instant.Internal (Instant)
+import JS.Temporal.PlainDate.Internal (PlainDate)
+import JS.Temporal.PlainDateTime.Internal (PlainDateTime)
+import JS.Temporal.PlainTime.Internal (PlainTime)
 import JS.Temporal.RoundingMode (RoundingMode)
 import JS.Temporal.RoundingMode as RoundingMode
 import JS.Temporal.TemporalUnit (TemporalUnit)
 import JS.Temporal.TemporalUnit as TemporalUnit
+import JS.Temporal.ZonedDateTime.Internal (ZonedDateTime)
 import Prim.Row (class Union)
 import Unsafe.Coerce as Unsafe.Coerce
-
-foreign import data ZonedDateTime :: Type
 
 -- Construction
 
@@ -495,21 +497,29 @@ getTimeZoneTransition :: String -> ZonedDateTime -> Maybe ZonedDateTime
 getTimeZoneTransition direction zonedDateTime =
   Function.Uncurried.runFn4 _getTimeZoneTransition Nothing Just direction zonedDateTime
 
--- Comparison
+-- Conversions
 
-foreign import _compare :: Fn2 ZonedDateTime ZonedDateTime Int
+foreign import _toInstant :: Fn1 ZonedDateTime Instant
 
-compare :: ZonedDateTime -> ZonedDateTime -> Ordering
-compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
+toInstant :: ZonedDateTime -> Instant
+toInstant = Function.Uncurried.runFn1 _toInstant
 
-foreign import _equals :: Fn2 ZonedDateTime ZonedDateTime Boolean
+foreign import _toPlainDateTime :: Fn1 ZonedDateTime PlainDateTime
 
-equals :: ZonedDateTime -> ZonedDateTime -> Boolean
-equals a b = Function.Uncurried.runFn2 _equals a b
+toPlainDateTime :: ZonedDateTime -> PlainDateTime
+toPlainDateTime = Function.Uncurried.runFn1 _toPlainDateTime
 
--- Serialization
+foreign import _toPlainDate :: Fn1 ZonedDateTime PlainDate
 
-foreign import toString_ :: ZonedDateTime -> String
+toPlainDate :: ZonedDateTime -> PlainDate
+toPlainDate = Function.Uncurried.runFn1 _toPlainDate
+
+foreign import _toPlainTime :: Fn1 ZonedDateTime PlainTime
+
+toPlainTime :: ZonedDateTime -> PlainTime
+toPlainTime = Function.Uncurried.runFn1 _toPlainTime
+
+-- Serialization (toString_ from Internal)
 
 type ToStringOptions =
   ( calendarName :: String
@@ -577,13 +587,4 @@ toString providedOptions zonedDateTime =
     )
     zonedDateTime
 
--- Instances
-
-instance Eq ZonedDateTime where
-  eq = equals
-
-instance Ord ZonedDateTime where
-  compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
-
-instance Show ZonedDateTime where
-  show = toString_
+-- Instances (Eq, Ord, Show from Internal)

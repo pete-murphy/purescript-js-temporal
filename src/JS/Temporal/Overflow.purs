@@ -4,6 +4,7 @@ module JS.Temporal.Overflow
   , fromString
   ) where
 
+import Prelude
 import Data.Maybe (Maybe(..))
 
 data Overflow

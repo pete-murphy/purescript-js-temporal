@@ -49,16 +49,6 @@ export function _round(options, t) {
   return t.round(options);
 }
 
-export function _compare(a, b) {
-  return Temporal.PlainTime.compare(a, b);
-}
-
-export function _equals(a, b) {
-  return a.equals(b);
-}
-
 export function _toString(options, t) {
   return t.toString(options);
 }
-
-export const toString_ = (t) => t.toString();

@@ -1,5 +1,5 @@
 module JS.Temporal.PlainDateTime
-  ( PlainDateTime
+  ( module JS.Temporal.PlainDateTime.Internal
   -- * Construction
   , new
   , from
@@ -41,12 +41,12 @@ module JS.Temporal.PlainDateTime
   , since_
   -- * Round
   , round
-  -- * Comparison
-  , compare
-  , equals
   -- * Serialization
   , toString
-  , toString_
+  -- * Conversions
+  , toPlainDate
+  , toPlainTime
+  , toZonedDateTime
   -- * Options
   , ToOverflowOptions
   , ToDifferenceOptions
@@ -58,7 +58,7 @@ import Prelude hiding (add, compare)
 
 import ConvertableOptions (class ConvertOption, class ConvertOptionsWithDefaults)
 import ConvertableOptions as ConvertableOptions
-import Data.Function.Uncurried (Fn2)
+import Data.Function.Uncurried (Fn2, Fn1)
 import Data.Function.Uncurried as Function.Uncurried
 import Data.Maybe (Maybe)
 import Data.Nullable (Nullable, toMaybe)
@@ -68,19 +68,20 @@ import Effect.Uncurried as Effect.Uncurried
 import Foreign (Foreign)
 import Foreign as Foreign
 import JS.Temporal.CalendarName (CalendarName)
+import JS.Temporal.PlainDate.Internal (PlainDate)
+import JS.Temporal.PlainTime.Internal (PlainTime)
+import JS.Temporal.ZonedDateTime.Internal (ZonedDateTime)
 import JS.Temporal.CalendarName as CalendarName
-import JS.Temporal.Duration (Duration)
-import JS.Temporal.Internal (intToOrdering)
+import JS.Temporal.Duration.Internal (Duration)
 import JS.Temporal.Overflow (Overflow)
 import JS.Temporal.Overflow as Overflow
 import JS.Temporal.RoundingMode (RoundingMode)
 import JS.Temporal.RoundingMode as RoundingMode
 import JS.Temporal.TemporalUnit (TemporalUnit)
 import JS.Temporal.TemporalUnit as TemporalUnit
+import JS.Temporal.PlainDateTime.Internal (PlainDateTime)
 import Prim.Row (class Union)
 import Unsafe.Coerce as Unsafe.Coerce
-
-foreign import data PlainDateTime :: Type
 
 -- Construction
 
@@ -415,21 +416,9 @@ round providedOptions plainDateTime =
     )
     plainDateTime
 
--- Comparison
+-- Comparison (equals, compare from Internal)
 
-foreign import _compare :: Fn2 PlainDateTime PlainDateTime Int
-
-compare :: PlainDateTime -> PlainDateTime -> Ordering
-compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
-
-foreign import _equals :: Fn2 PlainDateTime PlainDateTime Boolean
-
-equals :: PlainDateTime -> PlainDateTime -> Boolean
-equals a b = Function.Uncurried.runFn2 _equals a b
-
--- Serialization
-
-foreign import toString_ :: PlainDateTime -> String
+-- Serialization (toString_ from Internal)
 
 type ToStringOptions =
   ( calendarName :: String
@@ -489,13 +478,21 @@ toString providedOptions plainDateTime =
     )
     plainDateTime
 
--- Instances
+-- Instances (Eq, Ord, Show from Internal)
 
-instance Eq PlainDateTime where
-  eq = equals
+-- Conversions
 
-instance Ord PlainDateTime where
-  compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
+foreign import _toPlainDate :: Fn1 PlainDateTime PlainDate
 
-instance Show PlainDateTime where
-  show = toString_
+toPlainDate :: PlainDateTime -> PlainDate
+toPlainDate = Function.Uncurried.runFn1 _toPlainDate
+
+foreign import _toPlainTime :: Fn1 PlainDateTime PlainTime
+
+toPlainTime :: PlainDateTime -> PlainTime
+toPlainTime = Function.Uncurried.runFn1 _toPlainTime
+
+foreign import _toZonedDateTime :: EffectFn2 String PlainDateTime ZonedDateTime
+
+toZonedDateTime :: String -> PlainDateTime -> Effect ZonedDateTime
+toZonedDateTime = Effect.Uncurried.runEffectFn2 _toZonedDateTime

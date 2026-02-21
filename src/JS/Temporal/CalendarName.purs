@@ -4,6 +4,7 @@ module JS.Temporal.CalendarName
   , fromString
   ) where
 
+import Prelude
 import Data.Maybe (Maybe(..))
 
 data CalendarName

@@ -1,5 +1,5 @@
 module JS.Temporal.PlainMonthDay
-  ( PlainMonthDay
+  ( module JS.Temporal.PlainMonthDay.Internal
   -- * Construction
   , new
   , from
@@ -10,11 +10,10 @@ module JS.Temporal.PlainMonthDay
   , calendarId
   -- * Manipulation
   , with
-  -- * Comparison
-  , equals
+  -- * Conversions
+  , toPlainDate
   -- * Serialization
   , toString
-  , toString_
   -- * Options
   , ToOverflowOptions
   , ToToStringOptions
@@ -33,10 +32,10 @@ import JS.Temporal.CalendarName (CalendarName)
 import JS.Temporal.CalendarName as CalendarName
 import JS.Temporal.Overflow (Overflow)
 import JS.Temporal.Overflow as Overflow
+import JS.Temporal.PlainDate.Internal (PlainDate)
+import JS.Temporal.PlainMonthDay.Internal (PlainMonthDay)
 import Prim.Row (class Union)
 import Unsafe.Coerce as Unsafe.Coerce
-
-foreign import data PlainMonthDay :: Type
 
 -- Construction
 
@@ -108,16 +107,16 @@ with
   -> Effect PlainMonthDay
 with = Effect.Uncurried.runEffectFn2 _with
 
+-- Conversions
+
+foreign import _toPlainDate :: EffectFn2 { year :: Int } PlainMonthDay PlainDate
+
+toPlainDate :: { year :: Int } -> PlainMonthDay -> Effect PlainDate
+toPlainDate = Effect.Uncurried.runEffectFn2 _toPlainDate
+
 -- Comparison
 
-foreign import _equals :: Fn2 PlainMonthDay PlainMonthDay Boolean
-
-equals :: PlainMonthDay -> PlainMonthDay -> Boolean
-equals a b = Function.Uncurried.runFn2 _equals a b
-
--- Serialization
-
-foreign import toString_ :: PlainMonthDay -> String
+-- Serialization (toString_ from Internal)
 
 type ToStringOptions = (calendarName :: String)
 
@@ -154,10 +153,4 @@ toString providedOptions plainMonthDay =
     )
     plainMonthDay
 
--- Instances
-
-instance Eq PlainMonthDay where
-  eq = equals
-
-instance Show PlainMonthDay where
-  show = toString_
+-- Instances (Eq, Show from Internal)

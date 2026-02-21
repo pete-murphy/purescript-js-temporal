@@ -4,6 +4,7 @@ module JS.Temporal.OffsetDisambiguation
   , fromString
   ) where
 
+import Prelude
 import Data.Maybe (Maybe(..))
 
 data OffsetDisambiguation

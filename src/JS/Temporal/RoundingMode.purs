@@ -4,6 +4,7 @@ module JS.Temporal.RoundingMode
   , fromString
   ) where
 
+import Prelude
 import Data.Maybe (Maybe(..))
 
 data RoundingMode

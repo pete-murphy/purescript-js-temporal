@@ -1,5 +1,5 @@
 module JS.Temporal.PlainYearMonth
-  ( PlainYearMonth
+  ( module JS.Temporal.PlainYearMonth.Internal
   -- * Construction
   , new
   , from
@@ -22,17 +22,15 @@ module JS.Temporal.PlainYearMonth
   , subtract_
   -- * Manipulation
   , with
+  -- * Conversions
+  , toPlainDate
   -- * Difference
   , until
   , until_
   , since
   , since_
-  -- * Comparison
-  , compare
-  , equals
   -- * Serialization
   , toString
-  , toString_
   -- * Options
   , ToOverflowOptions
   , ToDifferenceOptions
@@ -52,18 +50,17 @@ import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3)
 import Effect.Uncurried as Effect.Uncurried
 import JS.Temporal.CalendarName (CalendarName)
 import JS.Temporal.CalendarName as CalendarName
-import JS.Temporal.Duration (Duration)
-import JS.Temporal.Internal (intToOrdering)
+import JS.Temporal.Duration.Internal (Duration)
 import JS.Temporal.Overflow (Overflow)
 import JS.Temporal.Overflow as Overflow
 import JS.Temporal.RoundingMode (RoundingMode)
 import JS.Temporal.RoundingMode as RoundingMode
 import JS.Temporal.TemporalUnit (TemporalUnit)
 import JS.Temporal.TemporalUnit as TemporalUnit
+import JS.Temporal.PlainDate.Internal (PlainDate)
+import JS.Temporal.PlainYearMonth.Internal (PlainYearMonth)
 import Prim.Row (class Union)
 import Unsafe.Coerce as Unsafe.Coerce
-
-foreign import data PlainYearMonth :: Type
 
 -- Construction
 
@@ -98,8 +95,7 @@ from
   -> String
   -> Effect PlainYearMonth
 from providedOptions str =
-  Effect.Uncurried.runEffectFn2
-    _from
+  Effect.Uncurried.runEffectFn2 _from
     ( ConvertableOptions.convertOptionsWithDefaults
         ToOverflowOptions
         defaultOverflowOptions
@@ -211,6 +207,13 @@ with
   -> Effect PlainYearMonth
 with = Effect.Uncurried.runEffectFn2 _with
 
+-- Conversions
+
+foreign import _toPlainDate :: EffectFn2 { day :: Int } PlainYearMonth PlainDate
+
+toPlainDate :: { day :: Int } -> PlainYearMonth -> Effect PlainDate
+toPlainDate = Effect.Uncurried.runEffectFn2 _toPlainDate
+
 -- Difference
 
 type DifferenceOptions =
@@ -306,19 +309,7 @@ since_ = Effect.Uncurried.runEffectFn2 _sinceNoOpts
 
 -- Comparison
 
-foreign import _compare :: Fn2 PlainYearMonth PlainYearMonth Int
-
-compare :: PlainYearMonth -> PlainYearMonth -> Ordering
-compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
-
-foreign import _equals :: Fn2 PlainYearMonth PlainYearMonth Boolean
-
-equals :: PlainYearMonth -> PlainYearMonth -> Boolean
-equals a b = Function.Uncurried.runFn2 _equals a b
-
--- Serialization
-
-foreign import toString_ :: PlainYearMonth -> String
+-- Serialization (toString_ from Internal)
 
 type ToStringOptions = (calendarName :: String)
 
@@ -355,13 +346,4 @@ toString providedOptions plainYearMonth =
     )
     plainYearMonth
 
--- Instances
-
-instance Eq PlainYearMonth where
-  eq = equals
-
-instance Ord PlainYearMonth where
-  compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
-
-instance Show PlainYearMonth where
-  show = toString_
+-- Instances (Eq, Ord, Show from Internal)

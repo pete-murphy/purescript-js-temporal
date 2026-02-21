@@ -86,3 +86,15 @@ export function _toString(options, pdt) {
 }
 
 export const toString_ = (pdt) => pdt.toString();
+
+export function _toPlainDate(pdt) {
+  return pdt.toPlainDate();
+}
+
+export function _toPlainTime(pdt) {
+  return pdt.toPlainTime();
+}
+
+export function _toZonedDateTime(timeZone, pdt) {
+  return pdt.toZonedDateTime(timeZone);
+}

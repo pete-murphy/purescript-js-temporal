@@ -2,6 +2,12 @@
 
 PureScript bindings for the JavaScript [Temporal API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal).
 
+## Installation
+
+```bash
+spago install js-temporal
+```
+
 ## Documentation
 
 Generate HTML documentation with:

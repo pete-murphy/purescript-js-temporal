@@ -26,6 +26,21 @@ When contributing documentation, reference material can be fetched with:
 
 This populates `reference/spec` (tc39 Temporal spec) and `reference/mdn` (MDN Temporal docs).
 
+## Examples
+
+The `src/Examples/` directory contains PureScript translations of recipes from the [Temporal Cookbook](https://tc39.es/proposal-temporal/docs/cookbook.html). Run all examples:
+
+```bash
+nix develop
+just run-examples
+```
+
+Or run a single example:
+
+```bash
+spago run -m Examples.Cookbook.CurrentDateTime
+```
+
 ## Setup
 
 ```bash
@@ -34,4 +49,4 @@ spago build
 spago test
 ```
 
-Node.js requires the Temporal flag: `node --harmony-temporal`.
+Node.js requires the Temporal flag: `node --harmony-temporal`. The `nix develop` shell provides a wrapped Node with this flag enabled.

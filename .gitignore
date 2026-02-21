@@ -1,5 +1,6 @@
 
 bower_components/
+reference/
 node_modules/
 .pulp-cache/
 output/

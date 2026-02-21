@@ -1,0 +1,73 @@
+# AGENTS.md
+
+## Project overview
+
+PureScript bindings for the JavaScript [Temporal API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal). Uses the `purs-backend-es` compiler backend to target JavaScript ES modules.
+
+**API design goal:** The library should mirror the Temporal API. Each PureScript module name corresponds to a Temporal object namespace in JS (e.g. `JS.Temporal.PlainDate` ↔ `Temporal.PlainDate`), and module functions correspond to methods on those JS objects.
+
+## Setup and build
+
+- **Enter dev environment:** `nix develop` (provides `purs`, `spago`, `purs-tidy`, `purs-backend-es`, `nodejs`, `just`, `alejandra`)
+- **Temporal in Node:** Node.js ships Temporal behind a flag. Use `node --harmony-temporal` to enable it when running scripts or the REPL
+- **Install dependencies:** `spago install`
+- **Build:** `spago build`
+- **Run tests:** `spago test`
+- **REPL:** `spago repl`
+
+## Reference: Temporal spec
+
+A local copy of the [tc39/proposal-temporal](https://github.com/tc39/proposal-temporal) spec lives in `reference/spec/` as Ecmarkup HTML source files. These are the authoritative spec sources—no conversion, no data loss.
+
+**Spec files and their corresponding PureScript modules:**
+
+| Spec file             | Module                                     |
+| --------------------- | ------------------------------------------ |
+| `plaindate.html`      | `JS.Temporal.PlainDate`                    |
+| `plaindatetime.html`  | `JS.Temporal.PlainDateTime`                |
+| `plaintime.html`      | `JS.Temporal.PlainTime`                    |
+| `plainyearmonth.html` | `JS.Temporal.PlainYearMonth`               |
+| `plainmonthday.html`  | `JS.Temporal.PlainMonthDay`                |
+| `instant.html`        | `JS.Temporal.Instant`                      |
+| `zoneddatetime.html`  | `JS.Temporal.ZonedDateTime`                |
+| `duration.html`       | `JS.Temporal.Duration`                     |
+| `temporal.html`       | `JS.Temporal.Now` (Temporal.Now namespace) |
+| `calendar.html`       | `JS.Temporal.CalendarName`                 |
+| `abstractops.html`    | Shared abstract ops / conversions          |
+| `timezone.html`       | Time zone logic                            |
+
+**Search the spec:**
+
+```bash
+rg "prototype.add" reference/spec/
+rg "Temporal.PlainDate.from" reference/spec/
+rg "emu-clause.*sec-temporal" reference/spec/
+```
+
+**List an object’s API surface:**
+
+```bash
+rg "<h1>" reference/spec/plaindate.html
+```
+
+Section IDs in the spec (e.g. `id="sec-temporal.plaindate.prototype.add"`) allow precise navigation.
+
+## Code style
+
+- PureScript: `purs-tidy` formatting. Run `purs-tidy format-in-place src test` to format.
+- Nix files: `alejandra` formatting
+- All side effects in the `Effect` monad
+- FFI: JavaScript files use `.js` alongside `.purs`
+
+## Testing
+
+- Entry point: `Test.Main` in `test/Test/`
+- Run: `spago test`
+- Add or update tests for any behavior you change
+
+## Architecture
+
+- `src/JS/Temporal/` — library modules
+- `test/Test/` — tests
+- `spago.yaml` — package config (registry 73.1.0)
+- `flake.nix` — Nix dev environment and scripts

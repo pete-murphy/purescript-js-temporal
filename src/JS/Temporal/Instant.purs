@@ -39,7 +39,6 @@ module JS.Temporal.Instant
 import Prelude hiding (add, compare)
 
 import ConvertableOptions (class ConvertOption, class ConvertOptionsWithDefaults)
-import Data.DateTime.Instant (Instant) as DateTime.Instant
 import Data.DateTime.Instant as DateTime.Instant
 import Data.Maybe (Maybe)
 import Data.Time.Duration (Milliseconds(..))

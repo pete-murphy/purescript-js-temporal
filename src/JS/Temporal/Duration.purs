@@ -365,50 +365,56 @@ toMilliseconds duration
   | months duration /= 0 = Nothing
   | weeks duration /= 0 = Nothing
   | otherwise =
-      let totalMs :: Number
-          totalMs =
-            Int.toNumber (days duration) * Int.toNumber millisecondsPerDay
-              + Int.toNumber (hours duration) * Int.toNumber millisecondsPerHour
-              + Int.toNumber (minutes duration) * Int.toNumber millisecondsPerMinute
-              + Int.toNumber (seconds duration) * Int.toNumber millisecondsPerSecond
-              + Int.toNumber (milliseconds duration)
-          signed =
-            case sign duration of
-              -1 -> negate totalMs
-              _ -> totalMs
-       in Just (Milliseconds signed)
+      let
+        totalMs :: Number
+        totalMs =
+          Int.toNumber (days duration) * Int.toNumber millisecondsPerDay
+            + Int.toNumber (hours duration) * Int.toNumber millisecondsPerHour
+            + Int.toNumber (minutes duration) * Int.toNumber millisecondsPerMinute
+            + Int.toNumber (seconds duration) * Int.toNumber millisecondsPerSecond
+            + Int.toNumber (milliseconds duration)
+        signed =
+          case sign duration of
+            -1 -> negate totalMs
+            _ -> totalMs
+      in
+        Just (Milliseconds signed)
 
 decomposeMilliseconds :: Number -> { days :: Int, hours :: Int, minutes :: Int, seconds :: Int, milliseconds :: Int }
 decomposeMilliseconds totalMs =
-  let msPerDay = Int.toNumber millisecondsPerDay
-      msPerHour = Int.toNumber millisecondsPerHour
-      msPerMinute = Int.toNumber millisecondsPerMinute
-      msPerSecond = Int.toNumber millisecondsPerSecond
-      daysVal = Int.floor (totalMs / msPerDay)
-      afterDays = totalMs - Int.toNumber daysVal * msPerDay
-      hoursVal = Int.floor (afterDays / msPerHour)
-      afterHours = afterDays - Int.toNumber hoursVal * msPerHour
-      minutesVal = Int.floor (afterHours / msPerMinute)
-      afterMinutes = afterHours - Int.toNumber minutesVal * msPerMinute
-      secondsVal = Int.floor (afterMinutes / msPerSecond)
-      millisecondsVal = Int.floor (afterMinutes - Int.toNumber secondsVal * msPerSecond)
-   in { days: daysVal, hours: hoursVal, minutes: minutesVal, seconds: secondsVal, milliseconds: millisecondsVal }
+  let
+    msPerDay = Int.toNumber millisecondsPerDay
+    msPerHour = Int.toNumber millisecondsPerHour
+    msPerMinute = Int.toNumber millisecondsPerMinute
+    msPerSecond = Int.toNumber millisecondsPerSecond
+    daysVal = Int.floor (totalMs / msPerDay)
+    afterDays = totalMs - Int.toNumber daysVal * msPerDay
+    hoursVal = Int.floor (afterDays / msPerHour)
+    afterHours = afterDays - Int.toNumber hoursVal * msPerHour
+    minutesVal = Int.floor (afterHours / msPerMinute)
+    afterMinutes = afterHours - Int.toNumber minutesVal * msPerMinute
+    secondsVal = Int.floor (afterMinutes / msPerSecond)
+    millisecondsVal = Int.floor (afterMinutes - Int.toNumber secondsVal * msPerSecond)
+  in
+    { days: daysVal, hours: hoursVal, minutes: minutesVal, seconds: secondsVal, milliseconds: millisecondsVal }
 
 -- | Creates a Temporal Duration from purescript-datetime `Milliseconds`. See
 -- | docs/purescript-datetime-interop.md.
 fromMilliseconds :: Milliseconds -> Effect Duration
 fromMilliseconds ms =
-  let totalMs = unwrap ms
-      absolute = if totalMs < 0.0 then negate totalMs else totalMs
-      components = decomposeMilliseconds absolute
-      signMultiplier = if totalMs < 0.0 then -1 else 1
-      fields =
-        { days: signMultiplier * components.days
-        , hours: signMultiplier * components.hours
-        , minutes: signMultiplier * components.minutes
-        , seconds: signMultiplier * components.seconds
-        , milliseconds: signMultiplier * components.milliseconds
-        }
-   in new fields
+  let
+    totalMs = unwrap ms
+    absolute = if totalMs < 0.0 then negate totalMs else totalMs
+    components = decomposeMilliseconds absolute
+    signMultiplier = if totalMs < 0.0 then -1 else 1
+    fields =
+      { days: signMultiplier * components.days
+      , hours: signMultiplier * components.hours
+      , minutes: signMultiplier * components.minutes
+      , seconds: signMultiplier * components.seconds
+      , milliseconds: signMultiplier * components.milliseconds
+      }
+  in
+    new fields
 
 -- Instances (Eq, Show from Internal)

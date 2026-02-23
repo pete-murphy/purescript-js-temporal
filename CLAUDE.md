@@ -23,11 +23,13 @@ This provides: `purs`, `spago`, `purs-tidy`, `purs-backend-es`, `nodejs`, `just`
 - **Build:** `spago build`
 - **Check formatting:** `purs-tidy check src test examples` (or `run-check-format`)
 - **Format code:** `purs-tidy format-in-place src test examples`
+- **Generate options:** `just generate-options` — regenerates `src/JS/Temporal/Options/*.purs`
 - **REPL:** `spago repl`
 
 ## Architecture
 
-- `src/` — Library source modules
+- `src/` — Library source; `src/JS/Temporal/Options/` contains generated option types (run `just generate-options` to regenerate)
+- `script/generate-options/` — PureScript script that generates the Options modules
 - `test/Test/` — Test modules (entry point: `Test.Main`)
 - `examples/` — Separate Spago package; Temporal Cookbook examples (entry: `Examples.Main`)
 - `spago.yaml` — Package config and dependencies (registry 73.1.0)

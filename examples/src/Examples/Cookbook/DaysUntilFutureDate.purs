@@ -9,7 +9,7 @@ import Effect.Class.Console as Console
 import JS.Temporal.Duration as Duration
 import JS.Temporal.Now as Now
 import JS.Temporal.PlainDate as PlainDate
-import JS.Temporal.TemporalUnit as TemporalUnit
+import JS.Temporal.Options.TemporalUnit as TemporalUnit
 
 main :: Effect Unit
 main = do

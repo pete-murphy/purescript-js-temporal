@@ -12,22 +12,6 @@ spago install js-temporal
 
 Module documentation is [published on Pursuit](https://pursuit.purescript.org/packages/purescript-js-temporal).
 
-Generate HTML documentation with:
-
-```bash
-spago docs -f html
-```
-
-Output is written to `generated-docs/html/index.html`. Open in a browser to browse the API.
-
-When contributing documentation, reference material can be fetched with:
-
-```bash
-./scripts/fetch-reference.sh
-```
-
-This populates `reference/spec` (tc39 Temporal spec) and `reference/mdn` (MDN Temporal docs).
-
 ## Examples
 
 The `examples/` directory is a separate Spago package containing PureScript translations of recipes from the [Temporal Cookbook](https://tc39.es/proposal-temporal/docs/cookbook.html). Run all examples:

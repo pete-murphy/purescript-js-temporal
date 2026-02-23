@@ -34,10 +34,10 @@ import Data.Function.Uncurried as Function.Uncurried
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3)
 import Effect.Uncurried as Effect.Uncurried
-import JS.Temporal.CalendarName (CalendarName)
-import JS.Temporal.CalendarName as CalendarName
-import JS.Temporal.Overflow (Overflow)
-import JS.Temporal.Overflow as Overflow
+import JS.Temporal.Options.CalendarName (CalendarName)
+import JS.Temporal.Options.CalendarName as CalendarName
+import JS.Temporal.Options.Overflow (Overflow)
+import JS.Temporal.Options.Overflow as Overflow
 import JS.Temporal.PlainDate.Internal (PlainDate)
 import JS.Temporal.PlainMonthDay.Internal (PlainMonthDay)
 import Prim.Row (class Union)

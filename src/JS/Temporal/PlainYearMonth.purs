@@ -54,15 +54,15 @@ import Data.Nullable (Nullable, toMaybe)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3)
 import Effect.Uncurried as Effect.Uncurried
-import JS.Temporal.CalendarName (CalendarName)
-import JS.Temporal.CalendarName as CalendarName
+import JS.Temporal.Options.CalendarName (CalendarName)
+import JS.Temporal.Options.CalendarName as CalendarName
 import JS.Temporal.Duration.Internal (Duration)
-import JS.Temporal.Overflow (Overflow)
-import JS.Temporal.Overflow as Overflow
-import JS.Temporal.RoundingMode (RoundingMode)
-import JS.Temporal.RoundingMode as RoundingMode
-import JS.Temporal.TemporalUnit (TemporalUnit)
-import JS.Temporal.TemporalUnit as TemporalUnit
+import JS.Temporal.Options.Overflow (Overflow)
+import JS.Temporal.Options.Overflow as Overflow
+import JS.Temporal.Options.RoundingMode (RoundingMode)
+import JS.Temporal.Options.RoundingMode as RoundingMode
+import JS.Temporal.Options.TemporalUnit (TemporalUnit)
+import JS.Temporal.Options.TemporalUnit as TemporalUnit
 import JS.Temporal.PlainDate.Internal (PlainDate)
 import JS.Temporal.PlainYearMonth.Internal (PlainYearMonth)
 import Prim.Row (class Union)

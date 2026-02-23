@@ -1,0 +1,25 @@
+package:
+  name: generate-options
+  dependencies:
+    - aff
+    - arrays
+    - control
+    - effect
+    - exceptions
+    - foldable-traversable
+    - foreign-object
+    - maybe
+    - node-fs
+    - node-path
+    - node-process
+    - partial
+    - prelude
+    - strings
+    - tidy
+    - tidy-codegen
+    - transformers
+    - tuples
+workspace:
+  packageSet:
+    registry: 73.1.0
+  extraPackages: {}

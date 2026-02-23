@@ -7,8 +7,8 @@ import Prelude
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.PlainTime as PlainTime
-import JS.Temporal.RoundingMode as RoundingMode
-import JS.Temporal.TemporalUnit as TemporalUnit
+import JS.Temporal.Options.RoundingMode as RoundingMode
+import JS.Temporal.Options.TemporalUnit as TemporalUnit
 
 main :: Effect Unit
 main = do

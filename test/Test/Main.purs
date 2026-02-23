@@ -14,19 +14,19 @@ import Effect (Effect)
 import Effect.Exception (error, throwException)
 import Effect.Class.Console as Console
 import JS.BigInt as BigInt
-import JS.Temporal.CalendarName as CalendarName
-import JS.Temporal.Disambiguation as Disambiguation
+import JS.Temporal.Options.CalendarName as CalendarName
+import JS.Temporal.Options.Disambiguation as Disambiguation
 import JS.Temporal.Duration as Duration
 import JS.Temporal.Instant as Instant
 import JS.Temporal.Now as Now
-import JS.Temporal.Overflow as Overflow
+import JS.Temporal.Options.Overflow as Overflow
 import JS.Temporal.PlainDate as PlainDate
 import JS.Temporal.PlainDateTime as PlainDateTime
 import JS.Temporal.PlainMonthDay as PlainMonthDay
 import JS.Temporal.PlainTime as PlainTime
 import JS.Temporal.PlainYearMonth as PlainYearMonth
-import JS.Temporal.RoundingMode as RoundingMode
-import JS.Temporal.TemporalUnit as TemporalUnit
+import JS.Temporal.Options.RoundingMode as RoundingMode
+import JS.Temporal.Options.TemporalUnit as TemporalUnit
 import JS.Temporal.ZonedDateTime as ZonedDateTime
 import Random.LCG (randomSeed)
 import Test.Assert.Extended as Test

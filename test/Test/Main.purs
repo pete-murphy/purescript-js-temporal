@@ -800,26 +800,26 @@ test_Now = do
   nowInstant <- Now.instant
   Test.assert (Instant.toString_ nowInstant /= "")
 
-  Console.log "Now.plainDateISO"
-  plainDate <- Now.plainDateISO
+  Console.log "Now.plainDateISO_"
+  plainDate <- Now.plainDateISO_
   Test.assertEqual
     { actual: PlainDate.year plainDate >= 1970 && PlainDate.year plainDate < 2100
     , expected: true
     }
 
-  Console.log "Now.plainTimeISO"
-  plainTime <- Now.plainTimeISO
+  Console.log "Now.plainTimeISO_"
+  plainTime <- Now.plainTimeISO_
   Test.assert (PlainTime.hour plainTime >= 0 && PlainTime.hour plainTime < 24)
 
-  Console.log "Now.plainDateISOIn"
-  utcDate <- Now.plainDateISOIn "UTC"
+  Console.log "Now.plainDateISO"
+  utcDate <- Now.plainDateISO "UTC"
   Test.assertEqual
     { actual: PlainDate.year utcDate >= 1970 && PlainDate.year utcDate < 2100
     , expected: true
     }
 
-  Console.log "Now.zonedDateTimeISO"
-  zoned <- Now.zonedDateTimeISO
+  Console.log "Now.zonedDateTimeISO_"
+  zoned <- Now.zonedDateTimeISO_
   Test.assert (ZonedDateTime.year zoned >= 1970 && ZonedDateTime.year zoned < 2100)
 
 -- TemporalUnit

@@ -3,8 +3,11 @@ module Test.Main (main) where
 import Prelude
 
 import Control.Monad.Rec.Class (Step(..), tailRecM)
+import Data.Int as Int
 import Data.Date.Gen (genDate)
+import Data.Time.Duration (Milliseconds(..))
 import Data.Time.Gen (genTime)
+import Data.DateTime (DateTime(..), adjust)
 import Data.DateTime.Gen (genDateTime)
 import Data.DateTime.Instant as DateTime.Instant
 import Data.Foldable as Foldable
@@ -30,7 +33,7 @@ import JS.Temporal.Options.TemporalUnit as TemporalUnit
 import JS.Temporal.ZonedDateTime as ZonedDateTime
 import Random.LCG (randomSeed)
 import Test.Assert.Extended as Test
-import Test.QuickCheck.Gen (runGen)
+import Test.QuickCheck.Gen (Gen, chooseInt, runGen)
 
 main :: Effect Unit
 main = do
@@ -49,6 +52,7 @@ main = do
   test_Disambiguation
   test_CalendarName
   test_DateTimeInterop
+  test_DurationArithmeticInterop
 
 -- PlainDate
 test_PlainDate :: Effect Unit
@@ -1028,3 +1032,104 @@ test_DateTimeInterop = do
   Console.log ("  " <> show numTests <> " PlainTime round-trips passed")
   Console.log ("  " <> show numTests <> " PlainDateTime round-trips passed")
   Console.log ("  " <> show numTests <> " Instant round-trips passed")
+
+-- Duration arithmetic commutativity: add in Temporal then convert == convert then add in datetime
+genFixedDurationComponents :: Gen { days :: Int, hours :: Int, minutes :: Int, seconds :: Int, milliseconds :: Int }
+genFixedDurationComponents = do
+  days <- chooseInt 0 30
+  hours <- chooseInt 0 23
+  minutes <- chooseInt 0 59
+  seconds <- chooseInt 0 59
+  milliseconds <- chooseInt 0 999
+  pure { days, hours, minutes, seconds, milliseconds }
+
+millisecondsPerDay :: Int
+millisecondsPerDay = 86400000
+
+millisecondsPerHour :: Int
+millisecondsPerHour = 3600000
+
+millisecondsPerMinute :: Int
+millisecondsPerMinute = 60000
+
+millisecondsPerSecond :: Int
+millisecondsPerSecond = 1000
+
+test_DurationArithmeticInterop :: Effect Unit
+test_DurationArithmeticInterop = do
+  Console.log "Duration arithmetic interop (add commutes with conversion)"
+  let numTests = 100
+
+  seed1 <- randomSeed
+  _ <- tailRecM
+    ( \{ remaining, state } ->
+        if remaining <= 0 then
+          pure (Done unit)
+        else do
+          let Tuple dateTime newState1 = runGen genDateTime state
+          let Tuple components newState2 = runGen genFixedDurationComponents newState1
+          temporalDuration <- Duration.new components
+          let totalMs :: Number
+              totalMs =
+                Int.toNumber components.days * Int.toNumber millisecondsPerDay
+                  + Int.toNumber components.hours * Int.toNumber millisecondsPerHour
+                  + Int.toNumber components.minutes * Int.toNumber millisecondsPerMinute
+                  + Int.toNumber components.seconds * Int.toNumber millisecondsPerSecond
+                  + Int.toNumber components.milliseconds
+          plain <- PlainDateTime.fromDateTime dateTime
+          resultTemporal <- PlainDateTime.add_ temporalDuration plain
+          let resultTemporalAsDateTime = PlainDateTime.toDateTime resultTemporal
+          case adjust (Milliseconds totalMs) dateTime of
+            Nothing -> pure (Loop { remaining: remaining - 1, state: newState2 })
+            Just resultPsDateTime -> do
+              when (resultTemporalAsDateTime /= resultPsDateTime)
+                ( throwException
+                    ( error
+                        ( "Duration add interop failed: Temporal result "
+                            <> show resultTemporalAsDateTime
+                            <> " /= datetime result "
+                            <> show resultPsDateTime
+                            <> " for dateTime "
+                            <> show dateTime
+                            <> " and duration "
+                            <> show components
+                        )
+                    )
+                )
+              pure (Loop { remaining: remaining - 1, state: newState2 })
+    )
+    { remaining: numTests, state: { newSeed: seed1, size: 10 } }
+
+  seed2 <- randomSeed
+  _ <- tailRecM
+    ( \{ remaining, state } ->
+        if remaining <= 0 then
+          pure (Done unit)
+        else do
+          let Tuple components newState = runGen genFixedDurationComponents state
+          temporalDuration <- Duration.new components
+          case Duration.toMilliseconds temporalDuration of
+            Nothing -> pure (Loop { remaining: remaining - 1, state: newState })
+            Just ms -> do
+              backDuration <- Duration.fromMilliseconds ms
+              case Duration.toMilliseconds backDuration of
+                Nothing ->
+                  throwException
+                    (error ("Duration round-trip: fromMilliseconds produced duration that toMilliseconds returns Nothing"))
+                Just msBack ->
+                  when (ms /= msBack)
+                    ( throwException
+                        ( error
+                            ( "Duration round-trip failed: "
+                                <> show ms
+                                <> " /= "
+                                <> show msBack
+                            )
+                        )
+                    )
+              pure (Loop { remaining: remaining - 1, state: newState })
+    )
+    { remaining: numTests, state: { newSeed: seed2, size: 10 } }
+
+  Console.log ("  " <> show numTests <> " Duration arithmetic interop passed")
+  Console.log ("  " <> show numTests <> " Duration round-trip passed")

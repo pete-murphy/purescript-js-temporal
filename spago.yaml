@@ -2,7 +2,7 @@ package:
   name: js-temporal
   publish:
     license: MIT
-    version: 0.0.1
+    version: 1.0.0
     location:
       githubOwner: pete-murphy
       githubRepo: purescript-js-temporal

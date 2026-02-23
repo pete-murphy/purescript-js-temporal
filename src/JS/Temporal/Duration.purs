@@ -46,6 +46,9 @@ module JS.Temporal.Duration
   -- * Serialization
   , toString
   , toString_
+  -- * purescript-datetime interop
+  , fromMilliseconds
+  , toMilliseconds
   ) where
 
 import Prelude hiding (add, compare)
@@ -54,6 +57,10 @@ import ConvertableOptions (class ConvertOption, class ConvertOptionsWithDefaults
 import ConvertableOptions as ConvertableOptions
 import Data.Function.Uncurried (Fn2)
 import Data.Function.Uncurried as Function.Uncurried
+import Data.Int as Int
+import Data.Maybe (Maybe(..))
+import Data.Newtype (unwrap)
+import Data.Time.Duration (Milliseconds(..))
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1, EffectFn2)
 import Effect.Uncurried as Effect.Uncurried
@@ -334,5 +341,74 @@ toString providedOptions duration =
         providedOptions
     )
     duration
+
+-- purescript-datetime interop (fixed-unit durations only)
+
+millisecondsPerDay :: Int
+millisecondsPerDay = 86400000
+
+millisecondsPerHour :: Int
+millisecondsPerHour = 3600000
+
+millisecondsPerMinute :: Int
+millisecondsPerMinute = 60000
+
+millisecondsPerSecond :: Int
+millisecondsPerSecond = 1000
+
+-- | Converts a Temporal Duration to purescript-datetime `Milliseconds`. Returns
+-- | `Nothing` if the duration contains calendar units (years, months, weeks).
+-- | Microseconds and nanoseconds are dropped. See docs/purescript-datetime-interop.md.
+toMilliseconds :: Duration -> Maybe Milliseconds
+toMilliseconds duration
+  | years duration /= 0 = Nothing
+  | months duration /= 0 = Nothing
+  | weeks duration /= 0 = Nothing
+  | otherwise =
+      let totalMs :: Number
+          totalMs =
+            Int.toNumber (days duration) * Int.toNumber millisecondsPerDay
+              + Int.toNumber (hours duration) * Int.toNumber millisecondsPerHour
+              + Int.toNumber (minutes duration) * Int.toNumber millisecondsPerMinute
+              + Int.toNumber (seconds duration) * Int.toNumber millisecondsPerSecond
+              + Int.toNumber (milliseconds duration)
+          signed =
+            case sign duration of
+              -1 -> negate totalMs
+              _ -> totalMs
+       in Just (Milliseconds signed)
+
+decomposeMilliseconds :: Number -> { days :: Int, hours :: Int, minutes :: Int, seconds :: Int, milliseconds :: Int }
+decomposeMilliseconds totalMs =
+  let msPerDay = Int.toNumber millisecondsPerDay
+      msPerHour = Int.toNumber millisecondsPerHour
+      msPerMinute = Int.toNumber millisecondsPerMinute
+      msPerSecond = Int.toNumber millisecondsPerSecond
+      daysVal = Int.floor (totalMs / msPerDay)
+      afterDays = totalMs - Int.toNumber daysVal * msPerDay
+      hoursVal = Int.floor (afterDays / msPerHour)
+      afterHours = afterDays - Int.toNumber hoursVal * msPerHour
+      minutesVal = Int.floor (afterHours / msPerMinute)
+      afterMinutes = afterHours - Int.toNumber minutesVal * msPerMinute
+      secondsVal = Int.floor (afterMinutes / msPerSecond)
+      millisecondsVal = Int.floor (afterMinutes - Int.toNumber secondsVal * msPerSecond)
+   in { days: daysVal, hours: hoursVal, minutes: minutesVal, seconds: secondsVal, milliseconds: millisecondsVal }
+
+-- | Creates a Temporal Duration from purescript-datetime `Milliseconds`. See
+-- | docs/purescript-datetime-interop.md.
+fromMilliseconds :: Milliseconds -> Effect Duration
+fromMilliseconds ms =
+  let totalMs = unwrap ms
+      absolute = if totalMs < 0.0 then negate totalMs else totalMs
+      components = decomposeMilliseconds absolute
+      signMultiplier = if totalMs < 0.0 then -1 else 1
+      fields =
+        { days: signMultiplier * components.days
+        , hours: signMultiplier * components.hours
+        , minutes: signMultiplier * components.minutes
+        , seconds: signMultiplier * components.seconds
+        , milliseconds: signMultiplier * components.milliseconds
+        }
+   in new fields
 
 -- Instances (Eq, Show from Internal)

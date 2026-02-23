@@ -27,12 +27,20 @@ Or run a single example:
 spago run -p js-temporal-examples -m Examples.Cookbook.CurrentDateTime
 ```
 
-## Setup
+## purescript-datetime Interop
 
-```bash
-nix develop   # or: spago install
-spago build
-spago test
-```
+The library provides conversion functions between js-temporal types and [purescript-datetime](https://github.com/purescript/purescript-datetime) types, so you can integrate with existing code that uses `Data.Date`, `Data.Time`, `Data.DateTime`, or `Data.DateTime.Instant`.
 
-Node.js requires the Temporal flag: `node --harmony-temporal`. The `nix develop` shell provides a wrapped Node with this flag enabled.
+| js-temporal     | purescript-datetime                |
+| --------------- | --------------------------------- |
+| `PlainDate`     | `Data.Date.Date`                  |
+| `PlainTime`     | `Data.Time.Time`                  |
+| `PlainDateTime` | `Data.DateTime.DateTime`         |
+| `Instant`       | `Data.DateTime.Instant`           |
+| `Duration`      | `Data.Time.Duration.Milliseconds` |
+
+Each module exports `fromX` / `toX` functions for its corresponding type — for example, `PlainDate.fromDate` and `PlainDate.toDate`. All conversions round-trip at the precision supported by purescript-datetime (milliseconds). Microsecond and nanosecond components are dropped when converting to purescript-datetime types.
+
+`Duration.fromMilliseconds` and `Duration.toMilliseconds` support fixed-unit durations only (days, hours, minutes, seconds, milliseconds); calendar units (years, months, weeks) are not supported.
+
+`ZonedDateTime`, `PlainYearMonth`, and `PlainMonthDay` have no purescript-datetime equivalents.

@@ -4,9 +4,12 @@ module JS.Temporal.PlainMonthDay.Internal
   , toString_
   ) where
 
+import Prelude
+
 import Data.Function.Uncurried (Fn2)
 import Data.Function.Uncurried as Function.Uncurried
-import Prelude
+import JS.Intl.DateTimeFormat (class DateTimeLike)
+import Unsafe.Coerce as Unsafe.Coerce
 
 foreign import data PlainMonthDay :: Type
 
@@ -22,3 +25,6 @@ instance Eq PlainMonthDay where
 
 instance Show PlainMonthDay where
   show = toString_
+
+instance DateTimeLike PlainMonthDay where
+  unsafeToDateTimeForeign = Unsafe.Coerce.unsafeCoerce

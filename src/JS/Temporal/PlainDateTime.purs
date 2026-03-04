@@ -71,7 +71,7 @@ import ConvertableOptions (class ConvertOption, class ConvertOptionsWithDefaults
 import ConvertableOptions as ConvertableOptions
 import Data.DateTime (DateTime(..))
 import Data.DateTime as DateTime
-import Data.Function.Uncurried (Fn2, Fn1)
+import Data.Function.Uncurried (Fn1, Fn2)
 import Data.Function.Uncurried as Function.Uncurried
 import Data.Maybe (Maybe)
 import Data.Nullable (Nullable, toMaybe)
@@ -80,21 +80,21 @@ import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3)
 import Effect.Uncurried as Effect.Uncurried
 import Foreign (Foreign)
 import Foreign as Foreign
-import JS.Temporal.Options.CalendarName (CalendarName)
-import JS.Temporal.PlainDate as PlainDate
-import JS.Temporal.PlainTime as PlainTime
-import JS.Temporal.ZonedDateTime.Internal (ZonedDateTime)
-import JS.Temporal.Options.CalendarName as CalendarName
 import JS.Temporal.Duration.Internal (Duration)
+import JS.Temporal.Options.CalendarName (CalendarName)
+import JS.Temporal.Options.CalendarName as CalendarName
 import JS.Temporal.Options.Overflow (Overflow)
 import JS.Temporal.Options.Overflow as Overflow
 import JS.Temporal.Options.RoundingMode (RoundingMode)
 import JS.Temporal.Options.RoundingMode as RoundingMode
 import JS.Temporal.Options.TemporalUnit (TemporalUnit)
 import JS.Temporal.Options.TemporalUnit as TemporalUnit
+import JS.Temporal.PlainDate as PlainDate
 import JS.Temporal.PlainDate.Internal (PlainDate)
 import JS.Temporal.PlainDateTime.Internal (PlainDateTime)
+import JS.Temporal.PlainTime as PlainTime
 import JS.Temporal.PlainTime.Internal (PlainTime)
+import JS.Temporal.ZonedDateTime.Internal (ZonedDateTime)
 import Prim.Row (class Union)
 import Unsafe.Coerce as Unsafe.Coerce
 

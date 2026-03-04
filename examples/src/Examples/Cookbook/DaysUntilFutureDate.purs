@@ -8,8 +8,8 @@ import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.Duration as Duration
 import JS.Temporal.Now as Now
-import JS.Temporal.PlainDate as PlainDate
 import JS.Temporal.Options.TemporalUnit as TemporalUnit
+import JS.Temporal.PlainDate as PlainDate
 
 main :: Effect Unit
 main = do

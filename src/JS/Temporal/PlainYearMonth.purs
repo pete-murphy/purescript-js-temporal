@@ -54,9 +54,9 @@ import Data.Nullable (Nullable, toMaybe)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3)
 import Effect.Uncurried as Effect.Uncurried
+import JS.Temporal.Duration.Internal (Duration)
 import JS.Temporal.Options.CalendarName (CalendarName)
 import JS.Temporal.Options.CalendarName as CalendarName
-import JS.Temporal.Duration.Internal (Duration)
 import JS.Temporal.Options.Overflow (Overflow)
 import JS.Temporal.Options.Overflow as Overflow
 import JS.Temporal.Options.RoundingMode (RoundingMode)

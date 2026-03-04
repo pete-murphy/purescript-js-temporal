@@ -6,6 +6,9 @@ module JS.Temporal.Duration.Internal
 
 import Prelude
 
+import JS.Intl.DurationFormat (class DurationLike, unsafeToDurationForeign)
+import Unsafe.Coerce as Unsafe.Coerce
+
 -- | A Temporal duration (opaque type).
 foreign import data Duration :: Type
 
@@ -37,3 +40,6 @@ instance Eq Duration where
 
 instance Show Duration where
   show = toString_
+
+instance DurationLike Duration where
+  unsafeToDurationForeign = Unsafe.Coerce.unsafeCoerce

@@ -6,9 +6,9 @@ import Prelude
 
 import Effect (Effect)
 import Effect.Class.Console as Console
-import JS.Temporal.PlainTime as PlainTime
 import JS.Temporal.Options.RoundingMode as RoundingMode
 import JS.Temporal.Options.TemporalUnit as TemporalUnit
+import JS.Temporal.PlainTime as PlainTime
 
 main :: Effect Unit
 main = do

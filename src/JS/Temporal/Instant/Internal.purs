@@ -6,10 +6,13 @@ module JS.Temporal.Instant.Internal
   , toString_
   ) where
 
+import Prelude hiding (compare)
+
 import Data.Function.Uncurried (Fn2)
 import Data.Function.Uncurried as Function.Uncurried
+import JS.Intl.DateTimeFormat (class DateTimeLike)
 import JS.Temporal.Internal (intToOrdering)
-import Prelude hiding (compare)
+import Unsafe.Coerce as Unsafe.Coerce
 
 -- | A point in time (opaque type).
 foreign import data Instant :: Type
@@ -33,3 +36,6 @@ instance Ord Instant where
 
 instance Show Instant where
   show = toString_
+
+instance DateTimeLike Instant where
+  unsafeToDateTimeForeign = Unsafe.Coerce.unsafeCoerce

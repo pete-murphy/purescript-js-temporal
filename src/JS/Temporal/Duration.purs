@@ -66,12 +66,12 @@ import Effect.Uncurried (EffectFn1, EffectFn2)
 import Effect.Uncurried as Effect.Uncurried
 import Foreign (Foreign)
 import Foreign as Foreign
+import JS.Temporal.Duration.Internal (Duration)
 import JS.Temporal.Internal (intToOrdering)
 import JS.Temporal.Options.RoundingMode (RoundingMode)
 import JS.Temporal.Options.RoundingMode as RoundingMode
 import JS.Temporal.Options.TemporalUnit (TemporalUnit)
 import JS.Temporal.Options.TemporalUnit as TemporalUnit
-import JS.Temporal.Duration.Internal (Duration)
 import Prim.Row (class Union)
 import Unsafe.Coerce as Unsafe.Coerce
 

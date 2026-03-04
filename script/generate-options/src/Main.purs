@@ -4,10 +4,10 @@ import Prelude
 
 import Control.Monad.Writer as Writer
 import Data.Array ((!!))
-import Data.Maybe (Maybe(..))
-import Data.String as String
 import Data.Foldable as Foldable
 import Data.Map as Map
+import Data.Maybe (Maybe(..))
+import Data.String as String
 import Data.Tuple (Tuple(..))
 import Effect (Effect)
 import Effect.Aff as Aff

@@ -46,11 +46,11 @@ import Prelude hiding (add, compare)
 import ConvertableOptions (class ConvertOption, class ConvertOptionsWithDefaults)
 import ConvertableOptions as ConvertableOptions
 import Data.Enum (fromEnum, toEnum)
-import Data.Maybe (fromJust)
 import Data.Function.Uncurried (Fn2)
+import Data.Function.Uncurried as Function.Uncurried
+import Data.Maybe (fromJust)
 import Data.Time (Time(..))
 import Data.Time as Time
-import Data.Function.Uncurried as Function.Uncurried
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3)
 import Effect.Uncurried as Effect.Uncurried

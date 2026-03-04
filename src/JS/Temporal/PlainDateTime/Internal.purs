@@ -5,10 +5,13 @@ module JS.Temporal.PlainDateTime.Internal
   , toString_
   ) where
 
+import Prelude hiding (compare)
+
 import Data.Function.Uncurried (Fn2)
 import Data.Function.Uncurried as Function.Uncurried
+import JS.Intl.DateTimeFormat (class DateTimeLike)
 import JS.Temporal.Internal (intToOrdering)
-import Prelude hiding (compare)
+import Unsafe.Coerce as Unsafe.Coerce
 
 foreign import data PlainDateTime :: Type
 
@@ -31,3 +34,6 @@ instance Ord PlainDateTime where
 
 instance Show PlainDateTime where
   show = toString_
+
+instance DateTimeLike PlainDateTime where
+  unsafeToDateTimeForeign = Unsafe.Coerce.unsafeCoerce

@@ -3,33 +3,33 @@ module Test.Main (main) where
 import Prelude
 
 import Control.Monad.Rec.Class (Step(..), tailRecM)
-import Data.Int as Int
 import Data.Date.Gen (genDate)
-import Data.Time.Duration (Milliseconds(..))
-import Data.Time.Gen (genTime)
 import Data.DateTime (DateTime(..), adjust)
 import Data.DateTime.Gen (genDateTime)
 import Data.DateTime.Instant as DateTime.Instant
 import Data.Foldable as Foldable
+import Data.Int as Int
 import Data.Maybe (Maybe(..))
+import Data.Time.Duration (Milliseconds(..))
+import Data.Time.Gen (genTime)
 import Data.Tuple (Tuple(..))
 import Effect (Effect)
-import Effect.Exception (error, throwException)
 import Effect.Class.Console as Console
+import Effect.Exception (error, throwException)
 import JS.BigInt as BigInt
-import JS.Temporal.Options.CalendarName as CalendarName
-import JS.Temporal.Options.Disambiguation as Disambiguation
 import JS.Temporal.Duration as Duration
 import JS.Temporal.Instant as Instant
 import JS.Temporal.Now as Now
+import JS.Temporal.Options.CalendarName as CalendarName
+import JS.Temporal.Options.Disambiguation as Disambiguation
 import JS.Temporal.Options.Overflow as Overflow
+import JS.Temporal.Options.RoundingMode as RoundingMode
+import JS.Temporal.Options.TemporalUnit as TemporalUnit
 import JS.Temporal.PlainDate as PlainDate
 import JS.Temporal.PlainDateTime as PlainDateTime
 import JS.Temporal.PlainMonthDay as PlainMonthDay
 import JS.Temporal.PlainTime as PlainTime
 import JS.Temporal.PlainYearMonth as PlainYearMonth
-import JS.Temporal.Options.RoundingMode as RoundingMode
-import JS.Temporal.Options.TemporalUnit as TemporalUnit
 import JS.Temporal.ZonedDateTime as ZonedDateTime
 import Random.LCG (randomSeed)
 import Test.Assert.Extended as Test
@@ -1069,13 +1069,14 @@ test_DurationArithmeticInterop = do
           let Tuple dateTime newState1 = runGen genDateTime state
           let Tuple components newState2 = runGen genFixedDurationComponents newState1
           temporalDuration <- Duration.new components
-          let totalMs :: Number
-              totalMs =
-                Int.toNumber components.days * Int.toNumber millisecondsPerDay
-                  + Int.toNumber components.hours * Int.toNumber millisecondsPerHour
-                  + Int.toNumber components.minutes * Int.toNumber millisecondsPerMinute
-                  + Int.toNumber components.seconds * Int.toNumber millisecondsPerSecond
-                  + Int.toNumber components.milliseconds
+          let
+            totalMs :: Number
+            totalMs =
+              Int.toNumber components.days * Int.toNumber millisecondsPerDay
+                + Int.toNumber components.hours * Int.toNumber millisecondsPerHour
+                + Int.toNumber components.minutes * Int.toNumber millisecondsPerMinute
+                + Int.toNumber components.seconds * Int.toNumber millisecondsPerSecond
+                + Int.toNumber components.milliseconds
           plain <- PlainDateTime.fromDateTime dateTime
           resultTemporal <- PlainDateTime.add_ temporalDuration plain
           let resultTemporalAsDateTime = PlainDateTime.toDateTime resultTemporal

@@ -4,7 +4,7 @@ import Prelude
 
 import Control.Monad.Rec.Class (Step(..), tailRecM)
 import Data.Date.Gen (genDate)
-import Data.DateTime (DateTime(..), adjust)
+import Data.DateTime as Data.DateTime
 import Data.DateTime.Gen (genDateTime)
 import Data.DateTime.Instant as DateTime.Instant
 import Data.Foldable as Foldable
@@ -17,6 +17,9 @@ import Effect (Effect)
 import Effect.Class.Console as Console
 import Effect.Exception (error, throwException)
 import JS.BigInt as BigInt
+import JS.Intl.DateTimeFormat as DateTimeFormat
+import JS.Intl.DurationFormat as DurationFormat
+import JS.Intl.Locale as Locale
 import JS.Temporal.Duration as Duration
 import JS.Temporal.Instant as Instant
 import JS.Temporal.Now as Now
@@ -53,6 +56,8 @@ main = do
   test_CalendarName
   test_DateTimeInterop
   test_DurationArithmeticInterop
+  test_IntlDurationFormat
+  test_IntlDateTimeFormat
 
 -- PlainDate
 test_PlainDate :: Effect Unit
@@ -1080,7 +1085,7 @@ test_DurationArithmeticInterop = do
           plain <- PlainDateTime.fromDateTime dateTime
           resultTemporal <- PlainDateTime.add_ temporalDuration plain
           let resultTemporalAsDateTime = PlainDateTime.toDateTime resultTemporal
-          case adjust (Milliseconds totalMs) dateTime of
+          case Data.DateTime.adjust (Milliseconds totalMs) dateTime of
             Nothing -> pure (Loop { remaining: remaining - 1, state: newState2 })
             Just resultPsDateTime -> do
               when (resultTemporalAsDateTime /= resultPsDateTime)
@@ -1134,3 +1139,65 @@ test_DurationArithmeticInterop = do
 
   Console.log ("  " <> show numTests <> " Duration arithmetic interop passed")
   Console.log ("  " <> show numTests <> " Duration round-trip passed")
+
+-- Intl.DurationFormat with Temporal.Duration (DurationLike instance)
+test_IntlDurationFormat :: Effect Unit
+test_IntlDurationFormat = do
+  Console.log "Intl.DurationFormat with Temporal.Duration"
+  locale <- Locale.new_ "en"
+  formatter <- DurationFormat.new [ locale ] { style: "long" }
+
+  Console.log "  DurationFormat.format"
+  duration <- Duration.new { hours: 2, minutes: 30 }
+  let formatted = DurationFormat.format formatter duration
+  Test.assert' ("Expected non-empty formatted duration, got: \"" <> formatted <> "\"") (formatted /= "")
+
+  Console.log "  DurationFormat.format (full ISO duration)"
+  durationFull <- Duration.from "P1Y2M3DT4H5M6S"
+  let formattedFull = DurationFormat.format formatter durationFull
+  Test.assert' ("Expected non-empty formatted duration, got: \"" <> formattedFull <> "\"") (formattedFull /= "")
+
+  Console.log "  DurationFormat.formatToParts"
+  let parts = DurationFormat.formatToParts formatter duration
+  Test.assert' "Expected non-empty formatToParts result" (parts /= [])
+
+-- Intl.DateTimeFormat with Temporal types (DateTimeLike instances)
+test_IntlDateTimeFormat :: Effect Unit
+test_IntlDateTimeFormat = do
+  Console.log "Intl.DateTimeFormat with Temporal types"
+  locale <- Locale.new_ "en"
+
+  Console.log "  DateTimeFormat.format PlainDate"
+  dateFormatter <- DateTimeFormat.new [ locale ] { dateStyle: "long" }
+  plainDate <- PlainDate.new 2026 2 21
+  let formattedDate = DateTimeFormat.format dateFormatter plainDate
+  Test.assert' ("Expected non-empty formatted PlainDate, got: \"" <> formattedDate <> "\"") (formattedDate /= "")
+
+  Console.log "  DateTimeFormat.format PlainTime"
+  timeFormatter <- DateTimeFormat.new [ locale ] { timeStyle: "medium" }
+  plainTime <- PlainTime.new { hour: 14, minute: 30, second: 45, millisecond: 0, microsecond: 0, nanosecond: 0 }
+  let formattedTime = DateTimeFormat.format timeFormatter plainTime
+  Test.assert' ("Expected non-empty formatted PlainTime, got: \"" <> formattedTime <> "\"") (formattedTime /= "")
+
+  Console.log "  DateTimeFormat.format PlainDateTime"
+  dateTimeFormatter <- DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
+  plainDateTime <- PlainDateTime.new { year: 2026, month: 2, day: 21, hour: 14, minute: 30, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 }
+  let formattedDateTime = DateTimeFormat.format dateTimeFormatter plainDateTime
+  Test.assert' ("Expected non-empty formatted PlainDateTime, got: \"" <> formattedDateTime <> "\"") (formattedDateTime /= "")
+
+  Console.log "  DateTimeFormat.format Instant"
+  instantFormatter <- DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium", timeZone: "UTC" }
+  instant <- Instant.from "2026-02-21T12:00:00Z"
+  let formattedInstant = DateTimeFormat.format instantFormatter instant
+  Test.assert' ("Expected non-empty formatted Instant, got: \"" <> formattedInstant <> "\"") (formattedInstant /= "")
+
+  Console.log "  DateTimeFormat.format ZonedDateTime"
+  zonedFormatter <- DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
+  zonedDateTime <- ZonedDateTime.from_ "2026-02-21T12:00:00-08:00[America/Los_Angeles]"
+  let formattedZoned = DateTimeFormat.format zonedFormatter zonedDateTime
+  Test.assert' ("Expected non-empty formatted ZonedDateTime, got: \"" <> formattedZoned <> "\"") (formattedZoned /= "")
+
+-- PlainYearMonth and PlainMonthDay require a non-iso8601 calendar for
+-- DateTimeFormat (e.g. "gregory"), but Node's --harmony-temporal crashes
+-- (V8 bug) when creating these types with a Gregorian calendar. Revisit
+-- once Temporal ships unflagged.

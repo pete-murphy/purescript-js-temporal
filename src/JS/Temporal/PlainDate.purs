@@ -422,7 +422,7 @@ foreign import _until :: forall r. EffectFn3 { | r } PlainDate PlainDate Duratio
 -- | locale <- JS.Intl.Locale.new_ "en-US"
 -- | today <- Now.plainDateISO_
 -- | futureDate <- PlainDate.from_ "2026-12-25"
--- | untilDuration <- PlainDate.until { largestUnit: TemporalUnit.Day } futureDate today
+-- | untilDuration <- PlainDate.until { smallestUnit: TemporalUnit.Day } futureDate today
 -- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- | Console.log (JS.Intl.DurationFormat.format formatter untilDuration <> " until Christmas 2026")
 -- | ```

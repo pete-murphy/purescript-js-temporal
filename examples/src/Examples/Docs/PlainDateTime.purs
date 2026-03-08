@@ -160,7 +160,7 @@ exampleUntil = do
       pure aprilFirst
 
   duration <- PlainDateTime.until
-    { largestUnit: TemporalUnit.Day }
+    { smallestUnit: TemporalUnit.Day }
     nextBilling
     now
   durationFormatter <- JS.Intl.DurationFormat.new [ locale ] { style: JS.Intl.Options.DurationFormatStyle.Long }

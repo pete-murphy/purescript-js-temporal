@@ -517,7 +517,7 @@ foreign import _until :: forall r. EffectFn3 { | r } PlainDateTime PlainDateTime
 -- |     pure aprilFirst
 -- |
 -- | duration <- PlainDateTime.until
--- |   { largestUnit: TemporalUnit.Day }
+-- |   { smallestUnit: TemporalUnit.Day }
 -- |   nextBilling
 -- |   now
 -- | durationFormatter <- JS.Intl.DurationFormat.new [ locale ] { style: JS.Intl.Options.DurationFormatStyle.Long }
@@ -525,7 +525,7 @@ foreign import _until :: forall r. EffectFn3 { | r } PlainDateTime PlainDateTime
 -- | ```
 -- |
 -- | ```text
--- | 23 days, 13 hours, 28 minutes, 54 seconds until next billing
+-- | 23 days until next billing
 -- | ```
 
 until

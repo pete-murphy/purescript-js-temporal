@@ -146,8 +146,20 @@ with_ = Effect.Uncurried.runEffectFn2 _withNoOpts
 -- Conversions
 
 foreign import _toPlainDate :: EffectFn2 { year :: Int } PlainMonthDay PlainDate
-
 -- | Converts to PlainDate by supplying a year.
+-- |
+-- | ```purescript
+-- | locale <- Locale.new_ "en-US"
+-- | birthday <- PlainMonthDay.from_ "12-15"
+-- | birthdayIn2030 <- PlainMonthDay.toPlainDate { year: 2030 } birthday
+-- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
+-- | Console.log ("Birthday in 2030: " <> JS.Intl.DateTimeFormat.format formatter birthdayIn2030)
+-- | ```
+-- |
+-- | ```text
+-- | Birthday in 2030: December 15, 2030
+-- | ```
+
 toPlainDate :: { year :: Int } -> PlainMonthDay -> Effect PlainDate
 toPlainDate = Effect.Uncurried.runEffectFn2 _toPlainDate
 

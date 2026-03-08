@@ -250,8 +250,20 @@ with_ = Effect.Uncurried.runEffectFn2 _withNoOpts
 -- Conversions
 
 foreign import _toPlainDate :: EffectFn2 { day :: Int } PlainYearMonth PlainDate
-
 -- | Converts to PlainDate by supplying a day.
+-- |
+-- | ```purescript
+-- | locale <- Locale.new_ "en-US"
+-- | yearMonth <- PlainYearMonth.from_ "2024-01"
+-- | firstDay <- PlainYearMonth.toPlainDate { day: 1 } yearMonth
+-- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
+-- | Console.log (JS.Intl.DateTimeFormat.format formatter firstDay)
+-- | ```
+-- |
+-- | ```text
+-- | January 1, 2024
+-- | ```
+
 toPlainDate :: { day :: Int } -> PlainYearMonth -> Effect PlainDate
 toPlainDate = Effect.Uncurried.runEffectFn2 _toPlainDate
 

@@ -126,8 +126,19 @@ from providedOptions str =
     str
 
 foreign import _fromNoOpts :: EffectFn1 String PlainTime
-
 -- | Same as from with default options.
+-- |
+-- | ```purescript
+-- | locale <- Locale.new_ "en-US"
+-- | time <- PlainTime.from_ "15:30:00"
+-- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
+-- | Console.log (JS.Intl.DateTimeFormat.format formatter time)
+-- | ```
+-- |
+-- | ```text
+-- | 3:30:00 PM
+-- | ```
+
 from_ :: String -> Effect PlainTime
 from_ = Effect.Uncurried.runEffectFn1 _fromNoOpts
 
@@ -149,8 +160,21 @@ add :: Duration -> PlainTime -> Effect PlainTime
 add = Effect.Uncurried.runEffectFn2 _add
 
 foreign import _subtract :: EffectFn2 Duration PlainTime PlainTime
+-- | Subtracts a duration. Arg order: `subtract duration subject`. Wraps at 24 hours.
+-- |
+-- | ```purescript
+-- | locale <- Locale.new_ "en-US"
+-- | time <- PlainTime.from_ "14:30:00"
+-- | twoHours <- Duration.new { hours: 2 }
+-- | earlier <- PlainTime.subtract twoHours time
+-- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
+-- | Console.log (JS.Intl.DateTimeFormat.format formatter earlier)
+-- | ```
+-- |
+-- | ```text
+-- | 12:30:00 PM
+-- | ```
 
--- | Subtracts a duration. Wraps at 24 hours. Throws for calendar durations.
 subtract :: Duration -> PlainTime -> Effect PlainTime
 subtract = Effect.Uncurried.runEffectFn2 _subtract
 
@@ -239,7 +263,7 @@ instance ConvertOption ToDifferenceOptions "roundingMode" String String where
 
 foreign import _until :: forall r. EffectFn3 { | r } PlainTime PlainTime Duration
 
--- | Duration from this time until the other (positive if other is later same day).
+-- | Duration from `subject` (last arg) until `other` (second arg). Arg order: `until options other subject`.
 until
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -270,7 +294,7 @@ until_ = Effect.Uncurried.runEffectFn2 _untilNoOpts
 
 foreign import _since :: forall r. EffectFn3 { | r } PlainTime PlainTime Duration
 
--- | Duration from the other time to this one (inverse of until).
+-- | Duration from `other` to `subject` (inverse of until). Arg order: `since options other subject`.
 since
   :: forall provided
    . ConvertOptionsWithDefaults

@@ -20,6 +20,7 @@ import JS.BigInt as BigInt
 import JS.Intl.DateTimeFormat as DateTimeFormat
 import JS.Intl.DurationFormat as DurationFormat
 import JS.Intl.Locale as Locale
+import JS.Intl.Options.DurationFormatStyle as DurationFormatStyle
 import JS.Temporal.Duration as Duration
 import JS.Temporal.Instant as Instant
 import JS.Temporal.Now as Now
@@ -1197,7 +1198,24 @@ test_IntlDateTimeFormat = do
   let formattedZoned = DateTimeFormat.format zonedFormatter zonedDateTime
   Test.assert' ("Expected non-empty formatted ZonedDateTime, got: \"" <> formattedZoned <> "\"") (formattedZoned /= "")
 
--- PlainYearMonth and PlainMonthDay require a non-iso8601 calendar for
--- DateTimeFormat (e.g. "gregory"), but Node's --harmony-temporal crashes
--- (V8 bug) when creating these types with a Gregorian calendar. Revisit
--- once Temporal ships unflagged.
+test_NextBilling :: Effect Unit
+test_NextBilling = do
+  now <- Now.plainDateTimeISO_ >>= PlainDateTime.round { smallestUnit: TemporalUnit.Second }
+
+  nextBilling <- do
+    aprilFirst <- PlainDateTime.new
+      { year: PlainDateTime.year now
+      , month: 4
+      , day: 1
+      }
+    if aprilFirst < now then do
+      oneYear <- Duration.new { years: 1 }
+      PlainDateTime.add_ oneYear aprilFirst
+    else
+      pure aprilFirst
+
+  duration <- PlainDateTime.until { smallestUnit: TemporalUnit.Day } nextBilling now
+  durationFormat <- DurationFormat.new [] { style: DurationFormatStyle.Long }
+
+  Console.log (DurationFormat.format durationFormat duration <> " until next billing") -- e.g., "24 days until next billing"
+

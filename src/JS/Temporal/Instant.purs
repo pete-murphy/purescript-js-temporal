@@ -70,8 +70,19 @@ new :: BigInt -> Effect Instant
 new = Effect.Uncurried.runEffectFn1 _new
 
 foreign import _from :: EffectFn1 String Instant
-
 -- | Parses an ISO 8601 instant string (e.g. `"2024-01-15T12:00:00Z"`). Throws on invalid input.
+-- |
+-- | ```purescript
+-- | locale <- Locale.new_ "en-US"
+-- | instant <- Instant.from "2024-01-15T12:00:00Z"
+-- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium", timeZone: "UTC" }
+-- | Console.log (JS.Intl.DateTimeFormat.format formatter instant)
+-- | ```
+-- |
+-- | ```text
+-- | January 15, 2024 at 12:00:00 PM
+-- | ```
+
 from :: String -> Effect Instant
 from = Effect.Uncurried.runEffectFn1 _from
 
@@ -102,7 +113,7 @@ add = Effect.Uncurried.runEffectFn2 _add
 
 foreign import _subtract :: EffectFn2 Duration Instant Instant
 
--- | Subtracts a duration from an instant. Throws for calendar durations.
+-- | Subtracts a duration. Arg order: `subtract duration instant`.
 subtract :: Duration -> Instant -> Effect Instant
 subtract = Effect.Uncurried.runEffectFn2 _subtract
 
@@ -142,8 +153,21 @@ instance ConvertOption ToDifferenceOptions "roundingMode" String String where
   convertOption _ _ = identity
 
 foreign import _until :: forall r. EffectFn3 { | r } Instant Instant Duration
+-- | Duration from `subject` (last arg) until `other` (second arg). Arg order: `until options other subject`.
+-- |
+-- | ```purescript
+-- | locale <- Locale.new_ "en-US"
+-- | earlier <- Instant.from "2020-01-09T00:00Z"
+-- | later <- Instant.from "2020-01-09T04:00Z"
+-- | result <- Instant.until { largestUnit: TemporalUnit.Hour } later earlier
+-- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
+-- | Console.log ("4 hours: " <> JS.Intl.DurationFormat.format formatter result)
+-- | ```
+-- |
+-- | ```text
+-- | 4 hours: 4 hours
+-- | ```
 
--- | Returns the duration from this instant until the other. Options: largestUnit, smallestUnit, roundingIncrement, roundingMode.
 until
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -173,8 +197,21 @@ until_ :: Instant -> Instant -> Effect Duration
 until_ = Effect.Uncurried.runEffectFn2 _untilNoOpts
 
 foreign import _since :: forall r. EffectFn3 { | r } Instant Instant Duration
+-- | Duration from `other` to `subject` (inverse of until). Arg order: `since options other subject`.
+-- |
+-- | ```purescript
+-- | locale <- Locale.new_ "en-US"
+-- | earlier <- Instant.from "2020-01-09T00:00Z"
+-- | later <- Instant.from "2020-01-09T04:00Z"
+-- | elapsed <- Instant.since { largestUnit: TemporalUnit.Hour } earlier later
+-- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
+-- | Console.log ("Elapsed: " <> JS.Intl.DurationFormat.format formatter elapsed)
+-- | ```
+-- |
+-- | ```text
+-- | Elapsed: 4 hours
+-- | ```
 
--- | Returns the duration from the other instant to this one (inverse of until).
 since
   :: forall provided
    . ConvertOptionsWithDefaults

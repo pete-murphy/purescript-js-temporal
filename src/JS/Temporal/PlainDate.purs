@@ -126,8 +126,19 @@ from providedOptions str =
     str
 
 foreign import _fromNoOpts :: EffectFn1 String PlainDate
-
 -- | Same as from with default options.
+-- |
+-- | ```purescript
+-- | locale <- Locale.new_ "en-US"
+-- | date <- PlainDate.from_ "2024-01-15"
+-- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
+-- | Console.log (JS.Intl.DateTimeFormat.format formatter date)
+-- | ```
+-- |
+-- | ```text
+-- | January 15, 2024
+-- | ```
+
 from_ :: String -> Effect PlainDate
 from_ = Effect.Uncurried.runEffectFn1 _fromNoOpts
 
@@ -201,7 +212,7 @@ add_ = Effect.Uncurried.runEffectFn2 _addNoOpts
 
 foreign import _subtract :: forall r. EffectFn3 { | r } Duration PlainDate PlainDate
 
--- | Subtracts a duration from a date. Options: overflow.
+-- | Subtracts a duration. Arg order: `subtract options duration subject`. Options: overflow.
 subtract
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -225,8 +236,21 @@ subtract providedOptions duration plainDate =
     plainDate
 
 foreign import _subtractNoOpts :: EffectFn2 Duration PlainDate PlainDate
-
 -- | Same as subtract with default options.
+-- |
+-- | ```purescript
+-- | locale <- Locale.new_ "en-US"
+-- | date <- PlainDate.from_ "2024-03-15"
+-- | oneWeek <- Duration.new { weeks: 1 }
+-- | earlier <- PlainDate.subtract_ oneWeek date
+-- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
+-- | Console.log (JS.Intl.DateTimeFormat.format formatter earlier)
+-- | ```
+-- |
+-- | ```text
+-- | March 8, 2024
+-- | ```
+
 subtract_ :: Duration -> PlainDate -> Effect PlainDate
 subtract_ = Effect.Uncurried.runEffectFn2 _subtractNoOpts
 
@@ -318,8 +342,22 @@ instance ConvertOption ToDifferenceOptions "roundingMode" String String where
   convertOption _ _ = identity
 
 foreign import _until :: forall r. EffectFn3 { | r } PlainDate PlainDate Duration
+-- | Duration from `subject` (last arg) until `other` (second arg). Arg order: `until options other subject`.
+-- | Options: largestUnit, smallestUnit, roundingIncrement, roundingMode.
+-- |
+-- | ```purescript
+-- | locale <- Locale.new_ "en-US"
+-- | today <- Now.plainDateISO_
+-- | futureDate <- PlainDate.from_ "2026-12-25"
+-- | untilDuration <- PlainDate.until { largestUnit: TemporalUnit.Day } futureDate today
+-- | numberFormatter <- JS.Intl.NumberFormat.new [ locale ] {}
+-- | Console.log ("Days until Christmas 2026: " <> JS.Intl.NumberFormat.format numberFormatter (Int.toNumber (Duration.days untilDuration)))
+-- | ```
+-- |
+-- | ```text
+-- | Days until Christmas 2026: 293
+-- | ```
 
--- | Duration from this date until the other. Options: largestUnit, smallestUnit, roundingIncrement, roundingMode.
 until
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -349,8 +387,21 @@ until_ :: PlainDate -> PlainDate -> Effect Duration
 until_ = Effect.Uncurried.runEffectFn2 _untilNoOpts
 
 foreign import _since :: forall r. EffectFn3 { | r } PlainDate PlainDate Duration
+-- | Duration from `other` to `subject` (inverse of until). Arg order: `since options other subject`.
+-- |
+-- | ```purescript
+-- | locale <- Locale.new_ "en-US"
+-- | start <- PlainDate.from_ "2024-01-01"
+-- | end <- PlainDate.from_ "2024-03-15"
+-- | elapsed <- PlainDate.since { largestUnit: TemporalUnit.Day } start end
+-- | numberFormatter <- JS.Intl.NumberFormat.new [ locale ] {}
+-- | Console.log ("Elapsed: " <> JS.Intl.NumberFormat.format numberFormatter (Int.toNumber (Duration.days elapsed)) <> " days")
+-- | ```
+-- |
+-- | ```text
+-- | Elapsed: 74 days
+-- | ```
 
--- | Duration from the other date to this one (inverse of until).
 since
   :: forall provided
    . ConvertOptionsWithDefaults

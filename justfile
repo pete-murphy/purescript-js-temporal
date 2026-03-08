@@ -17,6 +17,11 @@ run-examples:
     spago docs -f html
     open generated-docs/html/index.html
 
+# Extract doc examples from examples/src/Examples/Docs/ into source -- | comments.
+# Runs Examples.Docs.Main to capture output (requires Temporal: use nix develop).
+sync-doc-examples:
+    node script/sync-doc-examples.mjs
+
 # Fetch or update the Temporal spec from tc39/proposal-temporal
 fetch-spec:
     mkdir -p reference

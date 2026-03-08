@@ -176,8 +176,19 @@ from providedOptions str =
     str
 
 foreign import _fromNoOpts :: EffectFn1 String ZonedDateTime
-
 -- | Same as from with default options.
+-- |
+-- | ```purescript
+-- | locale <- Locale.new_ "en-US"
+-- | zoned <- ZonedDateTime.from_ "2024-01-15T12:00:00-05:00[America/New_York]"
+-- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
+-- | Console.log (JS.Intl.DateTimeFormat.format formatter zoned)
+-- | ```
+-- |
+-- | ```text
+-- | January 15, 2024 at 12:00:00 PM EST
+-- | ```
+
 from_ :: String -> Effect ZonedDateTime
 from_ = Effect.Uncurried.runEffectFn1 _fromNoOpts
 
@@ -285,6 +296,7 @@ add_ = Effect.Uncurried.runEffectFn2 _addNoOpts
 
 foreign import _subtract :: forall r. EffectFn3 { | r } Duration ZonedDateTime ZonedDateTime
 
+-- | Subtracts a duration. Arg order: `subtract options duration subject`.
 subtract
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -308,6 +320,18 @@ subtract providedOptions duration zonedDateTime =
     zonedDateTime
 
 foreign import _subtractNoOpts :: EffectFn2 Duration ZonedDateTime ZonedDateTime
+-- | ```purescript
+-- | locale <- Locale.new_ "en-US"
+-- | zoned <- ZonedDateTime.from_ "2024-03-15T14:00:00[America/New_York]"
+-- | twoHours <- Duration.new { hours: 2 }
+-- | earlier <- ZonedDateTime.subtract_ twoHours zoned
+-- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
+-- | Console.log (JS.Intl.DateTimeFormat.format formatter earlier)
+-- | ```
+-- |
+-- | ```text
+-- | March 15, 2024 at 12:00:00 PM EDT
+-- | ```
 
 subtract_ :: Duration -> ZonedDateTime -> Effect ZonedDateTime
 subtract_ = Effect.Uncurried.runEffectFn2 _subtractNoOpts
@@ -419,6 +443,7 @@ instance ConvertOption ToDifferenceOptions "roundingMode" String String where
 
 foreign import _until :: forall r. EffectFn3 { | r } ZonedDateTime ZonedDateTime Duration
 
+-- | Duration from `subject` (last arg) until `other` (second arg). Arg order: `until options other subject`.
 until
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -442,12 +467,27 @@ until providedOptions other zonedDateTime =
     zonedDateTime
 
 foreign import _untilNoOpts :: EffectFn2 ZonedDateTime ZonedDateTime Duration
+-- | Same as until with default options. Arg order: `until_ other subject`.
+-- |
+-- | ```purescript
+-- | locale <- Locale.new_ "en-US"
+-- | departure <- ZonedDateTime.from_ "2020-03-08T11:55:00+08:00[Asia/Hong_Kong]"
+-- | arrival <- ZonedDateTime.from_ "2020-03-08T09:50:00-07:00[America/Los_Angeles]"
+-- | flightTime <- ZonedDateTime.until_ arrival departure
+-- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
+-- | Console.log ("Flight time: " <> JS.Intl.DurationFormat.format formatter flightTime)
+-- | ```
+-- |
+-- | ```text
+-- | Flight time: 12 hours, 55 minutes
+-- | ```
 
 until_ :: ZonedDateTime -> ZonedDateTime -> Effect Duration
 until_ = Effect.Uncurried.runEffectFn2 _untilNoOpts
 
 foreign import _since :: forall r. EffectFn3 { | r } ZonedDateTime ZonedDateTime Duration
 
+-- | Duration from `other` to `subject` (inverse of until). Arg order: `since options other subject`.
 since
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -471,6 +511,20 @@ since providedOptions other zonedDateTime =
     zonedDateTime
 
 foreign import _sinceNoOpts :: EffectFn2 ZonedDateTime ZonedDateTime Duration
+-- | Same as since with default options. Arg order: `since_ other subject`.
+-- |
+-- | ```purescript
+-- | locale <- Locale.new_ "en-US"
+-- | start <- ZonedDateTime.from_ "2024-01-01T00:00:00[America/New_York]"
+-- | end <- ZonedDateTime.from_ "2024-03-15T12:00:00[America/New_York]"
+-- | elapsed <- ZonedDateTime.since_ start end
+-- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
+-- | Console.log ("Elapsed: " <> JS.Intl.DurationFormat.format formatter elapsed)
+-- | ```
+-- |
+-- | ```text
+-- | Elapsed: 1,787 hours
+-- | ```
 
 since_ :: ZonedDateTime -> ZonedDateTime -> Effect Duration
 since_ = Effect.Uncurried.runEffectFn2 _sinceNoOpts

@@ -96,7 +96,7 @@ type DurationComponents =
 foreign import _new :: forall r. EffectFn1 { | r } Duration
 
 -- | Creates a Duration from component fields. At least one component must be
--- | provided. Mixed signs are invalid. Corresponds to `Temporal.Duration()`.
+-- | provided. Mixed signs are invalid.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"

@@ -65,7 +65,7 @@ import Unsafe.Coerce as Unsafe.Coerce
 
 foreign import _new :: EffectFn1 BigInt Instant
 
--- | Creates an Instant from epoch nanoseconds. Corresponds to `Temporal.Instant()`.
+-- | Creates an Instant from epoch nanoseconds.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"

@@ -114,7 +114,7 @@ type PlainDateTimeComponents =
 
 foreign import _new :: forall r. EffectFn1 { | r } PlainDateTime
 
--- | Creates a PlainDateTime from component fields. Corresponds to `Temporal.PlainDateTime()`.
+-- | Creates a PlainDateTime from component fields.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"

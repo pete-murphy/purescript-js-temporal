@@ -1,6 +1,4 @@
 -- | Cookbook: Converting between purescript-datetime and js-temporal
--- | Corresponds to "Legacy Date => Temporal" and "Temporal => legacy Date"
--- | using purescript-datetime types.
 module Examples.Cookbook.DateTimeInterop where
 
 import Prelude

@@ -14,7 +14,7 @@ Module documentation is [published on Pursuit](https://pursuit.purescript.org/pa
 
 ## Examples
 
-The `examples/` directory is a separate Spago package containing PureScript translations of recipes from the [Temporal Cookbook](https://tc39.es/proposal-temporal/docs/cookbook.html). Run all examples:
+The [`examples/`](./examples/) directory is a separate Spago package containing PureScript translations of recipes from the [Temporal Cookbook](https://tc39.es/proposal-temporal/docs/cookbook.html). Run all examples:
 
 ```bash
 nix develop
@@ -31,11 +31,11 @@ spago run -p js-temporal-examples -m Examples.Cookbook.CurrentDateTime
 
 The library provides conversion functions between js-temporal types and [purescript-datetime](https://github.com/purescript/purescript-datetime) types, so you can integrate with existing code that uses `Data.Date`, `Data.Time`, `Data.DateTime`, or `Data.DateTime.Instant`.
 
-| js-temporal     | purescript-datetime                |
+| js-temporal     | purescript-datetime               |
 | --------------- | --------------------------------- |
 | `PlainDate`     | `Data.Date.Date`                  |
 | `PlainTime`     | `Data.Time.Time`                  |
-| `PlainDateTime` | `Data.DateTime.DateTime`         |
+| `PlainDateTime` | `Data.DateTime.DateTime`          |
 | `Instant`       | `Data.DateTime.Instant`           |
 | `Duration`      | `Data.Time.Duration.Milliseconds` |
 

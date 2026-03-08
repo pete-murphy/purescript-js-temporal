@@ -7,20 +7,20 @@
     cd script/generate-options && spago run ../../
 
 @test:
-    spago test
+    NODE_OPTIONS="--import=$(pwd)/script/register-temporal-polyfill.mjs" spago test
 
-# Run Temporal Cookbook examples (requires node with Temporal: use `nix develop`)
+# Run Temporal Cookbook examples with the dev Temporal polyfill.
 run-examples:
-    spago run -p js-temporal-examples
+    NODE_OPTIONS="--import=$(pwd)/script/register-temporal-polyfill.mjs" spago run -p js-temporal-examples
 
 @view-docs:
     spago docs -f html
     open generated-docs/html/index.html
 
 # Extract doc examples from examples/src/Examples/Docs/ into source -- | comments.
-# Runs Examples.Docs.Main to capture output (requires Temporal: use nix develop).
+# Runs Examples.Docs.Main to capture output with the dev Temporal polyfill.
 sync-doc-examples:
-    node script/sync-doc-examples.mjs
+    NODE_OPTIONS="--import=$(pwd)/script/register-temporal-polyfill.mjs" node script/sync-doc-examples.mjs
 
 # Fetch or update the Temporal spec from tc39/proposal-temporal
 fetch-spec:

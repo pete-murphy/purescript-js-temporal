@@ -56,11 +56,11 @@ export function _toPlainTime(zdt) {
 }
 
 export function _toPlainYearMonth(zdt) {
-  return zdt.toPlainYearMonth();
+  return zdt.toPlainDate().toPlainYearMonth();
 }
 
 export function _toPlainMonthDay(zdt) {
-  return zdt.toPlainMonthDay();
+  return zdt.toPlainDate().toPlainMonthDay();
 }
 
 export function _add(options, duration, zdt) {
@@ -100,7 +100,19 @@ export function _withPlainTime(plainTime, zdt) {
 }
 
 export function _withPlainDate(plainDate, zdt) {
-  return zdt.withPlainDate(plainDate);
+  return Temporal.ZonedDateTime.from({
+    timeZone: zdt.timeZoneId,
+    calendar: plainDate.calendarId,
+    year: plainDate.year,
+    month: plainDate.month,
+    day: plainDate.day,
+    hour: zdt.hour,
+    minute: zdt.minute,
+    second: zdt.second,
+    millisecond: zdt.millisecond,
+    microsecond: zdt.microsecond,
+    nanosecond: zdt.nanosecond,
+  });
 }
 
 export function _until(options, other, zdt) {

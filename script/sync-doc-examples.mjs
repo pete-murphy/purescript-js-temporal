@@ -9,7 +9,8 @@
  *   -- [/EXAMPLE]
  *
  * Runs Examples.Docs.Main to capture stdout, then injects both code and
- * output blocks into source docs. Requires Temporal (e.g. nix develop).
+ * output blocks into source docs. The docs runner is executed with the
+ * dev Temporal polyfill preloaded.
  *
  * Run from repo root: node script/sync-doc-examples.mjs
  */
@@ -22,6 +23,17 @@ import { pathToFileURL } from "url";
 const ROOT = new URL("..", import.meta.url).pathname;
 const DOCS_DIR = join(ROOT, "examples", "src", "Examples", "Docs");
 const SRC_DIR = join(ROOT, "src");
+const TEMPORAL_POLYFILL_LOADER = join(ROOT, "script", "register-temporal-polyfill.mjs");
+
+function withTemporalPolyfillNodeOptions(existingNodeOptions = "") {
+  const temporalPolyfillImport = `--import=${TEMPORAL_POLYFILL_LOADER}`;
+  if (existingNodeOptions.includes(temporalPolyfillImport)) {
+    return existingNodeOptions;
+  }
+  return existingNodeOptions.trim().length === 0
+    ? temporalPolyfillImport
+    : `${existingNodeOptions} ${temporalPolyfillImport}`;
+}
 
 /**
  * Runs Examples.Docs.Main and parses stdout for --- OUTPUT <qualifiedName> --- ... --- /OUTPUT ---
@@ -32,16 +44,29 @@ function runDocsRunnerAndParseOutput() {
   try {
     const stdout = execSync(
       "spago run -p js-temporal-examples -m Examples.Docs.Main 2>/dev/null",
-      { encoding: "utf-8", cwd: ROOT }
+      {
+        encoding: "utf-8",
+        cwd: ROOT,
+        env: {
+          ...process.env,
+          NODE_OPTIONS: withTemporalPolyfillNodeOptions(process.env.NODE_OPTIONS),
+        },
+      }
     );
     const outputRegex = /--- OUTPUT (.+?) ---\n([\s\S]*?)\n--- \/OUTPUT ---/g;
     let m;
     while ((m = outputRegex.exec(stdout)) !== null) {
-      outputMap.set(m[1].trim(), m[2].trimEnd());
+      const qualifiedName = m[1].trim();
+      const output = m[2].trimEnd();
+      if (output.startsWith("[[EXAMPLE ERROR]] ")) {
+        console.warn(`Warning: Example ${qualifiedName} failed while capturing output: ${output}`);
+        continue;
+      }
+      outputMap.set(qualifiedName, output);
     }
   } catch (err) {
     console.warn(
-      "Warning: Docs runner failed (Temporal required, try nix develop). Output blocks will be omitted."
+      "Warning: Docs runner failed even with the Temporal polyfill preloaded. Output blocks will be omitted."
     );
   }
   return outputMap;
@@ -210,8 +235,15 @@ function findFunctionLineIndex(lines, functionName) {
   const functionNameRegex = new RegExp(
     `^${escapedFunctionName}(?:\\s*$|\\s+::|\\s+=|\\s+=>)`
   );
+  const foreignImportRegex = new RegExp(
+    `^foreign\\s+import\\s+${escapedFunctionName}\\s+::`
+  );
 
   for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+    if (foreignImportRegex.test(lines[lineIndex])) {
+      return lineIndex;
+    }
+
     if (!functionNameRegex.test(lines[lineIndex])) {
       continue;
     }

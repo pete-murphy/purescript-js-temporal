@@ -20,7 +20,6 @@ import JS.BigInt as BigInt
 import JS.Intl.DateTimeFormat as DateTimeFormat
 import JS.Intl.DurationFormat as DurationFormat
 import JS.Intl.Locale as Locale
-import JS.Intl.Options.DurationFormatStyle as DurationFormatStyle
 import JS.Temporal.Duration as Duration
 import JS.Temporal.Instant as Instant
 import JS.Temporal.Now as Now
@@ -169,6 +168,21 @@ test_PlainDate = do
   Test.assertEqual
     { actual: PlainDate.day withDateOpts
     , expected: 1
+    }
+
+  Console.log "PlainDate.withCalendar / toPlainYearMonth / toPlainMonthDay"
+  gregoryDate <- PlainDate.withCalendar "gregory" plainDate
+  Test.assertEqual
+    { actual: PlainDate.toString { calendarName: CalendarName.Always } gregoryDate
+    , expected: "2026-02-21[u-ca=gregory]"
+    }
+  Test.assertEqual
+    { actual: PlainYearMonth.toString_ (PlainDate.toPlainYearMonth plainDate)
+    , expected: "2026-02"
+    }
+  Test.assertEqual
+    { actual: PlainMonthDay.toString_ (PlainDate.toPlainMonthDay plainDate)
+    , expected: "02-21"
     }
 
   Console.log "PlainDate.toPlainDateTime"
@@ -373,6 +387,19 @@ test_PlainDateTime = do
     , expected: "14:30:00"
     }
 
+  Console.log "PlainDateTime.withPlainTime / withCalendar"
+  closingTime <- PlainTime.from_ "17:45:00"
+  withClosingTime <- PlainDateTime.withPlainTime closingTime plainDateTime
+  Test.assertEqual
+    { actual: PlainDateTime.toString_ withClosingTime
+    , expected: "2026-02-21T17:45:00"
+    }
+  japaneseCalendar <- PlainDateTime.withCalendar "japanese" plainDateTime
+  Test.assertEqual
+    { actual: PlainDateTime.calendarId japaneseCalendar
+    , expected: "japanese"
+    }
+
   Console.log "PlainDateTime.until_ / since_"
   otherDateTime <- PlainDateTime.from_ "2026-02-22T14:30:00"
   untilDt <- PlainDateTime.until_ otherDateTime plainDateTime
@@ -455,6 +482,19 @@ test_PlainYearMonth = do
     { actual: PlainYearMonth.month addedWithOpts
     , expected: 5
     }
+  oneMonth <- Duration.new { months: 1 }
+  subtracted <- PlainYearMonth.subtract_ oneMonth plainYearMonth
+  Test.assertEqual
+    { actual: PlainYearMonth.month subtracted
+    , expected: 1
+    }
+
+  Console.log "PlainYearMonth.with"
+  updatedYearMonth <- PlainYearMonth.with { overflow: Overflow.Constrain } { month: 12 } plainYearMonth
+  Test.assertEqual
+    { actual: PlainYearMonth.toString_ updatedYearMonth
+    , expected: "2026-12"
+    }
 
   Console.log "PlainYearMonth.until_ / since_"
   otherYearMonth <- PlainYearMonth.from_ "2026-05"
@@ -523,6 +563,11 @@ test_PlainMonthDay = do
   Test.assertEqual
     { actual: PlainMonthDay.day withMonthDay
     , expected: 31
+    }
+  withMonthDayConstrain <- PlainMonthDay.with { overflow: Overflow.Constrain } { monthCode: "M11" } plainMonthDay
+  Test.assertEqual
+    { actual: PlainMonthDay.toString_ withMonthDayConstrain
+    , expected: "11-25"
     }
 
 -- Duration
@@ -614,6 +659,18 @@ test_Duration = do
   Test.assertEqual
     { actual: comparison
     , expected: GT
+    }
+
+  Console.log "Duration.with / toString"
+  updatedDuration <- Duration.with { minutes: 45 } duration
+  Test.assertEqual
+    { actual: Duration.minutes updatedDuration
+    , expected: 45
+    }
+  durationToSerialize <- Duration.new { hours: 2, minutes: 30, seconds: 15, milliseconds: 400 }
+  Test.assertEqual
+    { actual: Duration.toString { smallestUnit: TemporalUnit.Second } durationToSerialize
+    , expected: "PT2H30M15S"
     }
 
   Console.log "Duration.round"
@@ -801,6 +858,22 @@ test_ZonedDateTime = do
   Test.assertEqual
     { actual: ZonedDateTime.offset utcZoned
     , expected: "+00:00"
+    }
+
+  Console.log "ZonedDateTime.withPlainDate / toPlainYearMonth / toPlainMonthDay"
+  replacementDate <- PlainDate.from_ "2026-03-01"
+  replacedDate <- ZonedDateTime.withPlainDate replacementDate zonedDateTime
+  Test.assertEqual
+    { actual: PlainDate.toString_ (ZonedDateTime.toPlainDate replacedDate)
+    , expected: "2026-03-01"
+    }
+  Test.assertEqual
+    { actual: PlainYearMonth.toString_ (ZonedDateTime.toPlainYearMonth zonedDateTime)
+    , expected: "2026-02"
+    }
+  Test.assertEqual
+    { actual: PlainMonthDay.toString_ (ZonedDateTime.toPlainMonthDay zonedDateTime)
+    , expected: "02-21"
     }
 
 -- Now
@@ -1197,25 +1270,3 @@ test_IntlDateTimeFormat = do
   zonedDateTime <- ZonedDateTime.from_ "2026-02-21T12:00:00-08:00[America/Los_Angeles]"
   let formattedZoned = DateTimeFormat.format zonedFormatter zonedDateTime
   Test.assert' ("Expected non-empty formatted ZonedDateTime, got: \"" <> formattedZoned <> "\"") (formattedZoned /= "")
-
-test_NextBilling :: Effect Unit
-test_NextBilling = do
-  now <- Now.plainDateTimeISO_ >>= PlainDateTime.round { smallestUnit: TemporalUnit.Second }
-
-  nextBilling <- do
-    aprilFirst <- PlainDateTime.new
-      { year: PlainDateTime.year now
-      , month: 4
-      , day: 1
-      }
-    if aprilFirst < now then do
-      oneYear <- Duration.new { years: 1 }
-      PlainDateTime.add_ oneYear aprilFirst
-    else
-      pure aprilFirst
-
-  duration <- PlainDateTime.until { smallestUnit: TemporalUnit.Day } nextBilling now
-  durationFormat <- DurationFormat.new [] { style: DurationFormatStyle.Long }
-
-  Console.log (DurationFormat.format durationFormat duration <> " until next billing") -- e.g., "24 days until next billing"
-

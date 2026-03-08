@@ -3,7 +3,8 @@
 -- | minutes, seconds, milliseconds, microseconds, and nanoseconds.
 -- |
 -- | Calendar durations (years, months, weeks) require a reference date for
--- | arithmetic; use PlainDate/PlainDateTime.add/subtract for those. Non-calendar
+-- | arithmetic; use `PlainDate.add`, `PlainDate.subtract`, `PlainDateTime.add`,
+-- | or `PlainDateTime.subtract` for those. Non-calendar
 -- | durations can be added/subtracted directly.
 -- |
 -- | See <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal/Duration>
@@ -77,7 +78,8 @@ import Unsafe.Coerce as Unsafe.Coerce
 
 -- Construction
 
--- | Row type for duration component fields. All fields optional in `new` and `with`.
+-- | Row type for duration component fields. All fields optional in [`new`](#new)
+-- | and [`with`](#with).
 type DurationComponents =
   ( years :: Int
   , months :: Int
@@ -96,7 +98,7 @@ foreign import _new :: forall r. EffectFn1 { | r } Duration
 -- | provided. Mixed signs are invalid. Corresponds to `Temporal.Duration()`.
 -- |
 -- | ```purescript
--- | locale <- Locale.new_ "en-US"
+-- | locale <- JS.Intl.Locale.new_ "en-US"
 -- | twoHours <- Duration.new { hours: 2 }
 -- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- | Console.log (JS.Intl.DurationFormat.format formatter twoHours)
@@ -118,7 +120,7 @@ foreign import _from :: EffectFn1 String Duration
 -- | input. Corresponds to `Temporal.Duration.from()`.
 -- |
 -- | ```purescript
--- | locale <- Locale.new_ "en-US"
+-- | locale <- JS.Intl.Locale.new_ "en-US"
 -- | duration <- Duration.from "PT2H30M"
 -- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- | Console.log (JS.Intl.DurationFormat.format formatter duration)
@@ -133,15 +135,25 @@ from = Effect.Uncurried.runEffectFn1 _from
 
 -- Properties
 
+-- | Year component of the duration.
 foreign import years :: Duration -> Int
+-- | Month component of the duration.
 foreign import months :: Duration -> Int
+-- | Week component of the duration.
 foreign import weeks :: Duration -> Int
+-- | Day component of the duration.
 foreign import days :: Duration -> Int
+-- | Hour component of the duration.
 foreign import hours :: Duration -> Int
+-- | Minute component of the duration.
 foreign import minutes :: Duration -> Int
+-- | Second component of the duration.
 foreign import seconds :: Duration -> Int
+-- | Millisecond component of the duration.
 foreign import milliseconds :: Duration -> Int
+-- | Microsecond component of the duration.
 foreign import microseconds :: Duration -> Int
+-- | Nanosecond component of the duration.
 foreign import nanoseconds :: Duration -> Int
 
 -- | Returns 1 if positive, -1 if negative, 0 if zero.
@@ -157,6 +169,20 @@ foreign import _add :: EffectFn2 Duration Duration Duration
 -- | Adds two durations. Result is balanced to the largest unit of the inputs.
 -- | Throws if either duration contains calendar units (years, months, weeks).
 -- | Corresponds to `Temporal.Duration.prototype.add()`.
+-- |
+-- | ```purescript
+-- | locale <- JS.Intl.Locale.new_ "en-US"
+-- | twoHours <- Duration.new { hours: 2 }
+-- | thirtyMinutes <- Duration.new { minutes: 30 }
+-- | combined <- Duration.add twoHours thirtyMinutes
+-- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
+-- | Console.log (JS.Intl.DurationFormat.format formatter combined)
+-- | ```
+-- |
+-- | ```text
+-- | 2 hours, 30 minutes
+-- | ```
+
 add :: Duration -> Duration -> Effect Duration
 add = Effect.Uncurried.runEffectFn2 _add
 
@@ -165,7 +191,7 @@ foreign import _subtract :: EffectFn2 Duration Duration Duration
 -- | Corresponds to `Temporal.Duration.prototype.subtract()`.
 -- |
 -- | ```purescript
--- | locale <- Locale.new_ "en-US"
+-- | locale <- JS.Intl.Locale.new_ "en-US"
 -- | threeHours <- Duration.new { hours: 3 }
 -- | oneHour <- Duration.new { hours: 1 }
 -- | remainder <- Duration.subtract threeHours oneHour
@@ -190,6 +216,19 @@ foreign import _with :: forall r. EffectFn2 { | r } Duration Duration
 
 -- | Returns a new duration with specified fields replaced. Mixed signs invalid.
 -- | Corresponds to `Temporal.Duration.prototype.with()`.
+-- |
+-- | ```purescript
+-- | locale <- JS.Intl.Locale.new_ "en-US"
+-- | duration <- Duration.new { hours: 2, minutes: 30 }
+-- | updated <- Duration.with { minutes: 45 } duration
+-- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
+-- | Console.log (JS.Intl.DurationFormat.format formatter updated)
+-- | ```
+-- |
+-- | ```text
+-- | 2 hours, 45 minutes
+-- | ```
+
 with
   :: forall provided rest
    . Union provided rest DurationComponents
@@ -205,13 +244,27 @@ foreign import _compare :: EffectFn2 Duration Duration Int
 -- | Compares two durations. Returns LT if first is shorter, GT if longer, EQ if equal.
 -- | Throws for calendar durations without relativeTo. Corresponds to
 -- | `Temporal.Duration.compare()`.
+-- |
+-- | ```purescript
+-- | shorter <- Duration.new { hours: 1 }
+-- | longer <- Duration.new { hours: 2 }
+-- | ordering <- Duration.compare longer shorter
+-- | Console.log ("Comparison result: " <> show ordering)
+-- | ```
+-- |
+-- | ```text
+-- | Comparison result: GT
+-- | ```
+
 compare :: Duration -> Duration -> Effect Ordering
 compare a b = intToOrdering <$> Effect.Uncurried.runEffectFn2 _compare a b
 
 -- Round
 
--- | Options for `round`: largestUnit, smallestUnit, roundingIncrement, roundingMode,
--- | relativeTo (PlainDate/PlainDateTime/ZonedDateTime for calendar units).
+-- | Options for [`round`](#round): largestUnit, smallestUnit,
+-- | roundingIncrement, roundingMode,
+-- | relativeTo (`PlainDate`, `PlainDateTime`, or `ZonedDateTime` for calendar
+-- | units).
 type DurationRoundOptions =
   ( largestUnit :: String
   , smallestUnit :: String
@@ -256,6 +309,17 @@ foreign import _round :: forall r. EffectFn2 { | r } Duration Duration
 
 -- | Rounds the duration to the given smallest/largest units. Use relativeTo for
 -- | calendar durations. Corresponds to `Temporal.Duration.prototype.round()`.
+-- |
+-- | ```purescript
+-- | roundedSource <- Duration.new { hours: 1, minutes: 30, seconds: 45 }
+-- | rounded <- Duration.round { smallestUnit: TemporalUnit.Minute } roundedSource
+-- | Console.log (Duration.toString_ rounded)
+-- | ```
+-- |
+-- | ```text
+-- | PT1H31M
+-- | ```
+
 round
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -278,7 +342,7 @@ round providedOptions duration =
 
 -- Total
 
--- | Options for `total`: unit (required), relativeTo for calendar units.
+-- | Options for [`total`](#total): unit (required), relativeTo for calendar units.
 type DurationTotalOptions =
   ( unit :: String
   , relativeTo :: Foreign
@@ -306,7 +370,7 @@ foreign import _total :: forall r. EffectFn2 { | r } Duration Number
 -- | for calendar durations. Corresponds to `Temporal.Duration.prototype.total()`.
 -- |
 -- | ```purescript
--- | locale <- Locale.new_ "en-US"
+-- | locale <- JS.Intl.Locale.new_ "en-US"
 -- | duration <- Duration.new { hours: 2, minutes: 30 }
 -- | totalHours <- Duration.total { unit: TemporalUnit.Hour } duration
 -- | numberFormatter <- JS.Intl.NumberFormat.new [ locale ] { minimumFractionDigits: 1, maximumFractionDigits: 1 }
@@ -364,11 +428,21 @@ instance ConvertOption ToDurationToStringOptions "smallestUnit" TemporalUnit Str
 instance ConvertOption ToDurationToStringOptions "smallestUnit" String String where
   convertOption _ _ = identity
 
--- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
+-- | Same as [`toString`](#tostring) with default options.
 toString_ :: Duration -> String
 toString_ duration = Function.Uncurried.runFn2 _toString defaultDurationToStringOptions duration
 
 -- | Serializes the duration to ISO 8601 format (e.g. `"PT1H30M"`).
+-- |
+-- | ```purescript
+-- | duration <- Duration.new { hours: 2, minutes: 30, seconds: 15, milliseconds: 400 }
+-- | Console.log (Duration.toString { smallestUnit: TemporalUnit.Second } duration)
+-- | ```
+-- |
+-- | ```text
+-- | PT2H30M15S
+-- | ```
+
 toString
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -405,7 +479,8 @@ millisecondsPerSecond = 1000
 
 -- | Converts a Temporal Duration to purescript-datetime `Milliseconds`. Returns
 -- | `Nothing` if the duration contains calendar units (years, months, weeks).
--- | Microseconds and nanoseconds are dropped. See docs/purescript-datetime-interop.md.
+-- | Microseconds and nanoseconds are dropped. See
+-- | [./docs/purescript-datetime-interop.md](./docs/purescript-datetime-interop.md).
 toMilliseconds :: Duration -> Maybe Milliseconds
 toMilliseconds duration
   | years duration /= 0 = Nothing
@@ -446,7 +521,7 @@ decomposeMilliseconds totalMs =
     { days: daysVal, hours: hoursVal, minutes: minutesVal, seconds: secondsVal, milliseconds: millisecondsVal }
 
 -- | Creates a Temporal Duration from purescript-datetime `Milliseconds`. See
--- | docs/purescript-datetime-interop.md.
+-- | [./docs/purescript-datetime-interop.md](./docs/purescript-datetime-interop.md).
 fromMilliseconds :: Milliseconds -> Effect Duration
 fromMilliseconds ms =
   let

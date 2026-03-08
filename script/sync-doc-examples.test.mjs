@@ -130,6 +130,39 @@ function testInsertsDocCommentWhenNoDocBlockExists() {
   assert.equal(updatedContent, expectedContent);
 }
 
+function testSupportsForeignImportDeclarations() {
+  const originalContent = [
+    "module Example where",
+    "",
+    'foreign import instant :: Effect Instant',
+    "",
+  ].join("\n");
+
+  const updatedContent = updateSourceContent(
+    originalContent,
+    "instant",
+    "now <- Now.instant",
+    "March 8, 2026 at 4:22:02 AM"
+  );
+
+  const expectedContent = [
+    "module Example where",
+    "",
+    "-- | ```purescript",
+    "-- | now <- Now.instant",
+    "-- | ```",
+    "-- |",
+    "-- | ```text",
+    "-- | March 8, 2026 at 4:22:02 AM",
+    "-- | ```",
+    "",
+    'foreign import instant :: Effect Instant',
+    "",
+  ].join("\n");
+
+  assert.equal(updatedContent, expectedContent);
+}
+
 function testSecondRunIsIdempotent() {
   const originalContent = [
     "module Example where",
@@ -170,6 +203,7 @@ function runTests() {
   testReplacesDuplicateManagedBlocksAndPreservesProse();
   testAppendsExampleToExistingDocWithoutManagedRegion();
   testInsertsDocCommentWhenNoDocBlockExists();
+  testSupportsForeignImportDeclarations();
   testSecondRunIsIdempotent();
   console.log("sync-doc-examples tests passed");
 }

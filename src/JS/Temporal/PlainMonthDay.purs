@@ -48,6 +48,19 @@ import Unsafe.Coerce as Unsafe.Coerce
 foreign import _new :: EffectFn2 Int Int PlainMonthDay
 
 -- | Creates a PlainMonthDay from month and day.
+-- |
+-- | ```purescript
+-- | locale <- JS.Intl.Locale.new_ "en-US"
+-- | holiday <- PlainMonthDay.new 7 4
+-- | holidayIn2024 <- PlainMonthDay.toPlainDate { year: 2024 } holiday
+-- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
+-- | Console.log (JS.Intl.DateTimeFormat.format formatter holidayIn2024)
+-- | ```
+-- |
+-- | ```text
+-- | July 4, 2024
+-- | ```
+
 new :: Int -> Int -> Effect PlainMonthDay
 new = Effect.Uncurried.runEffectFn2 _new
 
@@ -66,7 +79,21 @@ instance ConvertOption ToOverflowOptions "overflow" String String where
 
 foreign import _from :: forall r. EffectFn2 { | r } String PlainMonthDay
 
--- | Parses a month-day string (e.g. `"01-15"` or `"--01-15"`). Options: overflow.
+-- | Creates a PlainMonthDay from an RFC 9557 / ISO 8601 month-day string
+-- | (e.g. `"12-15"` or `"--01-15"`). Options: overflow.
+-- |
+-- | ```purescript
+-- | locale <- JS.Intl.Locale.new_ "en-US"
+-- | birthday <- PlainMonthDay.from { overflow: Overflow.Constrain } "12-15"
+-- | birthdayIn2024 <- PlainMonthDay.toPlainDate { year: 2024 } birthday
+-- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
+-- | Console.log ("Birthday: " <> JS.Intl.DateTimeFormat.format formatter birthdayIn2024)
+-- | ```
+-- |
+-- | ```text
+-- | Birthday: December 15, 2024
+-- | ```
+
 from
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -89,14 +116,18 @@ from providedOptions str =
 
 foreign import _fromNoOpts :: EffectFn1 String PlainMonthDay
 
--- | Same as from with default options.
+-- | Same as [`from`](#from) with default options.
+
 from_ :: String -> Effect PlainMonthDay
 from_ = Effect.Uncurried.runEffectFn1 _fromNoOpts
 
 -- Properties
 
+-- | Calendar-specific month code, such as `M12`.
 foreign import monthCode :: PlainMonthDay -> String
+-- | Day of the month.
 foreign import day :: PlainMonthDay -> Int
+-- | Calendar identifier, such as `"iso8601"`.
 foreign import calendarId :: PlainMonthDay -> String
 
 -- Manipulation
@@ -109,6 +140,20 @@ type WithFields =
 foreign import _with :: forall ro rf. EffectFn3 { | ro } { | rf } PlainMonthDay PlainMonthDay
 
 -- | Returns a new PlainMonthDay with specified fields replaced. Options: overflow.
+-- |
+-- | ```purescript
+-- | locale <- JS.Intl.Locale.new_ "en-US"
+-- | original <- PlainMonthDay.from_ "01-15"
+-- | changed <- PlainMonthDay.with { overflow: Overflow.Constrain } { day: 31 } original
+-- | changedIn2024 <- PlainMonthDay.toPlainDate { year: 2024 } changed
+-- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
+-- | Console.log (JS.Intl.DateTimeFormat.format formatter changedIn2024)
+-- | ```
+-- |
+-- | ```text
+-- | January 31, 2024
+-- | ```
+
 with
   :: forall optsProvided fields rest
    . Union fields rest WithFields
@@ -134,7 +179,8 @@ with options fields plainMonthDay =
 
 foreign import _withNoOpts :: forall r. EffectFn2 { | r } PlainMonthDay PlainMonthDay
 
--- | Same as with with default options.
+-- | Same as [`with`](#with) with default options.
+
 with_
   :: forall fields rest
    . Union fields rest WithFields
@@ -149,7 +195,7 @@ foreign import _toPlainDate :: EffectFn2 { year :: Int } PlainMonthDay PlainDate
 -- | Converts to PlainDate by supplying a year.
 -- |
 -- | ```purescript
--- | locale <- Locale.new_ "en-US"
+-- | locale <- JS.Intl.Locale.new_ "en-US"
 -- | birthday <- PlainMonthDay.from_ "12-15"
 -- | birthdayIn2030 <- PlainMonthDay.toPlainDate { year: 2030 } birthday
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
@@ -182,11 +228,22 @@ instance ConvertOption ToToStringOptions "calendarName" String String where
 
 foreign import _toString :: forall r. Fn2 { | r } PlainMonthDay String
 
--- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
+-- | Same as [`toString`](#tostring) with default options.
+
 toString_ :: PlainMonthDay -> String
 toString_ plainMonthDay = Function.Uncurried.runFn2 _toString defaultToStringOptions plainMonthDay
 
 -- | Serializes to ISO 8601 month-day format. Options: calendarName.
+-- |
+-- | ```purescript
+-- | mday <- PlainMonthDay.from_ "03-14"
+-- | Console.log (PlainMonthDay.toString {} mday)
+-- | ```
+-- |
+-- | ```text
+-- | 03-14
+-- | ```
+
 toString
   :: forall provided
    . ConvertOptionsWithDefaults

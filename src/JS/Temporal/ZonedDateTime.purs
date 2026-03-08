@@ -200,6 +200,7 @@ from providedOptions str =
     str
 
 foreign import _fromNoOpts :: EffectFn1 String ZonedDateTime
+
 -- | Same as [`from`](#from) with default options.
 
 from_ :: String -> Effect ZonedDateTime
@@ -606,6 +607,7 @@ until providedOptions other zonedDateTime =
     zonedDateTime
 
 foreign import _untilNoOpts :: EffectFn2 ZonedDateTime ZonedDateTime Duration
+
 -- | Same as [`until`](#until) with default options. Arg order: `until_ other subject`.
 
 until_ :: ZonedDateTime -> ZonedDateTime -> Effect Duration
@@ -651,6 +653,7 @@ since providedOptions other zonedDateTime =
     zonedDateTime
 
 foreign import _sinceNoOpts :: EffectFn2 ZonedDateTime ZonedDateTime Duration
+
 -- | Same as [`since`](#since) with default options. Arg order: `since_ other subject`.
 
 since_ :: ZonedDateTime -> ZonedDateTime -> Effect Duration

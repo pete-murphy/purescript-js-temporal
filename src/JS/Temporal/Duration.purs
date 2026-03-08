@@ -94,6 +94,7 @@ type DurationComponents =
   )
 
 foreign import _new :: forall r. EffectFn1 { | r } Duration
+
 -- | Creates a Duration from component fields. At least one component must be
 -- | provided. Mixed signs are invalid. Corresponds to `Temporal.Duration()`.
 -- |
@@ -116,6 +117,7 @@ new
 new = Effect.Uncurried.runEffectFn1 _new
 
 foreign import _from :: EffectFn1 String Duration
+
 -- | Parses an ISO 8601 duration string (e.g. `"PT1H30M"`). Throws on invalid
 -- | input. Corresponds to `Temporal.Duration.from()`.
 -- |
@@ -187,6 +189,7 @@ add :: Duration -> Duration -> Effect Duration
 add = Effect.Uncurried.runEffectFn2 _add
 
 foreign import _subtract :: EffectFn2 Duration Duration Duration
+
 -- | Subtracts the second duration from the first. Same balancing/constraints as add.
 -- | Corresponds to `Temporal.Duration.prototype.subtract()`.
 -- |
@@ -366,6 +369,7 @@ instance ConvertOption ToDurationTotalOptions "relativeTo" String Foreign where
   convertOption _ _ = Foreign.unsafeToForeign
 
 foreign import _total :: forall r. EffectFn2 { | r } Duration Number
+
 -- | Returns the total length of the duration in the given unit. Use relativeTo
 -- | for calendar durations. Corresponds to `Temporal.Duration.prototype.total()`.
 -- |

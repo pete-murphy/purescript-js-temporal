@@ -759,7 +759,6 @@ toString providedOptions plainDateTime =
 -- Conversions
 
 -- | Converts a purescript-datetime `DateTime` to a `PlainDateTime`.
--- | See [./docs/purescript-datetime-interop.md](./docs/purescript-datetime-interop.md).
 fromDateTime :: DateTime -> Effect PlainDateTime
 fromDateTime dateTime = do
   plainDate <- PlainDate.fromDate (DateTime.date dateTime)
@@ -767,7 +766,6 @@ fromDateTime dateTime = do
   pure (PlainDate.toPlainDateTime plainTime plainDate)
 
 -- | Converts a `PlainDateTime` to a purescript-datetime `DateTime`.
--- | See [./docs/purescript-datetime-interop.md](./docs/purescript-datetime-interop.md).
 toDateTime :: PlainDateTime -> DateTime
 toDateTime plainDateTime =
   DateTime

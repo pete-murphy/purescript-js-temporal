@@ -154,6 +154,7 @@ from providedOptions str =
     str
 
 foreign import _fromNoOpts :: EffectFn1 String PlainTime
+
 -- | Same as [`from`](#from) with default options.
 
 from_ :: String -> Effect PlainTime
@@ -197,6 +198,7 @@ add :: Duration -> PlainTime -> Effect PlainTime
 add = Effect.Uncurried.runEffectFn2 _add
 
 foreign import _subtract :: EffectFn2 Duration PlainTime PlainTime
+
 -- | Subtracts a duration. Arg order: `subtract duration subject`. Wraps at 24 hours.
 -- |
 -- | ```purescript
@@ -408,7 +410,6 @@ since_ = Effect.Uncurried.runEffectFn2 _sinceNoOpts
 
 -- | Converts a purescript-datetime `Time` to a `PlainTime`. Microsecond and
 -- | nanosecond components are set to zero.
--- | See [./docs/purescript-datetime-interop.md](./docs/purescript-datetime-interop.md).
 fromTime :: Time -> Effect PlainTime
 fromTime time =
   new
@@ -420,7 +421,6 @@ fromTime time =
 
 -- | Converts a `PlainTime` to a purescript-datetime `Time`.
 -- | Microsecond and nanosecond are dropped (treated as zero).
--- | See [./docs/purescript-datetime-interop.md](./docs/purescript-datetime-interop.md).
 toTime :: PlainTime -> Time
 toTime plain =
   unsafePartial fromJust

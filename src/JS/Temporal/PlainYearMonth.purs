@@ -335,6 +335,7 @@ with_ = Effect.Uncurried.runEffectFn2 _withNoOpts
 -- Conversions
 
 foreign import _toPlainDate :: EffectFn2 { day :: Int } PlainYearMonth PlainDate
+
 -- | Converts to PlainDate by supplying a day.
 -- |
 -- | ```purescript

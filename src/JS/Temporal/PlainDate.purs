@@ -153,6 +153,7 @@ from providedOptions str =
     str
 
 foreign import _fromNoOpts :: EffectFn1 String PlainDate
+
 -- | Same as [`from`](#from) with default options.
 
 from_ :: String -> Effect PlainDate
@@ -296,6 +297,7 @@ subtract providedOptions duration plainDate =
     plainDate
 
 foreign import _subtractNoOpts :: EffectFn2 Duration PlainDate PlainDate
+
 -- | Same as [`subtract`](#subtract) with default options.
 
 subtract_ :: Duration -> PlainDate -> Effect PlainDate
@@ -415,6 +417,7 @@ instance ConvertOption ToDifferenceOptions "roundingMode" String String where
   convertOption _ _ = identity
 
 foreign import _until :: forall r. EffectFn3 { | r } PlainDate PlainDate Duration
+
 -- | Duration from `subject` (last arg) until `other` (second arg). Arg order: `until options other subject`.
 -- | Options: largestUnit, smallestUnit, roundingIncrement, roundingMode.
 -- |
@@ -461,6 +464,7 @@ until_ :: PlainDate -> PlainDate -> Effect Duration
 until_ = Effect.Uncurried.runEffectFn2 _untilNoOpts
 
 foreign import _since :: forall r. EffectFn3 { | r } PlainDate PlainDate Duration
+
 -- | Duration from `other` to `subject` (inverse of until). Arg order: `since options other subject`.
 -- |
 -- | ```purescript
@@ -508,12 +512,10 @@ since_ = Effect.Uncurried.runEffectFn2 _sinceNoOpts
 -- Conversions
 
 -- | Converts a purescript-datetime `Date` to a `PlainDate`.
--- | See [./docs/purescript-datetime-interop.md](./docs/purescript-datetime-interop.md).
 fromDate :: Date -> Effect PlainDate
 fromDate date = new (fromEnum (Date.year date)) (fromEnum (Date.month date)) (fromEnum (Date.day date))
 
 -- | Converts a `PlainDate` to a purescript-datetime `Date`.
--- | See [./docs/purescript-datetime-interop.md](./docs/purescript-datetime-interop.md).
 toDate :: PlainDate -> Date
 toDate plainDate =
   Date.canonicalDate

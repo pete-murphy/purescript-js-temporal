@@ -82,6 +82,7 @@ new :: BigInt -> Effect Instant
 new = Effect.Uncurried.runEffectFn1 _new
 
 foreign import _from :: EffectFn1 String Instant
+
 -- | Parses an ISO 8601 instant string (e.g. `"2024-01-15T12:00:00Z"`). Throws on invalid input.
 -- |
 -- | ```purescript
@@ -211,6 +212,7 @@ instance ConvertOption ToDifferenceOptions "roundingMode" String String where
   convertOption _ _ = identity
 
 foreign import _until :: forall r. EffectFn3 { | r } Instant Instant Duration
+
 -- | Duration from `subject` (last arg) until `other` (second arg). Arg order: `until options other subject`.
 -- |
 -- | ```purescript
@@ -255,6 +257,7 @@ until_ :: Instant -> Instant -> Effect Duration
 until_ = Effect.Uncurried.runEffectFn2 _untilNoOpts
 
 foreign import _since :: forall r. EffectFn3 { | r } Instant Instant Duration
+
 -- | Duration from `other` to `subject` (inverse of until). Arg order: `since options other subject`.
 -- |
 -- | ```purescript
@@ -367,13 +370,11 @@ round providedOptions instant =
 -- Conversions
 
 -- | Converts a purescript-datetime `Instant` to a Temporal `Instant`.
--- | See [./docs/purescript-datetime-interop.md](./docs/purescript-datetime-interop.md).
 fromDateTimeInstant :: DateTime.Instant.Instant -> Effect Instant
 fromDateTimeInstant instant = fromEpochMilliseconds (unwrap (DateTime.Instant.unInstant instant))
 
 -- | Converts a Temporal `Instant` to a purescript-datetime `Instant`.
 -- | Returns `Nothing` if the value is outside the datetime Instant range.
--- | See [./docs/purescript-datetime-interop.md](./docs/purescript-datetime-interop.md).
 toDateTimeInstant :: Instant -> Maybe DateTime.Instant.Instant
 toDateTimeInstant instant = DateTime.Instant.instant (Milliseconds (epochMilliseconds instant))
 

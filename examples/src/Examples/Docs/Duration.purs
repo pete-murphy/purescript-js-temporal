@@ -11,20 +11,20 @@ import JS.Intl.NumberFormat as JS.Intl.NumberFormat
 import JS.Temporal.Duration as Duration
 import JS.Temporal.Options.TemporalUnit as TemporalUnit
 
-exampleFrom :: Effect Unit
-exampleFrom = do
-  -- [EXAMPLE JS.Temporal.Duration.from]
+exampleFromString :: Effect Unit
+exampleFromString = do
+  -- [EXAMPLE JS.Temporal.Duration.fromString]
   locale <- JS.Intl.Locale.new_ "en-US"
-  duration <- Duration.from "PT2H30M"
+  duration <- Duration.fromString "PT2H30M"
   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
   Console.log (JS.Intl.DurationFormat.format formatter duration)
   -- [/EXAMPLE]
 
-exampleNew :: Effect Unit
-exampleNew = do
-  -- [EXAMPLE JS.Temporal.Duration.new]
+exampleFrom :: Effect Unit
+exampleFrom = do
+  -- [EXAMPLE JS.Temporal.Duration.from]
   locale <- JS.Intl.Locale.new_ "en-US"
-  twoHours <- Duration.new { hours: 2 }
+  twoHours <- Duration.from { hours: 2 }
   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
   Console.log (JS.Intl.DurationFormat.format formatter twoHours)
   -- [/EXAMPLE]
@@ -33,7 +33,7 @@ exampleTotal :: Effect Unit
 exampleTotal = do
   -- [EXAMPLE JS.Temporal.Duration.total]
   locale <- JS.Intl.Locale.new_ "en-US"
-  duration <- Duration.new { hours: 2, minutes: 30 }
+  duration <- Duration.from { hours: 2, minutes: 30 }
   totalHours <- Duration.total { unit: TemporalUnit.Hour } duration
   numberFormatter <- JS.Intl.NumberFormat.new [ locale ] { minimumFractionDigits: 1, maximumFractionDigits: 1 }
   Console.log ("Total hours: " <> JS.Intl.NumberFormat.format numberFormatter totalHours)
@@ -43,8 +43,8 @@ exampleAdd :: Effect Unit
 exampleAdd = do
   -- [EXAMPLE JS.Temporal.Duration.add]
   locale <- JS.Intl.Locale.new_ "en-US"
-  twoHours <- Duration.new { hours: 2 }
-  thirtyMinutes <- Duration.new { minutes: 30 }
+  twoHours <- Duration.from { hours: 2 }
+  thirtyMinutes <- Duration.from { minutes: 30 }
   combined <- Duration.add twoHours thirtyMinutes
   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
   Console.log (JS.Intl.DurationFormat.format formatter combined)
@@ -54,8 +54,8 @@ exampleSubtract :: Effect Unit
 exampleSubtract = do
   -- [EXAMPLE JS.Temporal.Duration.subtract]
   locale <- JS.Intl.Locale.new_ "en-US"
-  threeHours <- Duration.new { hours: 3 }
-  oneHour <- Duration.new { hours: 1 }
+  threeHours <- Duration.from { hours: 3 }
+  oneHour <- Duration.from { hours: 1 }
   remainder <- Duration.subtract threeHours oneHour
   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
   Console.log (JS.Intl.DurationFormat.format formatter remainder)
@@ -65,7 +65,7 @@ exampleWith :: Effect Unit
 exampleWith = do
   -- [EXAMPLE JS.Temporal.Duration.with]
   locale <- JS.Intl.Locale.new_ "en-US"
-  duration <- Duration.new { hours: 2, minutes: 30 }
+  duration <- Duration.from { hours: 2, minutes: 30 }
   updated <- Duration.with { minutes: 45 } duration
   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
   Console.log (JS.Intl.DurationFormat.format formatter updated)
@@ -74,8 +74,8 @@ exampleWith = do
 exampleCompare :: Effect Unit
 exampleCompare = do
   -- [EXAMPLE JS.Temporal.Duration.compare]
-  shorter <- Duration.new { hours: 1 }
-  longer <- Duration.new { hours: 2 }
+  shorter <- Duration.from { hours: 1 }
+  longer <- Duration.from { hours: 2 }
   ordering <- Duration.compare longer shorter
   Console.log ("Comparison result: " <> show ordering)
   -- [/EXAMPLE]
@@ -83,7 +83,7 @@ exampleCompare = do
 exampleRound :: Effect Unit
 exampleRound = do
   -- [EXAMPLE JS.Temporal.Duration.round]
-  roundedSource <- Duration.new { hours: 1, minutes: 30, seconds: 45 }
+  roundedSource <- Duration.from { hours: 1, minutes: 30, seconds: 45 }
   rounded <- Duration.round { smallestUnit: TemporalUnit.Minute } roundedSource
   Console.log (Duration.toString_ rounded)
   -- [/EXAMPLE]
@@ -91,6 +91,6 @@ exampleRound = do
 exampleToString :: Effect Unit
 exampleToString = do
   -- [EXAMPLE JS.Temporal.Duration.toString]
-  duration <- Duration.new { hours: 2, minutes: 30, seconds: 15, milliseconds: 400 }
+  duration <- Duration.from { hours: 2, minutes: 30, seconds: 15, milliseconds: 400 }
   Console.log (Duration.toString { smallestUnit: TemporalUnit.Second } duration)
   -- [/EXAMPLE]

@@ -19,18 +19,18 @@ bridgePublicHolidays holiday year = do
     3 -> pure [ date ]
     5 -> pure [ date ]
     2 -> do
-      daysDuration <- Duration.new { days: 1 }
+      daysDuration <- Duration.from { days: 1 }
       monday <- PlainDate.subtract_ daysDuration date
       pure [ monday, date ]
     4 -> do
-      daysDuration <- Duration.new { days: 1 }
+      daysDuration <- Duration.from { days: 1 }
       friday <- PlainDate.add_ daysDuration date
       pure [ date, friday ]
     _ -> pure []
 
 main :: Effect Unit
 main = do
-  labourDay <- PlainMonthDay.from_ "05-01"
+  labourDay <- PlainMonthDay.fromString_ "05-01"
 
   noBridge <- bridgePublicHolidays labourDay 2020
   Console.log ("2020 (no bridge): " <> intercalate ", " (map PlainDate.toString_ noBridge))

@@ -17,12 +17,12 @@ getFirstTuesday queriedMonth = do
   firstOfMonth <- PlainYearMonth.toPlainDate { day: 1 } queriedMonth
   let lookupTable = [ 1, 0, 6, 5, 4, 3, 2 ]
   let daysToAdd = fromMaybe 0 (lookupTable !! (PlainDate.dayOfWeek firstOfMonth - 1))
-  daysDuration <- Duration.new { days: daysToAdd }
+  daysDuration <- Duration.from { days: daysToAdd }
   PlainDate.add_ daysDuration firstOfMonth
 
 main :: Effect Unit
 main = do
-  myMonth <- PlainYearMonth.from_ "2020-02"
+  myMonth <- PlainYearMonth.fromString_ "2020-02"
   firstTuesday <- getFirstTuesday myMonth
   Console.log ("First Tuesday of Feb 2020: " <> PlainDate.toString_ firstTuesday)
   Console.log ("Day of week: " <> show (PlainDate.dayOfWeek firstTuesday))

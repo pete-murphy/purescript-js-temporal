@@ -6,8 +6,7 @@
 module JS.Temporal.Instant
   ( module JS.Temporal.Instant.Internal
   -- * Construction
-  , new
-  , from
+  , fromString
   , fromEpochMilliseconds
   , fromEpochNanoseconds
   -- * Properties
@@ -63,31 +62,13 @@ import Unsafe.Coerce as Unsafe.Coerce
 
 -- Construction
 
-foreign import _new :: EffectFn1 BigInt Instant
-
--- | Creates an Instant from epoch nanoseconds.
--- |
--- | ```purescript
--- | locale <- JS.Intl.Locale.new_ "en-US"
--- | instant <- Instant.new (BigInt.fromInt 0)
--- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium", timeZone: "UTC" }
--- | Console.log (JS.Intl.DateTimeFormat.format formatter instant)
--- | ```
--- |
--- | ```text
--- | January 1, 1970 at 12:00:00 AM
--- | ```
-
-new :: BigInt -> Effect Instant
-new = Effect.Uncurried.runEffectFn1 _new
-
-foreign import _from :: EffectFn1 String Instant
+foreign import _fromString :: EffectFn1 String Instant
 
 -- | Parses an ISO 8601 instant string (e.g. `"2024-01-15T12:00:00Z"`). Throws on invalid input.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | instant <- Instant.from "2024-01-15T12:00:00Z"
+-- | instant <- Instant.fromString "2024-01-15T12:00:00Z"
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium", timeZone: "UTC" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter instant)
 -- | ```
@@ -96,8 +77,8 @@ foreign import _from :: EffectFn1 String Instant
 -- | January 15, 2024 at 12:00:00 PM
 -- | ```
 
-from :: String -> Effect Instant
-from = Effect.Uncurried.runEffectFn1 _from
+fromString :: String -> Effect Instant
+fromString = Effect.Uncurried.runEffectFn1 _fromString
 
 foreign import _fromEpochMilliseconds :: EffectFn1 Number Instant
 
@@ -145,8 +126,8 @@ foreign import _add :: EffectFn2 Duration Instant Instant
 -- | Adds a duration to an instant. Throws for calendar durations.
 -- |
 -- | ```purescript
--- | instant <- Instant.from "2024-01-15T12:00:00Z"
--- | oneHour <- Duration.new { hours: 1 }
+-- | instant <- Instant.fromString "2024-01-15T12:00:00Z"
+-- | oneHour <- Duration.from { hours: 1 }
 -- | later <- Instant.add oneHour instant
 -- | Console.log (Instant.toString_ later)
 -- | ```
@@ -163,8 +144,8 @@ foreign import _subtract :: EffectFn2 Duration Instant Instant
 -- | Subtracts a duration. Arg order: `subtract duration instant`.
 -- |
 -- | ```purescript
--- | instant <- Instant.from "2024-01-15T12:00:00Z"
--- | oneHour <- Duration.new { hours: 1 }
+-- | instant <- Instant.fromString "2024-01-15T12:00:00Z"
+-- | oneHour <- Duration.from { hours: 1 }
 -- | earlier <- Instant.subtract oneHour instant
 -- | Console.log (Instant.toString_ earlier)
 -- | ```
@@ -217,8 +198,8 @@ foreign import _until :: forall r. EffectFn3 { | r } Instant Instant Duration
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | earlier <- Instant.from "2020-01-09T00:00Z"
--- | later <- Instant.from "2020-01-09T04:00Z"
+-- | earlier <- Instant.fromString "2020-01-09T00:00Z"
+-- | later <- Instant.fromString "2020-01-09T04:00Z"
 -- | result <- Instant.until { largestUnit: TemporalUnit.Hour } later earlier
 -- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- | Console.log ("4 hours: " <> JS.Intl.DurationFormat.format formatter result)
@@ -262,8 +243,8 @@ foreign import _since :: forall r. EffectFn3 { | r } Instant Instant Duration
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | earlier <- Instant.from "2020-01-09T00:00Z"
--- | later <- Instant.from "2020-01-09T04:00Z"
+-- | earlier <- Instant.fromString "2020-01-09T00:00Z"
+-- | later <- Instant.fromString "2020-01-09T04:00Z"
 -- | elapsed <- Instant.since { largestUnit: TemporalUnit.Hour } earlier later
 -- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- | Console.log ("Elapsed: " <> JS.Intl.DurationFormat.format formatter elapsed)
@@ -334,7 +315,7 @@ foreign import _round :: forall r. EffectFn2 { | r } Instant Instant
 -- | Rounds the instant to the given smallest unit. Options: smallestUnit, roundingIncrement, roundingMode.
 -- |
 -- | ```purescript
--- | instant <- Instant.from "2024-01-15T12:00:00.789Z"
+-- | instant <- Instant.fromString "2024-01-15T12:00:00.789Z"
 -- | rounded <- Instant.round
 -- |   { smallestUnit: TemporalUnit.Second
 -- |   , roundingMode: RoundingMode.HalfExpand
@@ -383,7 +364,7 @@ foreign import _toZonedDateTimeISO :: Fn2 String Instant ZonedDateTime
 -- | Converts the instant to a ZonedDateTime in the given time zone (e.g. `"America/New_York"`).
 -- |
 -- | ```purescript
--- | instant <- Instant.from "2024-01-15T12:00:00Z"
+-- | instant <- Instant.fromString "2024-01-15T12:00:00Z"
 -- | zoned <- pure (Instant.toZonedDateTimeISO "America/New_York" instant)
 -- | Console.log (ZonedDateTime.toString_ zoned)
 -- | ```
@@ -439,7 +420,7 @@ toString_ instant = Function.Uncurried.runFn2 _toString defaultToStringOptions i
 -- | Serializes the instant to ISO 8601 format. Options: fractionalSecondDigits, smallestUnit, roundingMode, timeZone.
 -- |
 -- | ```purescript
--- | instant <- Instant.from "2024-01-15T12:00:00.789Z"
+-- | instant <- Instant.fromString "2024-01-15T12:00:00.789Z"
 -- | Console.log
 -- |   ( Instant.toString
 -- |       { smallestUnit: TemporalUnit.Second

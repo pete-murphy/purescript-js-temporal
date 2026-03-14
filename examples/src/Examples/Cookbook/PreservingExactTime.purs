@@ -10,6 +10,6 @@ import JS.Temporal.ZonedDateTime as ZonedDateTime
 
 main :: Effect Unit
 main = do
-  source <- ZonedDateTime.from_ "2020-01-09T00:00[America/Chicago]"
+  source <- ZonedDateTime.fromString_ "2020-01-09T00:00[America/Chicago]"
   result <- ZonedDateTime.withTimeZone "America/Los_Angeles" source
   Console.log ("Midnight Chicago in LA: " <> ZonedDateTime.toString_ result)

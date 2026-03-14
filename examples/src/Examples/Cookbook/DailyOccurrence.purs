@@ -23,13 +23,13 @@ calculateFirstFewOccurrences startDate plainTime timeZone count = go startDate c
     let plainDateTime = PlainDate.toPlainDateTime plainTime date
     zoned <- PlainDateTime.toZonedDateTime timeZone plainDateTime
     let instant = ZonedDateTime.toInstant zoned
-    daysDuration <- Duration.new { days: 1 }
+    daysDuration <- Duration.from { days: 1 }
     nextDate <- PlainDate.add_ daysDuration date
     go nextDate (n - 1) (acc <> [ instant ])
 
 main :: Effect Unit
 main = do
-  startDate <- PlainDate.from_ "2017-03-10"
-  time <- PlainTime.from_ "08:00"
+  startDate <- PlainDate.fromString_ "2017-03-10"
+  time <- PlainTime.fromString_ "08:00"
   occurrences <- calculateFirstFewOccurrences startDate time "America/Los_Angeles" 4
   traverse_ (\i -> Console.log ("  " <> Instant.toString_ i)) occurrences

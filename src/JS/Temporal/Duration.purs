@@ -11,8 +11,8 @@
 module JS.Temporal.Duration
   ( module JS.Temporal.Duration.Internal
   -- * Construction
-  , new
   , from
+  , fromString
   -- * Properties
   , years
   , months
@@ -78,7 +78,7 @@ import Unsafe.Coerce as Unsafe.Coerce
 
 -- Construction
 
--- | Row type for duration component fields. All fields optional in [`new`](#new)
+-- | Row type for duration component fields. All fields optional in [`from`](#from)
 -- | and [`with`](#with).
 type DurationComponents =
   ( years :: Int
@@ -93,14 +93,14 @@ type DurationComponents =
   , nanoseconds :: Int
   )
 
-foreign import _new :: forall r. EffectFn1 { | r } Duration
+foreign import _from :: forall r. EffectFn1 { | r } Duration
 
 -- | Creates a Duration from component fields. At least one component must be
 -- | provided. Mixed signs are invalid.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | twoHours <- Duration.new { hours: 2 }
+-- | twoHours <- Duration.from { hours: 2 }
 -- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- | Console.log (JS.Intl.DurationFormat.format formatter twoHours)
 -- | ```
@@ -109,21 +109,21 @@ foreign import _new :: forall r. EffectFn1 { | r } Duration
 -- | 2 hours
 -- | ```
 
-new
+from
   :: forall provided rest
    . Union provided rest DurationComponents
   => { | provided }
   -> Effect Duration
-new = Effect.Uncurried.runEffectFn1 _new
+from = Effect.Uncurried.runEffectFn1 _from
 
-foreign import _from :: EffectFn1 String Duration
+foreign import _fromString :: EffectFn1 String Duration
 
 -- | Parses an ISO 8601 duration string (e.g. `"PT1H30M"`). Throws on invalid
 -- | input. Corresponds to `Temporal.Duration.from()`.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | duration <- Duration.from "PT2H30M"
+-- | duration <- Duration.fromString "PT2H30M"
 -- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- | Console.log (JS.Intl.DurationFormat.format formatter duration)
 -- | ```
@@ -132,8 +132,8 @@ foreign import _from :: EffectFn1 String Duration
 -- | 2 hours, 30 minutes
 -- | ```
 
-from :: String -> Effect Duration
-from = Effect.Uncurried.runEffectFn1 _from
+fromString :: String -> Effect Duration
+fromString = Effect.Uncurried.runEffectFn1 _fromString
 
 -- Properties
 
@@ -174,8 +174,8 @@ foreign import _add :: EffectFn2 Duration Duration Duration
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | twoHours <- Duration.new { hours: 2 }
--- | thirtyMinutes <- Duration.new { minutes: 30 }
+-- | twoHours <- Duration.from { hours: 2 }
+-- | thirtyMinutes <- Duration.from { minutes: 30 }
 -- | combined <- Duration.add twoHours thirtyMinutes
 -- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- | Console.log (JS.Intl.DurationFormat.format formatter combined)
@@ -195,8 +195,8 @@ foreign import _subtract :: EffectFn2 Duration Duration Duration
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | threeHours <- Duration.new { hours: 3 }
--- | oneHour <- Duration.new { hours: 1 }
+-- | threeHours <- Duration.from { hours: 3 }
+-- | oneHour <- Duration.from { hours: 1 }
 -- | remainder <- Duration.subtract threeHours oneHour
 -- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- | Console.log (JS.Intl.DurationFormat.format formatter remainder)
@@ -222,7 +222,7 @@ foreign import _with :: forall r. EffectFn2 { | r } Duration Duration
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | duration <- Duration.new { hours: 2, minutes: 30 }
+-- | duration <- Duration.from { hours: 2, minutes: 30 }
 -- | updated <- Duration.with { minutes: 45 } duration
 -- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- | Console.log (JS.Intl.DurationFormat.format formatter updated)
@@ -249,8 +249,8 @@ foreign import _compare :: EffectFn2 Duration Duration Int
 -- | `Temporal.Duration.compare()`.
 -- |
 -- | ```purescript
--- | shorter <- Duration.new { hours: 1 }
--- | longer <- Duration.new { hours: 2 }
+-- | shorter <- Duration.from { hours: 1 }
+-- | longer <- Duration.from { hours: 2 }
 -- | ordering <- Duration.compare longer shorter
 -- | Console.log ("Comparison result: " <> show ordering)
 -- | ```
@@ -314,7 +314,7 @@ foreign import _round :: forall r. EffectFn2 { | r } Duration Duration
 -- | calendar durations. Corresponds to `Temporal.Duration.prototype.round()`.
 -- |
 -- | ```purescript
--- | roundedSource <- Duration.new { hours: 1, minutes: 30, seconds: 45 }
+-- | roundedSource <- Duration.from { hours: 1, minutes: 30, seconds: 45 }
 -- | rounded <- Duration.round { smallestUnit: TemporalUnit.Minute } roundedSource
 -- | Console.log (Duration.toString_ rounded)
 -- | ```
@@ -375,7 +375,7 @@ foreign import _total :: forall r. EffectFn2 { | r } Duration Number
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | duration <- Duration.new { hours: 2, minutes: 30 }
+-- | duration <- Duration.from { hours: 2, minutes: 30 }
 -- | totalHours <- Duration.total { unit: TemporalUnit.Hour } duration
 -- | numberFormatter <- JS.Intl.NumberFormat.new [ locale ] { minimumFractionDigits: 1, maximumFractionDigits: 1 }
 -- | Console.log ("Total hours: " <> JS.Intl.NumberFormat.format numberFormatter totalHours)
@@ -439,7 +439,7 @@ toString_ duration = Function.Uncurried.runFn2 _toString defaultDurationToString
 -- | Serializes the duration to ISO 8601 format (e.g. `"PT1H30M"`).
 -- |
 -- | ```purescript
--- | duration <- Duration.new { hours: 2, minutes: 30, seconds: 15, milliseconds: 400 }
+-- | duration <- Duration.from { hours: 2, minutes: 30, seconds: 15, milliseconds: 400 }
 -- | Console.log (Duration.toString { smallestUnit: TemporalUnit.Second } duration)
 -- | ```
 -- |
@@ -541,6 +541,6 @@ fromMilliseconds ms =
       , milliseconds: signMultiplier * components.milliseconds
       }
   in
-    new fields
+    from fields
 
 -- Instances (Eq, Show from Internal)

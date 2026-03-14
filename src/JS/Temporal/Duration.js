@@ -1,8 +1,8 @@
-export function _new(components) {
+export function _from(components) {
   return Temporal.Duration.from(components);
 }
 
-export function _from(str) {
+export function _fromString(str) {
   return Temporal.Duration.from(str);
 }
 

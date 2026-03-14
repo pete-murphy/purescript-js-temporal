@@ -11,9 +11,9 @@ import JS.Temporal.PlainDate as PlainDate
 
 main :: Effect Unit
 main = do
-  date <- PlainDate.from_ "2018-09-16"
+  date <- PlainDate.fromString_ "2018-09-16"
   firstOfCurrentMonth <- PlainDate.with_ { day: 1 } date
-  oneMonth <- Duration.new { months: 1 }
+  oneMonth <- Duration.from { months: 1 }
   firstOfNextMonth <- PlainDate.add_ oneMonth firstOfCurrentMonth
 
   sinceCurrent <- PlainDate.since_ date firstOfCurrentMonth

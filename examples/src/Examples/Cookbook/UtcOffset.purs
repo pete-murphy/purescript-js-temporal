@@ -20,7 +20,7 @@ getUtcOffsetDifferenceSeconds instant sourceTimeZone targetTimeZone =
 
 main :: Effect Unit
 main = do
-  instant <- Instant.from "2020-01-09T00:00Z"
+  instant <- Instant.fromString "2020-01-09T00:00Z"
   let zoned = Instant.toZonedDateTimeISO "America/New_York" instant
   Console.log ("UTC offset (string): " <> ZonedDateTime.offset zoned)
   Console.log ("UTC offset (seconds): " <> show (ZonedDateTime.offsetNanoseconds zoned `div` 1000000000))

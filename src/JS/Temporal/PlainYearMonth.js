@@ -1,12 +1,16 @@
-export function _new(year, month) {
-  return new Temporal.PlainYearMonth(year, month);
+export function _fromRecord(options, components) {
+  return Temporal.PlainYearMonth.from(components, options);
 }
 
-export function _from(options, str) {
+export function _fromRecordNoOpts(components) {
+  return Temporal.PlainYearMonth.from(components);
+}
+
+export function _fromString(options, str) {
   return Temporal.PlainYearMonth.from(str, options);
 }
 
-export function _fromNoOpts(str) {
+export function _fromStringNoOpts(str) {
   return Temporal.PlainYearMonth.from(str);
 }
 

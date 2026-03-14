@@ -1,12 +1,16 @@
-export function _new(month, day) {
-  return new Temporal.PlainMonthDay(month, day);
+export function _fromRecord(options, components) {
+  return Temporal.PlainMonthDay.from(components, options);
 }
 
-export function _from(options, str) {
+export function _fromRecordNoOpts(components) {
+  return Temporal.PlainMonthDay.from(components);
+}
+
+export function _fromString(options, str) {
   return Temporal.PlainMonthDay.from(str, options);
 }
 
-export function _fromNoOpts(str) {
+export function _fromStringNoOpts(str) {
   return Temporal.PlainMonthDay.from(str);
 }
 

@@ -38,7 +38,7 @@ import JS.Temporal.ZonedDateTime (ZonedDateTime)
 -- | ```
 -- |
 -- | ```text
--- | Current instant (UTC): March 8, 2026 at 7:47:31 PM
+-- | Current instant (UTC): March 14, 2026 at 2:16:26 PM
 -- | ```
 
 foreign import instant :: Effect Instant
@@ -68,7 +68,7 @@ foreign import _zonedDateTimeISO_ :: Effect ZonedDateTime
 -- | ```
 -- |
 -- | ```text
--- | Now (zoned): March 8, 2026 at 3:47:31 PM
+-- | Now (zoned): March 14, 2026 at 10:16:26 AM
 -- | ```
 
 zonedDateTimeISO_ :: Effect ZonedDateTime
@@ -86,7 +86,7 @@ foreign import _zonedDateTimeISO :: EffectFn1 String ZonedDateTime
 -- | ```
 -- |
 -- | ```text
--- | Now (UTC): March 8, 2026 at 7:47:31 PM
+-- | Now (UTC): March 14, 2026 at 2:16:26 PM
 -- | ```
 
 zonedDateTimeISO :: String -> Effect ZonedDateTime
@@ -104,7 +104,7 @@ foreign import _plainDateISO_ :: Effect PlainDate
 -- | ```
 -- |
 -- | ```text
--- | Today (local): March 8, 2026
+-- | Today (local): March 14, 2026
 -- | ```
 
 plainDateISO_ :: Effect PlainDate
@@ -122,7 +122,7 @@ foreign import _plainDateISO :: EffectFn1 String PlainDate
 -- | ```
 -- |
 -- | ```text
--- | Today (UTC): March 8, 2026
+-- | Today (UTC): March 14, 2026
 -- | ```
 
 plainDateISO :: String -> Effect PlainDate
@@ -140,7 +140,7 @@ foreign import _plainDateTimeISO_ :: Effect PlainDateTime
 -- | ```
 -- |
 -- | ```text
--- | Now (local): March 8, 2026 at 3:47:31 PM
+-- | Now (local): March 14, 2026 at 10:16:26 AM
 -- | ```
 
 plainDateTimeISO_ :: Effect PlainDateTime
@@ -158,7 +158,7 @@ foreign import _plainDateTimeISO :: EffectFn1 String PlainDateTime
 -- | ```
 -- |
 -- | ```text
--- | Now (UTC): March 8, 2026 at 7:47:31 PM
+-- | Now (UTC): March 14, 2026 at 2:16:26 PM
 -- | ```
 
 plainDateTimeISO :: String -> Effect PlainDateTime
@@ -176,7 +176,7 @@ foreign import _plainTimeISO_ :: Effect PlainTime
 -- | ```
 -- |
 -- | ```text
--- | Current time (local): 3:47:31 PM
+-- | Current time (local): 10:16:26 AM
 -- | ```
 
 plainTimeISO_ :: Effect PlainTime
@@ -194,7 +194,7 @@ foreign import _plainTimeISO :: EffectFn1 String PlainTime
 -- | ```
 -- |
 -- | ```text
--- | Current time (UTC): 7:47:31 PM
+-- | Current time (UTC): 2:16:26 PM
 -- | ```
 
 plainTimeISO :: String -> Effect PlainTime

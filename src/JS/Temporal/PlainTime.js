@@ -1,12 +1,16 @@
-export function _new(components) {
+export function _fromRecord(options, components) {
+  return Temporal.PlainTime.from(components, options);
+}
+
+export function _fromRecordNoOpts(components) {
   return Temporal.PlainTime.from(components);
 }
 
-export function _from(options, str) {
+export function _fromString(options, str) {
   return Temporal.PlainTime.from(str, options);
 }
 
-export function _fromNoOpts(str) {
+export function _fromStringNoOpts(str) {
   return Temporal.PlainTime.from(str);
 }
 

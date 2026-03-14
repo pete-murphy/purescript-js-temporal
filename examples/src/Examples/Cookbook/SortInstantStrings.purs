@@ -14,7 +14,7 @@ import JS.Temporal.Instant as Instant
 
 sortInstantStrings :: Array String -> Boolean -> Effect (Array String)
 sortInstantStrings strings reverseOrder = do
-  pairs <- traverse (\s -> Tuple s <$> Instant.from s) strings
+  pairs <- traverse (\s -> Tuple s <$> Instant.fromString s) strings
   let sorted = sortBy (comparing snd) pairs
   let result = map (\(Tuple str _) -> str) sorted
   pure if reverseOrder then reverse result else result

@@ -10,7 +10,7 @@ import JS.Temporal.PlainDate as PlainDate
 
 main :: Effect Unit
 main = do
-  date <- PlainDate.from_ "2020-05-31"
+  date <- PlainDate.fromString_ "2020-05-31"
 
   feb <- PlainDate.with_ { month: 2 } date
   Console.log ("May 31 in February (constrained): " <> PlainDate.toString_ feb)

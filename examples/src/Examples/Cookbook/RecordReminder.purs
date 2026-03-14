@@ -20,9 +20,9 @@ getInstantBeforeOldRecord start previousRecord noticeWindow = do
 
 main :: Effect Unit
 main = do
-  raceStart <- Instant.from "2016-08-13T21:27-03:00[America/Sao_Paulo]"
-  record <- Duration.new { minutes: 26, seconds: 17, milliseconds: 530 }
-  noticeWindow <- Duration.new { minutes: 1 }
+  raceStart <- Instant.fromString "2016-08-13T21:27-03:00[America/Sao_Paulo]"
+  record <- Duration.from { minutes: 26, seconds: 17, milliseconds: 530 }
+  noticeWindow <- Duration.from { minutes: 1 }
 
   reminderAt <- getInstantBeforeOldRecord raceStart record noticeWindow
   Console.log ("Reminder at: " <> Instant.toString_ reminderAt)

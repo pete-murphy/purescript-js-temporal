@@ -17,7 +17,7 @@ getWeeklyDaysInMonth
 getWeeklyDaysInMonth yearMonth dayNumberOfTheWeek = do
   firstOfMonth <- PlainYearMonth.toPlainDate { day: 1 } yearMonth
   let daysToFirst = (7 + dayNumberOfTheWeek - PlainDate.dayOfWeek firstOfMonth) `mod` 7
-  daysDuration <- Duration.new { days: daysToFirst }
+  daysDuration <- Duration.from { days: daysToFirst }
   firstWeekday <- PlainDate.add_ daysDuration firstOfMonth
   go firstWeekday []
   where
@@ -25,13 +25,13 @@ getWeeklyDaysInMonth yearMonth dayNumberOfTheWeek = do
     if PlainDate.month nextWeekday /= PlainYearMonth.month yearMonth then
       pure (Array.reverse result)
     else do
-      weekDuration <- Duration.new { days: 7 }
+      weekDuration <- Duration.from { days: 7 }
       next <- PlainDate.add_ weekDuration nextWeekday
       go next ([ nextWeekday ] <> result)
 
 main :: Effect Unit
 main = do
-  feb2020 <- PlainYearMonth.from_ "2020-02"
+  feb2020 <- PlainYearMonth.fromString_ "2020-02"
   mondays <- getWeeklyDaysInMonth feb2020 1
   saturdays <- getWeeklyDaysInMonth feb2020 6
 

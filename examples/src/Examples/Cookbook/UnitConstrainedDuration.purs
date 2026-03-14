@@ -12,8 +12,8 @@ import JS.Temporal.Options.TemporalUnit as TemporalUnit
 
 main :: Effect Unit
 main = do
-  earlier <- Instant.from "2020-01-09T00:00Z"
-  later <- Instant.from "2020-01-09T04:00Z"
+  earlier <- Instant.fromString "2020-01-09T00:00Z"
+  later <- Instant.fromString "2020-01-09T04:00Z"
 
   result <- Instant.since { largestUnit: TemporalUnit.Hour } later earlier
   Console.log ("4 hours as PT4H: " <> Duration.toString_ result)

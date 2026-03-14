@@ -1,8 +1,4 @@
-export function _new(epochNanoseconds) {
-  return new Temporal.Instant(epochNanoseconds);
-}
-
-export function _from(str) {
+export function _fromString(str) {
   return Temporal.Instant.from(str);
 }
 

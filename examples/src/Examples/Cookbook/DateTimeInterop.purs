@@ -11,12 +11,12 @@ import JS.Temporal.PlainDate as PlainDate
 
 main :: Effect Unit
 main = do
-  plainDate <- PlainDate.from_ "2000-01-01"
+  plainDate <- PlainDate.fromString_ "2000-01-01"
   let date = PlainDate.toDate plainDate
   plainDate2 <- PlainDate.fromDate date
   Console.log ("PlainDate <-> Date round-trip: " <> PlainDate.toString_ plainDate2)
 
-  temporalInstant <- Instant.from "2020-01-01T00:00:01.000Z"
+  temporalInstant <- Instant.fromString "2020-01-01T00:00:01.000Z"
   case Instant.toDateTimeInstant temporalInstant of
     Just dtInstant -> do
       temporalBack <- Instant.fromDateTimeInstant dtInstant

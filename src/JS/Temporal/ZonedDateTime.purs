@@ -6,9 +6,11 @@
 module JS.Temporal.ZonedDateTime
   ( module JS.Temporal.ZonedDateTime.Internal
   -- * Construction
-  , new
+  , ZonedDateTimeComponents
   , from
   , from_
+  , fromString
+  , fromString_
   -- * Properties
   , year
   , month
@@ -117,23 +119,20 @@ import Unsafe.Coerce as Unsafe.Coerce
 
 -- Construction
 
-foreign import _new :: EffectFn2 BigInt String ZonedDateTime
-
--- | Creates a ZonedDateTime from epoch nanoseconds and a time zone ID.
--- |
--- | ```purescript
--- | locale <- JS.Intl.Locale.new_ "en-US"
--- | zoned <- ZonedDateTime.new (BigInt.fromInt 0) "UTC"
--- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium", timeZone: "UTC" }
--- | Console.log (JS.Intl.DateTimeFormat.format formatter zoned)
--- | ```
--- |
--- | ```text
--- | January 1, 1970 at 12:00:00 AM
--- | ```
-
-new :: BigInt -> String -> Effect ZonedDateTime
-new = Effect.Uncurried.runEffectFn2 _new
+type ZonedDateTimeComponents =
+  ( year :: Int
+  , month :: Int
+  , day :: Int
+  , hour :: Int
+  , minute :: Int
+  , second :: Int
+  , millisecond :: Int
+  , microsecond :: Int
+  , nanosecond :: Int
+  , timeZone :: String
+  , offset :: String
+  , monthCode :: String
+  )
 
 type FromOptions =
   ( overflow :: String
@@ -164,13 +163,13 @@ instance ConvertOption ToFromOptions "offset" OffsetDisambiguation String where
 instance ConvertOption ToFromOptions "offset" String String where
   convertOption _ _ = identity
 
-foreign import _from :: forall r. EffectFn2 { | r } String ZonedDateTime
+foreign import _fromRecord :: forall ro rc. EffectFn2 { | ro } { | rc } ZonedDateTime
 
--- | Parses an ISO 8601 string with time zone (e.g. `"2024-01-15T12:00-05:00[America/New_York]"`). Options: overflow, disambiguation, offset.
+-- | Creates a ZonedDateTime from component fields. Options: overflow, disambiguation, offset.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | zoned <- ZonedDateTime.from { overflow: Overflow.Constrain } "2024-01-15T12:00:00-05:00[America/New_York]"
+-- | zoned <- ZonedDateTime.from_ { year: 2024, month: 1, day: 15, hour: 12, timeZone: "America/New_York" }
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter zoned)
 -- | ```
@@ -180,6 +179,53 @@ foreign import _from :: forall r. EffectFn2 { | r } String ZonedDateTime
 -- | ```
 
 from
+  :: forall optsProvided provided rest
+   . Union provided rest ZonedDateTimeComponents
+  => ConvertOptionsWithDefaults
+       ToFromOptions
+       { | FromOptions }
+       { | optsProvided }
+       { | FromOptions }
+  => { | optsProvided }
+  -> { | provided }
+  -> Effect ZonedDateTime
+from providedOptions components =
+  Effect.Uncurried.runEffectFn2
+    _fromRecord
+    ( ConvertableOptions.convertOptionsWithDefaults
+        ToFromOptions
+        defaultFromOptions
+        providedOptions
+    )
+    components
+
+foreign import _fromRecordNoOpts :: forall r. EffectFn1 { | r } ZonedDateTime
+
+-- | Same as [`from`](#from) with default options.
+
+from_
+  :: forall provided rest
+   . Union provided rest ZonedDateTimeComponents
+  => { | provided }
+  -> Effect ZonedDateTime
+from_ = Effect.Uncurried.runEffectFn1 _fromRecordNoOpts
+
+foreign import _fromString :: forall r. EffectFn2 { | r } String ZonedDateTime
+
+-- | Parses an ISO 8601 string with time zone (e.g. `"2024-01-15T12:00-05:00[America/New_York]"`). Options: overflow, disambiguation, offset.
+-- |
+-- | ```purescript
+-- | locale <- JS.Intl.Locale.new_ "en-US"
+-- | zoned <- ZonedDateTime.fromString { overflow: Overflow.Constrain } "2024-01-15T12:00:00-05:00[America/New_York]"
+-- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
+-- | Console.log (JS.Intl.DateTimeFormat.format formatter zoned)
+-- | ```
+-- |
+-- | ```text
+-- | January 15, 2024 at 12:00:00 PM
+-- | ```
+
+fromString
   :: forall provided
    . ConvertOptionsWithDefaults
        ToFromOptions
@@ -189,9 +235,9 @@ from
   => { | provided }
   -> String
   -> Effect ZonedDateTime
-from providedOptions str =
+fromString providedOptions str =
   Effect.Uncurried.runEffectFn2
-    _from
+    _fromString
     ( ConvertableOptions.convertOptionsWithDefaults
         ToFromOptions
         defaultFromOptions
@@ -199,12 +245,23 @@ from providedOptions str =
     )
     str
 
-foreign import _fromNoOpts :: EffectFn1 String ZonedDateTime
+foreign import _fromStringNoOpts :: EffectFn1 String ZonedDateTime
 
--- | Same as [`from`](#from) with default options.
+-- | Same as [`fromString`](#fromstring) with default options.
+-- |
+-- | ```purescript
+-- | locale <- JS.Intl.Locale.new_ "en-US"
+-- | zoned <- ZonedDateTime.fromString_ "1970-01-01T00:00:00+00:00[UTC]"
+-- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium", timeZone: "UTC" }
+-- | Console.log (JS.Intl.DateTimeFormat.format formatter zoned)
+-- | ```
+-- |
+-- | ```text
+-- | January 1, 1970 at 12:00:00 AM
+-- | ```
 
-from_ :: String -> Effect ZonedDateTime
-from_ = Effect.Uncurried.runEffectFn1 _fromNoOpts
+fromString_ :: String -> Effect ZonedDateTime
+fromString_ = Effect.Uncurried.runEffectFn1 _fromStringNoOpts
 
 -- Properties
 
@@ -311,8 +368,8 @@ foreign import _add :: forall r. EffectFn3 { | r } Duration ZonedDateTime ZonedD
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | start <- ZonedDateTime.from_ "2024-01-15T12:00:00-05:00[America/New_York]"
--- | twoHours <- Duration.new { hours: 2 }
+-- | start <- ZonedDateTime.fromString_ "2024-01-15T12:00:00-05:00[America/New_York]"
+-- | twoHours <- Duration.from { hours: 2 }
 -- | later <- ZonedDateTime.add { overflow: Overflow.Constrain } twoHours start
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter later)
@@ -356,8 +413,8 @@ foreign import _subtract :: forall r. EffectFn3 { | r } Duration ZonedDateTime Z
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | zoned <- ZonedDateTime.from_ "2024-03-15T14:00:00[America/New_York]"
--- | twoHours <- Duration.new { hours: 2 }
+-- | zoned <- ZonedDateTime.fromString_ "2024-03-15T14:00:00[America/New_York]"
+-- | twoHours <- Duration.from { hours: 2 }
 -- | earlier <- ZonedDateTime.subtract { overflow: Overflow.Constrain } twoHours zoned
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter earlier)
@@ -418,7 +475,7 @@ foreign import _with :: forall ro rf. EffectFn3 { | ro } { | rf } ZonedDateTime 
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | meeting <- ZonedDateTime.from_ "2024-01-15T09:30:45-05:00[America/New_York]"
+-- | meeting <- ZonedDateTime.fromString_ "2024-01-15T09:30:45-05:00[America/New_York]"
 -- | noon <- ZonedDateTime.with { overflow: Overflow.Constrain } { hour: 12, minute: 0, second: 0 } meeting
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter noon)
@@ -467,7 +524,7 @@ foreign import _withTimeZone :: EffectFn2 String ZonedDateTime ZonedDateTime
 -- | Returns the same instant interpreted in a different time zone.
 -- |
 -- | ```purescript
--- | zoned <- ZonedDateTime.from_ "2024-01-15T12:00:00-05:00[America/New_York]"
+-- | zoned <- ZonedDateTime.fromString_ "2024-01-15T12:00:00-05:00[America/New_York]"
 -- | inTokyo <- ZonedDateTime.withTimeZone "Asia/Tokyo" zoned
 -- | Console.log (ZonedDateTime.toString_ inTokyo)
 -- | ```
@@ -484,7 +541,7 @@ foreign import _withCalendar :: EffectFn2 String ZonedDateTime ZonedDateTime
 -- | Returns a copy with the same instant and time zone, but a different calendar.
 -- |
 -- | ```purescript
--- | zoned <- ZonedDateTime.from_ "2024-01-15T12:00:00-05:00[America/New_York]"
+-- | zoned <- ZonedDateTime.fromString_ "2024-01-15T12:00:00-05:00[America/New_York]"
 -- | gregory <- ZonedDateTime.withCalendar "gregory" zoned
 -- | Console.log (ZonedDateTime.toString { calendarName: CalendarName.Always } gregory)
 -- | ```
@@ -501,8 +558,8 @@ foreign import _withPlainTime :: EffectFn2 PlainTime ZonedDateTime ZonedDateTime
 -- | Returns a copy with the wall-clock time replaced.
 -- |
 -- | ```purescript
--- | zoned <- ZonedDateTime.from_ "2024-01-15T09:30:45-05:00[America/New_York]"
--- | closingTime <- PlainTime.from_ "17:00:00"
+-- | zoned <- ZonedDateTime.fromString_ "2024-01-15T09:30:45-05:00[America/New_York]"
+-- | closingTime <- PlainTime.fromString_ "17:00:00"
 -- | updated <- ZonedDateTime.withPlainTime closingTime zoned
 -- | Console.log (ZonedDateTime.toString_ updated)
 -- | ```
@@ -519,8 +576,8 @@ foreign import _withPlainDate :: EffectFn2 PlainDate ZonedDateTime ZonedDateTime
 -- | Returns a copy with the calendar date replaced.
 -- |
 -- | ```purescript
--- | zoned <- ZonedDateTime.from_ "2024-01-15T09:30:45-05:00[America/New_York]"
--- | nextDay <- PlainDate.from_ "2024-01-16"
+-- | zoned <- ZonedDateTime.fromString_ "2024-01-15T09:30:45-05:00[America/New_York]"
+-- | nextDay <- PlainDate.fromString_ "2024-01-16"
 -- | updated <- ZonedDateTime.withPlainDate nextDay zoned
 -- | Console.log (ZonedDateTime.toString_ updated)
 -- | ```
@@ -573,8 +630,8 @@ foreign import _until :: forall r. EffectFn3 { | r } ZonedDateTime ZonedDateTime
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | departure <- ZonedDateTime.from_ "2020-03-08T11:55:00+08:00[Asia/Hong_Kong]"
--- | arrival <- ZonedDateTime.from_ "2020-03-08T09:50:00-07:00[America/Los_Angeles]"
+-- | departure <- ZonedDateTime.fromString_ "2020-03-08T11:55:00+08:00[Asia/Hong_Kong]"
+-- | arrival <- ZonedDateTime.fromString_ "2020-03-08T09:50:00-07:00[America/Los_Angeles]"
 -- | flightTime <- ZonedDateTime.until { largestUnit: TemporalUnit.Hour } arrival departure
 -- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- | Console.log ("Flight time: " <> JS.Intl.DurationFormat.format formatter flightTime)
@@ -619,8 +676,8 @@ foreign import _since :: forall r. EffectFn3 { | r } ZonedDateTime ZonedDateTime
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | start <- ZonedDateTime.from_ "2024-01-01T00:00:00[America/New_York]"
--- | end <- ZonedDateTime.from_ "2024-03-15T12:00:00[America/New_York]"
+-- | start <- ZonedDateTime.fromString_ "2024-01-01T00:00:00[America/New_York]"
+-- | end <- ZonedDateTime.fromString_ "2024-03-15T12:00:00[America/New_York]"
 -- | elapsed <- ZonedDateTime.since { largestUnit: TemporalUnit.Hour } start end
 -- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- | Console.log ("Elapsed: " <> JS.Intl.DurationFormat.format formatter elapsed)
@@ -693,7 +750,7 @@ foreign import _round :: forall r. EffectFn2 { | r } ZonedDateTime ZonedDateTime
 -- | roundingIncrement, roundingMode.
 -- |
 -- | ```purescript
--- | zoned <- ZonedDateTime.from_ "2024-01-15T09:30:45.123456789-05:00[America/New_York]"
+-- | zoned <- ZonedDateTime.fromString_ "2024-01-15T09:30:45.123456789-05:00[America/New_York]"
 -- | rounded <- ZonedDateTime.round { smallestUnit: TemporalUnit.Minute, roundingMode: RoundingMode.HalfExpand } zoned
 -- | Console.log (ZonedDateTime.toString_ rounded)
 -- | ```
@@ -729,7 +786,7 @@ foreign import _startOfDay :: EffectFn1 ZonedDateTime ZonedDateTime
 -- | Returns the start of the calendar day in this time zone.
 -- |
 -- | ```purescript
--- | zoned <- ZonedDateTime.from_ "2024-03-10T12:00:00-04:00[America/New_York]"
+-- | zoned <- ZonedDateTime.fromString_ "2024-03-10T12:00:00-04:00[America/New_York]"
 -- | start <- ZonedDateTime.startOfDay zoned
 -- | Console.log (ZonedDateTime.toString_ start)
 -- | ```
@@ -752,7 +809,7 @@ foreign import _getTimeZoneTransition
 -- | Gets the next or previous time zone transition. Direction: `"next"` or `"previous"`.
 -- |
 -- | ```purescript
--- | zoned <- ZonedDateTime.from_ "2024-03-09T12:00:00-05:00[America/New_York]"
+-- | zoned <- ZonedDateTime.fromString_ "2024-03-09T12:00:00-05:00[America/New_York]"
 -- | case ZonedDateTime.getTimeZoneTransition "next" zoned of
 -- |   Nothing -> Console.log "No transition"
 -- |   Just transition -> Console.log (ZonedDateTime.toString_ transition)
@@ -773,7 +830,7 @@ foreign import _toInstant :: Fn1 ZonedDateTime Instant
 -- | Extracts the absolute instant (no time zone).
 -- |
 -- | ```purescript
--- | zoned <- ZonedDateTime.from_ "2024-01-15T12:00:00-05:00[America/New_York]"
+-- | zoned <- ZonedDateTime.fromString_ "2024-01-15T12:00:00-05:00[America/New_York]"
 -- | Console.log (Instant.toString_ (ZonedDateTime.toInstant zoned))
 -- | ```
 -- |
@@ -789,7 +846,7 @@ foreign import _toPlainDateTime :: Fn1 ZonedDateTime PlainDateTime
 -- | Extracts date and time in the zoned wall-clock view (drops time zone).
 -- |
 -- | ```purescript
--- | zoned <- ZonedDateTime.from_ "2024-01-15T12:00:00-05:00[America/New_York]"
+-- | zoned <- ZonedDateTime.fromString_ "2024-01-15T12:00:00-05:00[America/New_York]"
 -- | Console.log (PlainDateTime.toString_ (ZonedDateTime.toPlainDateTime zoned))
 -- | ```
 -- |
@@ -805,7 +862,7 @@ foreign import _toPlainDate :: Fn1 ZonedDateTime PlainDate
 -- | Extracts the calendar date in the zoned wall-clock view.
 -- |
 -- | ```purescript
--- | zoned <- ZonedDateTime.from_ "2024-01-15T12:00:00-05:00[America/New_York]"
+-- | zoned <- ZonedDateTime.fromString_ "2024-01-15T12:00:00-05:00[America/New_York]"
 -- | Console.log (PlainDate.toString_ (ZonedDateTime.toPlainDate zoned))
 -- | ```
 -- |
@@ -821,7 +878,7 @@ foreign import _toPlainTime :: Fn1 ZonedDateTime PlainTime
 -- | Extracts the wall-clock time in the associated time zone.
 -- |
 -- | ```purescript
--- | zoned <- ZonedDateTime.from_ "2024-01-15T12:00:00-05:00[America/New_York]"
+-- | zoned <- ZonedDateTime.fromString_ "2024-01-15T12:00:00-05:00[America/New_York]"
 -- | Console.log (PlainTime.toString_ (ZonedDateTime.toPlainTime zoned))
 -- | ```
 -- |
@@ -837,7 +894,7 @@ foreign import _toPlainYearMonth :: Fn1 ZonedDateTime PlainYearMonth
 -- | Extracts the year and month in the zoned wall-clock view.
 -- |
 -- | ```purescript
--- | zoned <- ZonedDateTime.from_ "2024-01-15T12:00:00-05:00[America/New_York]"
+-- | zoned <- ZonedDateTime.fromString_ "2024-01-15T12:00:00-05:00[America/New_York]"
 -- | Console.log (PlainYearMonth.toString_ (ZonedDateTime.toPlainYearMonth zoned))
 -- | ```
 -- |
@@ -853,7 +910,7 @@ foreign import _toPlainMonthDay :: Fn1 ZonedDateTime PlainMonthDay
 -- | Extracts the month and day in the zoned wall-clock view.
 -- |
 -- | ```purescript
--- | zoned <- ZonedDateTime.from_ "2024-01-15T12:00:00-05:00[America/New_York]"
+-- | zoned <- ZonedDateTime.fromString_ "2024-01-15T12:00:00-05:00[America/New_York]"
 -- | Console.log (PlainMonthDay.toString_ (ZonedDateTime.toPlainMonthDay zoned))
 -- | ```
 -- |
@@ -919,7 +976,7 @@ toString_ zonedDateTime = Function.Uncurried.runFn2 _toString defaultToStringOpt
 -- | Serializes to ISO 8601 format with time zone. Options: calendarName, timeZoneName, offset, fractionalSecondDigits, smallestUnit, roundingMode.
 -- |
 -- | ```purescript
--- | zoned <- ZonedDateTime.from_ "2024-01-15T12:00:00.123456789-05:00[America/New_York]"
+-- | zoned <- ZonedDateTime.fromString_ "2024-01-15T12:00:00.123456789-05:00[America/New_York]"
 -- | Console.log
 -- |   ( ZonedDateTime.toString
 -- |       { smallestUnit: TemporalUnit.Minute

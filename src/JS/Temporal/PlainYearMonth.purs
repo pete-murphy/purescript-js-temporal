@@ -5,9 +5,11 @@
 module JS.Temporal.PlainYearMonth
   ( module JS.Temporal.PlainYearMonth.Internal
   -- * Construction
-  , new
+  , PlainYearMonthComponents
   , from
   , from_
+  , fromString
+  , fromString_
   -- * Properties
   , year
   , month
@@ -70,24 +72,10 @@ import Unsafe.Coerce as Unsafe.Coerce
 
 -- Construction
 
-foreign import _new :: EffectFn2 Int Int PlainYearMonth
-
--- | Creates a PlainYearMonth from year and month.
--- |
--- | ```purescript
--- | locale <- JS.Intl.Locale.new_ "en-US"
--- | yearMonth <- PlainYearMonth.new 2024 6
--- | firstDay <- PlainYearMonth.toPlainDate { day: 1 } yearMonth
--- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
--- | Console.log (JS.Intl.DateTimeFormat.format formatter firstDay)
--- | ```
--- |
--- | ```text
--- | June 1, 2024
--- | ```
-
-new :: Int -> Int -> Effect PlainYearMonth
-new = Effect.Uncurried.runEffectFn2 _new
+type PlainYearMonthComponents =
+  ( year :: Int
+  , month :: Int
+  )
 
 type OverflowOptions = (overflow :: String)
 
@@ -102,14 +90,13 @@ instance ConvertOption ToOverflowOptions "overflow" Overflow String where
 instance ConvertOption ToOverflowOptions "overflow" String String where
   convertOption _ _ = identity
 
-foreign import _from :: forall r. EffectFn2 { | r } String PlainYearMonth
+foreign import _fromRecord :: forall ro rc. EffectFn2 { | ro } { | rc } PlainYearMonth
 
--- | Creates a PlainYearMonth from an RFC 9557 / ISO 8601 year-month string (e.g. `"2024-01"`).
--- | Options: overflow.
+-- | Creates a PlainYearMonth from component fields. Options: overflow.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | yearMonth <- PlainYearMonth.from { overflow: Overflow.Constrain } "2024-06"
+-- | yearMonth <- PlainYearMonth.from { overflow: Overflow.Constrain } { year: 2024, month: 6 }
 -- | firstDay <- PlainYearMonth.toPlainDate { day: 1 } yearMonth
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter firstDay)
@@ -120,6 +107,67 @@ foreign import _from :: forall r. EffectFn2 { | r } String PlainYearMonth
 -- | ```
 
 from
+  :: forall optsProvided provided rest
+   . Union provided rest PlainYearMonthComponents
+  => ConvertOptionsWithDefaults
+       ToOverflowOptions
+       { | OverflowOptions }
+       { | optsProvided }
+       { | OverflowOptions }
+  => { | optsProvided }
+  -> { | provided }
+  -> Effect PlainYearMonth
+from providedOptions components =
+  Effect.Uncurried.runEffectFn2
+    _fromRecord
+    ( ConvertableOptions.convertOptionsWithDefaults
+        ToOverflowOptions
+        defaultOverflowOptions
+        providedOptions
+    )
+    components
+
+foreign import _fromRecordNoOpts :: forall r. EffectFn1 { | r } PlainYearMonth
+
+-- | Same as [`from`](#from) with default options.
+-- |
+-- | ```purescript
+-- | locale <- JS.Intl.Locale.new_ "en-US"
+-- | yearMonth <- PlainYearMonth.from_ { year: 2024, month: 6 }
+-- | firstDay <- PlainYearMonth.toPlainDate { day: 1 } yearMonth
+-- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
+-- | Console.log (JS.Intl.DateTimeFormat.format formatter firstDay)
+-- | ```
+-- |
+-- | ```text
+-- | June 1, 2024
+-- | ```
+
+from_
+  :: forall provided rest
+   . Union provided rest PlainYearMonthComponents
+  => { | provided }
+  -> Effect PlainYearMonth
+from_ = Effect.Uncurried.runEffectFn1 _fromRecordNoOpts
+
+foreign import _fromString :: forall r. EffectFn2 { | r } String PlainYearMonth
+
+-- | Creates a PlainYearMonth from an RFC 9557 / ISO 8601 year-month string (e.g. `"2024-01"`).
+-- | Options: overflow.
+-- |
+-- | ```purescript
+-- | locale <- JS.Intl.Locale.new_ "en-US"
+-- | yearMonth <- PlainYearMonth.fromString { overflow: Overflow.Constrain } "2024-06"
+-- | firstDay <- PlainYearMonth.toPlainDate { day: 1 } yearMonth
+-- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
+-- | Console.log (JS.Intl.DateTimeFormat.format formatter firstDay)
+-- | ```
+-- |
+-- | ```text
+-- | June 1, 2024
+-- | ```
+
+fromString
   :: forall provided
    . ConvertOptionsWithDefaults
        ToOverflowOptions
@@ -129,8 +177,8 @@ from
   => { | provided }
   -> String
   -> Effect PlainYearMonth
-from providedOptions str =
-  Effect.Uncurried.runEffectFn2 _from
+fromString providedOptions str =
+  Effect.Uncurried.runEffectFn2 _fromString
     ( ConvertableOptions.convertOptionsWithDefaults
         ToOverflowOptions
         defaultOverflowOptions
@@ -138,12 +186,12 @@ from providedOptions str =
     )
     str
 
-foreign import _fromNoOpts :: EffectFn1 String PlainYearMonth
+foreign import _fromStringNoOpts :: EffectFn1 String PlainYearMonth
 
--- | Same as [`from`](#from) with default options.
+-- | Same as [`fromString`](#fromstring) with default options.
 
-from_ :: String -> Effect PlainYearMonth
-from_ = Effect.Uncurried.runEffectFn1 _fromNoOpts
+fromString_ :: String -> Effect PlainYearMonth
+fromString_ = Effect.Uncurried.runEffectFn1 _fromStringNoOpts
 
 -- Properties
 
@@ -184,8 +232,8 @@ foreign import _add :: forall r. EffectFn3 { | r } Duration PlainYearMonth Plain
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | yearMonth <- PlainYearMonth.from_ "2024-06"
--- | threeMonths <- Duration.new { months: 3 }
+-- | yearMonth <- PlainYearMonth.fromString_ "2024-06"
+-- | threeMonths <- Duration.from { months: 3 }
 -- | later <- PlainYearMonth.add { overflow: Overflow.Constrain } threeMonths yearMonth
 -- | firstDay <- PlainYearMonth.toPlainDate { day: 1 } later
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
@@ -231,8 +279,8 @@ foreign import _subtract :: forall r. EffectFn3 { | r } Duration PlainYearMonth 
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | yearMonth <- PlainYearMonth.from_ "2024-06"
--- | twoMonths <- Duration.new { months: 2 }
+-- | yearMonth <- PlainYearMonth.fromString_ "2024-06"
+-- | twoMonths <- Duration.from { months: 2 }
 -- | earlier <- PlainYearMonth.subtract { overflow: Overflow.Constrain } twoMonths yearMonth
 -- | firstDay <- PlainYearMonth.toPlainDate { day: 1 } earlier
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
@@ -286,7 +334,7 @@ foreign import _with :: forall ro rf. EffectFn3 { | ro } { | rf } PlainYearMonth
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | yearMonth <- PlainYearMonth.from_ "2024-06"
+-- | yearMonth <- PlainYearMonth.fromString_ "2024-06"
 -- | changed <- PlainYearMonth.with { overflow: Overflow.Constrain } { month: 12 } yearMonth
 -- | firstDay <- PlainYearMonth.toPlainDate { day: 1 } changed
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
@@ -340,7 +388,7 @@ foreign import _toPlainDate :: EffectFn2 { day :: Int } PlainYearMonth PlainDate
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | yearMonth <- PlainYearMonth.from_ "2024-01"
+-- | yearMonth <- PlainYearMonth.fromString_ "2024-01"
 -- | firstDay <- PlainYearMonth.toPlainDate { day: 1 } yearMonth
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter firstDay)
@@ -394,8 +442,8 @@ foreign import _until :: forall r. EffectFn3 { | r } PlainYearMonth PlainYearMon
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | start <- PlainYearMonth.from_ "2024-01"
--- | end <- PlainYearMonth.from_ "2025-06"
+-- | start <- PlainYearMonth.fromString_ "2024-01"
+-- | end <- PlainYearMonth.fromString_ "2025-06"
 -- | duration <- PlainYearMonth.until { largestUnit: TemporalUnit.Year } end start
 -- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- | Console.log (JS.Intl.DurationFormat.format formatter duration)
@@ -440,8 +488,8 @@ foreign import _since :: forall r. EffectFn3 { | r } PlainYearMonth PlainYearMon
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | earlier <- PlainYearMonth.from_ "2022-06"
--- | later <- PlainYearMonth.from_ "2024-06"
+-- | earlier <- PlainYearMonth.fromString_ "2022-06"
+-- | later <- PlainYearMonth.fromString_ "2024-06"
 -- | duration <- PlainYearMonth.since { largestUnit: TemporalUnit.Year } earlier later
 -- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- | Console.log (JS.Intl.DurationFormat.format formatter duration)
@@ -507,7 +555,7 @@ toString_ plainYearMonth = Function.Uncurried.runFn2 _toString defaultToStringOp
 -- | Serializes to ISO 8601 year-month format. Options: calendarName.
 -- |
 -- | ```purescript
--- | yearMonth <- PlainYearMonth.from_ "2024-06"
+-- | yearMonth <- PlainYearMonth.fromString_ "2024-06"
 -- | Console.log (PlainYearMonth.toString {} yearMonth)
 -- | ```
 -- |

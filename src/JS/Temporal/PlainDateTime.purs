@@ -112,6 +112,10 @@ type PlainDateTimeComponents =
   , millisecond :: Int
   , microsecond :: Int
   , nanosecond :: Int
+  , era :: String
+  , eraYear :: Int
+  , monthCode :: String
+  , calendar :: String
   )
 
 type OverflowOptions = (overflow :: String)

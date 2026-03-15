@@ -37,6 +37,7 @@ module JS.Temporal.PlainDate
   , toPlainDateTime
   , toPlainMonthDay
   , toZonedDateTime
+  , toZonedDateTime_
   , toPlainYearMonth
   , toString
   , toString_
@@ -89,6 +90,10 @@ type PlainDateComponents =
   ( year :: Int
   , month :: Int
   , day :: Int
+  , era :: String
+  , eraYear :: Int
+  , monthCode :: String
+  , calendar :: String
   )
 
 type OverflowOptions = (overflow :: String)
@@ -618,13 +623,31 @@ foreign import _toPlainDateTime :: Fn2 PlainTime PlainDate PlainDateTime
 toPlainDateTime :: PlainTime -> PlainDate -> PlainDateTime
 toPlainDateTime = Function.Uncurried.runFn2 _toPlainDateTime
 
-foreign import _toZonedDateTime :: EffectFn2 String PlainDate ZonedDateTime
+foreign import _toZonedDateTime :: EffectFn3 String PlainTime PlainDate ZonedDateTime
+
+-- | Converts to a `ZonedDateTime` at the given time in the given time zone.
+-- |
+-- | ```purescript
+-- | date <- PlainDate.fromString_ "2024-01-15"
+-- | time <- PlainTime.fromString_ "14:30:00"
+-- | zoned <- PlainDate.toZonedDateTime "America/New_York" time date
+-- | Console.log (ZonedDateTime.toString_ zoned)
+-- | ```
+-- |
+-- | ```text
+-- | 2024-01-15T14:30:00-05:00[America/New_York]
+-- | ```
+
+toZonedDateTime :: String -> PlainTime -> PlainDate -> Effect ZonedDateTime
+toZonedDateTime = Effect.Uncurried.runEffectFn3 _toZonedDateTime
+
+foreign import _toZonedDateTimeNoOpts :: EffectFn2 String PlainDate ZonedDateTime
 
 -- | Converts to a `ZonedDateTime` at midnight in the given time zone.
 -- |
 -- | ```purescript
 -- | date <- PlainDate.fromString_ "2024-01-15"
--- | zoned <- PlainDate.toZonedDateTime "America/New_York" date
+-- | zoned <- PlainDate.toZonedDateTime_ "America/New_York" date
 -- | Console.log (ZonedDateTime.toString_ zoned)
 -- | ```
 -- |
@@ -632,8 +655,8 @@ foreign import _toZonedDateTime :: EffectFn2 String PlainDate ZonedDateTime
 -- | 2024-01-15T00:00:00-05:00[America/New_York]
 -- | ```
 
-toZonedDateTime :: String -> PlainDate -> Effect ZonedDateTime
-toZonedDateTime = Effect.Uncurried.runEffectFn2 _toZonedDateTime
+toZonedDateTime_ :: String -> PlainDate -> Effect ZonedDateTime
+toZonedDateTime_ = Effect.Uncurried.runEffectFn2 _toZonedDateTimeNoOpts
 
 -- Serialization
 

@@ -75,6 +75,10 @@ import Unsafe.Coerce as Unsafe.Coerce
 type PlainYearMonthComponents =
   ( year :: Int
   , month :: Int
+  , era :: String
+  , eraYear :: Int
+  , monthCode :: String
+  , calendar :: String
   )
 
 type OverflowOptions = (overflow :: String)

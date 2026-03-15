@@ -133,6 +133,6 @@ exampleToZonedDateTime :: Effect Unit
 exampleToZonedDateTime = do
   -- [EXAMPLE JS.Temporal.PlainDate.toZonedDateTime]
   date <- PlainDate.fromString_ "2024-01-15"
-  zoned <- PlainDate.toZonedDateTime "America/New_York" date
+  zoned <- PlainDate.toZonedDateTime_ "America/New_York" date
   Console.log (ZonedDateTime.toString_ zoned)
   -- [/EXAMPLE]

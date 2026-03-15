@@ -132,6 +132,9 @@ type ZonedDateTimeComponents =
   , timeZone :: String
   , offset :: String
   , monthCode :: String
+  , era :: String
+  , eraYear :: Int
+  , calendar :: String
   )
 
 type FromOptions =

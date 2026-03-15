@@ -87,7 +87,11 @@ export function _toPlainDateTime(plainTime, pd) {
   return pd.toPlainDateTime(plainTime);
 }
 
-export function _toZonedDateTime(timeZone, pd) {
+export function _toZonedDateTime(timeZone, plainTime, pd) {
+  return pd.toZonedDateTime({ timeZone, plainTime });
+}
+
+export function _toZonedDateTimeNoOpts(timeZone, pd) {
   return pd.toZonedDateTime(timeZone);
 }
 

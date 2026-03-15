@@ -9,6 +9,7 @@ module JS.Temporal.Instant
   , fromString
   , fromEpochMilliseconds
   , fromEpochNanoseconds
+  , fromJSDate
   -- * Properties
   , epochMilliseconds
   , epochNanoseconds
@@ -42,6 +43,8 @@ import ConvertableOptions as ConvertableOptions
 import Data.DateTime.Instant as DateTime.Instant
 import Data.Function.Uncurried (Fn2)
 import Data.Function.Uncurried as Function.Uncurried
+import Data.Generic.Rep (from)
+import Data.JSDate (JSDate)
 import Data.Maybe (Maybe)
 import Data.Newtype (unwrap)
 import Data.Time.Duration (Milliseconds(..))
@@ -111,6 +114,12 @@ foreign import _fromEpochNanoseconds :: EffectFn1 BigInt Instant
 
 fromEpochNanoseconds :: BigInt -> Effect Instant
 fromEpochNanoseconds = Effect.Uncurried.runEffectFn1 _fromEpochNanoseconds
+
+foreign import _fromJSDate :: EffectFn1 JSDate Instant
+
+-- | Creates an Instant from a JavaScript Date.
+fromJSDate :: JSDate -> Effect Instant
+fromJSDate = Effect.Uncurried.runEffectFn1 _fromJSDate
 
 -- Properties
 

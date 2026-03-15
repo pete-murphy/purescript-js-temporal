@@ -10,6 +10,10 @@ export function _fromEpochNanoseconds(ns) {
   return Temporal.Instant.fromEpochNanoseconds(ns);
 }
 
+export function _fromJSDate(date) {
+  return Temporal.Instant.from(date);
+}
+
 export const epochMilliseconds = (i) => i.epochMilliseconds;
 export const epochNanoseconds = (i) => i.epochNanoseconds;
 

@@ -195,12 +195,10 @@ test_PlainDate = do
 
   Console.log "PlainDate.toZonedDateTime"
   zoned <- PlainDate.toZonedDateTime_ "America/New_York" plainDate
-  -- Node's --harmony-temporal returns undefined for timeZoneId (uses timeZone.id instead).
-  -- timeZoneId is in the spec: sec-get-temporal.zoneddatetime.prototype.timezoneid
-  -- Test.assertEqual
-  --   { actual: ZonedDateTime.timeZoneId zoned
-  --   , expected: "America/New_York"
-  --   }
+  Test.assertEqual
+    { actual: ZonedDateTime.timeZoneId zoned
+    , expected: "America/New_York"
+    }
   Test.assertEqual
     { actual: PlainDate.toString_ (ZonedDateTime.toPlainDate zoned)
     , expected: "2026-02-21"

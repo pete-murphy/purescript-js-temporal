@@ -27,9 +27,9 @@ Or run a single example:
 spago run -p js-temporal-examples -m Examples.Cookbook.CurrentDateTime
 ```
 
-## Locale-aware formatting with js-intl
+## Locale-aware formatting with `js-intl`
 
-Temporal types work directly with [`purescript-js-intl`](https://pursuit.purescript.org/packages/purescript-js-intl) for locale-aware formatting — useful any time you need to display a date, time, or duration to a user.
+Temporal types work directly with [`js-intl`](https://pursuit.purescript.org/packages/purescript-js-intl) for locale-aware formatting—useful any time you need to display a date, time, or duration to a user.
 
 **Formatting dates and times** with `DateTimeFormat`:
 
@@ -63,20 +63,20 @@ do
 
 All Temporal types that represent a point in time (`PlainDate`, `PlainTime`, `PlainDateTime`, `PlainYearMonth`, `PlainMonthDay`, `Instant`, `ZonedDateTime`) work with `DateTimeFormat`, and `Duration` works with `DurationFormat`. See the [`examples/`](./examples/) directory for more usage patterns.
 
-## `purescript-datetime` interop
+## `datetime` interop
 
-The library provides conversion functions between `purescript-js-temporal` types and [`purescript-datetime`](https://pursuit.purescript.org/packages/purescript-datetime) types, so you can integrate with existing code that uses `Data.Date`, `Data.Time`, `Data.DateTime`, or `Data.DateTime.Instant`.
+The library provides conversion functions between `js-temporal` types and [`datetime`](https://pursuit.purescript.org/packages/purescript-datetime) types, so you can integrate with existing code that uses `Data.Date`, `Data.Time`, `Data.DateTime`, or `Data.DateTime.Instant`.
 
-| `purescript-js-temporal` | `purescript-datetime`             |
-| ------------------------ | --------------------------------- |
-| `PlainDate`              | `Data.Date.Date`                  |
-| `PlainTime`              | `Data.Time.Time`                  |
-| `PlainDateTime`          | `Data.DateTime.DateTime`          |
-| `Instant`                | `Data.DateTime.Instant`           |
-| `Duration`               | `Data.Time.Duration.Milliseconds` |
+| `js-temporal`   | `datetime`                        |
+| --------------- | --------------------------------- |
+| `PlainDate`     | `Data.Date.Date`                  |
+| `PlainTime`     | `Data.Time.Time`                  |
+| `PlainDateTime` | `Data.DateTime.DateTime`          |
+| `Instant`       | `Data.DateTime.Instant`           |
+| `Duration`      | `Data.Time.Duration.Milliseconds` |
 
-Each module exports `fromX` / `toX` functions for its corresponding type — for example, `PlainDate.fromDate` and `PlainDate.toDate`. All conversions round-trip at the precision supported by `purescript-datetime` (milliseconds). Microsecond and nanosecond components are dropped when converting to `purescript-datetime` types.
+Each module exports `fromX` / `toX` functions for its corresponding type — for example, `PlainDate.fromDate` and `PlainDate.toDate`. All conversions round-trip at the precision supported by `datetime` (milliseconds). Microsecond and nanosecond components are dropped when converting to `datetime` types.
 
 `Duration.fromMilliseconds` and `Duration.toMilliseconds` support fixed-unit durations only (days, hours, minutes, seconds, milliseconds); calendar units (years, months, weeks) are not supported.
 
-`ZonedDateTime`, `PlainYearMonth`, and `PlainMonthDay` have no `purescript-datetime` equivalents.
+`ZonedDateTime`, `PlainYearMonth`, and `PlainMonthDay` have no `datetime` equivalents.

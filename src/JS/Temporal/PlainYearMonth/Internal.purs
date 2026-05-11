@@ -1,7 +1,5 @@
 module JS.Temporal.PlainYearMonth.Internal
   ( PlainYearMonth
-  , equals
-  , compare
   , toString
   ) where
 
@@ -17,20 +15,14 @@ foreign import data PlainYearMonth :: Type
 
 foreign import _equals :: Fn2 PlainYearMonth PlainYearMonth Boolean
 foreign import _compare :: Fn2 PlainYearMonth PlainYearMonth Int
--- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
+-- | Default ISO 8601 serialization (no options).
 foreign import toString :: PlainYearMonth -> String
 
-equals :: PlainYearMonth -> PlainYearMonth -> Boolean
-equals a b = Function.Uncurried.runFn2 _equals a b
-
-compare :: PlainYearMonth -> PlainYearMonth -> Ordering
-compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
-
 instance Eq PlainYearMonth where
-  eq = equals
+  eq a b = Function.Uncurried.runFn2 _equals a b
 
 instance Ord PlainYearMonth where
-  compare = compare
+  compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
 
 instance Show PlainYearMonth where
   show = toString

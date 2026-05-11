@@ -11,7 +11,7 @@ export function _fromEpochNanoseconds(ns) {
 }
 
 export function _fromJSDate(date) {
-  return Temporal.Instant.from(date);
+  return Temporal.Instant.fromEpochMilliseconds(date.getTime());
 }
 
 export const epochMilliseconds = (i) => i.epochMilliseconds;

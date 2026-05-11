@@ -69,16 +69,9 @@ export function _since(other, pym) {
   return pym.since(other);
 }
 
-export function _compare(a, b) {
-  return Temporal.PlainYearMonth.compare(a, b);
-}
 
-export function _equals(a, b) {
-  return a.equals(b);
-}
 
 export function _toString(options, pym) {
   return pym.toString(options);
 }
 
-export const toString_ = (pym) => pym.toString();

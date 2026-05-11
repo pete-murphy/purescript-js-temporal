@@ -3,6 +3,7 @@ module Examples.Docs.PlainTime where
 
 import Prelude
 
+
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Intl.DateTimeFormat as JS.Intl.DateTimeFormat
@@ -13,56 +14,89 @@ import JS.Temporal.Options.Overflow as Overflow
 import JS.Temporal.Options.TemporalUnit as TemporalUnit
 import JS.Temporal.PlainTime as PlainTime
 
--- [EXAMPLE JS.Temporal.PlainTime.from]
+exampleFromWithOptions :: Effect Unit
+exampleFromWithOptions = do
+  time <- PlainTime.fromWithOptions { overflow: Overflow.Constrain }
+    { hour: 9, minute: 30, second: 0 }
+  Console.log (PlainTime.toString time)
+
 exampleFrom :: Effect Unit
 exampleFrom = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  time <- PlainTime.from
-    { hour: 9
-    , minute: 30
-    , second: 0
-    }
+  time <- PlainTime.from { hour: 9, minute: 30, second: 0 }
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
   Console.log (JS.Intl.DateTimeFormat.format formatter time)
 
--- [/EXAMPLE]
+exampleFromStringWithOptions :: Effect Unit
+exampleFromStringWithOptions = do
+  time <- PlainTime.fromStringWithOptions { overflow: Overflow.Constrain } "15:30:00"
+  Console.log (PlainTime.toString time)
 
--- [EXAMPLE JS.Temporal.PlainTime.fromString]
 exampleFromString :: Effect Unit
 exampleFromString = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  time <- PlainTime.fromStringWithOptions { overflow: Overflow.Constrain } "15:30:00"
+  time <- PlainTime.fromString "15:30:00"
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
   Console.log (JS.Intl.DateTimeFormat.format formatter time)
 
--- [/EXAMPLE]
+exampleHour :: Effect Unit
+exampleHour = do
+  time <- PlainTime.fromString "14:30:45"
+  Console.log ("Hour: " <> show (PlainTime.hour time))
 
--- [EXAMPLE JS.Temporal.PlainTime.add]
+exampleMinute :: Effect Unit
+exampleMinute = do
+  time <- PlainTime.fromString "14:30:45"
+  Console.log ("Minute: " <> show (PlainTime.minute time))
+
+exampleSecond :: Effect Unit
+exampleSecond = do
+  time <- PlainTime.fromString "14:30:45"
+  Console.log ("Second: " <> show (PlainTime.second time))
+
+exampleMillisecond :: Effect Unit
+exampleMillisecond = do
+  time <- PlainTime.fromString "14:30:45.123"
+  Console.log ("Millisecond: " <> show (PlainTime.millisecond time))
+
+exampleMicrosecond :: Effect Unit
+exampleMicrosecond = do
+  time <- PlainTime.fromString "14:30:45.123456"
+  Console.log ("Microsecond: " <> show (PlainTime.microsecond time))
+
+exampleNanosecond :: Effect Unit
+exampleNanosecond = do
+  time <- PlainTime.fromString "14:30:45.123456789"
+  Console.log ("Nanosecond: " <> show (PlainTime.nanosecond time))
+
 exampleAdd :: Effect Unit
 exampleAdd = do
-  locale <- JS.Intl.Locale.new_ "en-US"
   time <- PlainTime.fromString "14:30:00"
   twoHours <- Duration.from { hours: 2 }
   later <- PlainTime.add twoHours time
-  formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
-  Console.log (JS.Intl.DateTimeFormat.format formatter later)
+  Console.log (PlainTime.toString later)
 
--- [/EXAMPLE]
+exampleSubtract :: Effect Unit
+exampleSubtract = do
+  time <- PlainTime.fromString "14:30:00"
+  twoHours <- Duration.from { hours: 2 }
+  earlier <- PlainTime.subtract twoHours time
+  Console.log (PlainTime.toString earlier)
 
--- [EXAMPLE JS.Temporal.PlainTime.with]
-exampleWith :: Effect Unit
-exampleWith = do
-  locale <- JS.Intl.Locale.new_ "en-US"
+exampleWithWithOptions :: Effect Unit
+exampleWithWithOptions = do
   time <- PlainTime.fromString "15:30:45"
   noon <- PlainTime.withWithOptions { overflow: Overflow.Constrain } { hour: 12, minute: 0, second: 0 } time
-  formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
-  Console.log (JS.Intl.DateTimeFormat.format formatter noon)
+  Console.log (PlainTime.toString noon)
 
--- [/EXAMPLE]
+exampleWith :: Effect Unit
+exampleWith = do
+  time <- PlainTime.fromString "15:30:45"
+  noon <- PlainTime.with { hour: 12, minute: 0, second: 0 } time
+  Console.log (PlainTime.toString noon)
 
--- [EXAMPLE JS.Temporal.PlainTime.until]
-exampleUntil :: Effect Unit
-exampleUntil = do
+exampleUntilWithOptions :: Effect Unit
+exampleUntilWithOptions = do
   locale <- JS.Intl.Locale.new_ "en-US"
   start <- PlainTime.fromString "09:00:00"
   end <- PlainTime.fromString "17:30:00"
@@ -70,11 +104,15 @@ exampleUntil = do
   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
   Console.log (JS.Intl.DurationFormat.format formatter duration)
 
--- [/EXAMPLE]
+exampleUntil :: Effect Unit
+exampleUntil = do
+  start <- PlainTime.fromString "09:00:00"
+  end <- PlainTime.fromString "17:30:00"
+  duration <- PlainTime.until end start
+  Console.log (Duration.toString duration)
 
--- [EXAMPLE JS.Temporal.PlainTime.since]
-exampleSince :: Effect Unit
-exampleSince = do
+exampleSinceWithOptions :: Effect Unit
+exampleSinceWithOptions = do
   locale <- JS.Intl.Locale.new_ "en-US"
   earlier <- PlainTime.fromString "08:00:00"
   later <- PlainTime.fromString "12:30:00"
@@ -82,35 +120,36 @@ exampleSince = do
   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
   Console.log (JS.Intl.DurationFormat.format formatter duration)
 
--- [/EXAMPLE]
+exampleSince :: Effect Unit
+exampleSince = do
+  earlier <- PlainTime.fromString "08:00:00"
+  later <- PlainTime.fromString "12:30:00"
+  duration <- PlainTime.since earlier later
+  Console.log (Duration.toString duration)
 
--- [EXAMPLE JS.Temporal.PlainTime.subtract]
-exampleSubtract :: Effect Unit
-exampleSubtract = do
-  locale <- JS.Intl.Locale.new_ "en-US"
-  time <- PlainTime.fromString "14:30:00"
-  twoHours <- Duration.from { hours: 2 }
-  earlier <- PlainTime.subtract twoHours time
-  formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
-  Console.log (JS.Intl.DateTimeFormat.format formatter earlier)
-
--- [/EXAMPLE]
-
--- [EXAMPLE JS.Temporal.PlainTime.round]
 exampleRound :: Effect Unit
 exampleRound = do
-  locale <- JS.Intl.Locale.new_ "en-US"
   time <- PlainTime.fromString "09:30:45.123"
   rounded <- PlainTime.round { smallestUnit: TemporalUnit.Minute } time
-  formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
-  Console.log (JS.Intl.DateTimeFormat.format formatter rounded)
+  Console.log (PlainTime.toString rounded)
 
--- [/EXAMPLE]
+exampleFromTime :: Effect Unit
+exampleFromTime = do
+  time <- PlainTime.fromString "14:30:00"
+  roundTripped <- PlainTime.fromTime (PlainTime.toTime time)
+  Console.log (PlainTime.toString roundTripped)
 
--- [EXAMPLE JS.Temporal.PlainTime.toString]
+exampleToTime :: Effect Unit
+exampleToTime = do
+  time <- PlainTime.fromString "14:30:00"
+  Console.log (show (PlainTime.toTime time))
+
+exampleToStringWithOptions :: Effect Unit
+exampleToStringWithOptions = do
+  time <- PlainTime.fromString "14:30:45.123"
+  Console.log (PlainTime.toStringWithOptions { smallestUnit: TemporalUnit.Millisecond } time)
+
 exampleToString :: Effect Unit
 exampleToString = do
   time <- PlainTime.fromString "14:30:45.123"
-  Console.log (PlainTime.toStringWithOptions { smallestUnit: TemporalUnit.Millisecond } time)
--- [/EXAMPLE]
-
+  Console.log (PlainTime.toString time)

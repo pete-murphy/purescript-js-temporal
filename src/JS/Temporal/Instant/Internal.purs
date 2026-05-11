@@ -1,8 +1,6 @@
 -- | Opaque wrapper for `Temporal.Instant`. Re-exported from `JS.Temporal.Instant`.
 module JS.Temporal.Instant.Internal
   ( Instant
-  , equals
-  , compare
   , toString
   ) where
 
@@ -19,20 +17,14 @@ foreign import data Instant :: Type
 
 foreign import _equals :: Fn2 Instant Instant Boolean
 foreign import _compare :: Fn2 Instant Instant Int
--- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
+-- | Default ISO 8601 serialization (no options).
 foreign import toString :: Instant -> String
 
-equals :: Instant -> Instant -> Boolean
-equals a b = Function.Uncurried.runFn2 _equals a b
-
-compare :: Instant -> Instant -> Ordering
-compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
-
 instance Eq Instant where
-  eq = equals
+  eq a b = Function.Uncurried.runFn2 _equals a b
 
 instance Ord Instant where
-  compare = compare
+  compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
 
 instance Show Instant where
   show = toString

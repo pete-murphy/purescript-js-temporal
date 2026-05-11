@@ -1,4 +1,4 @@
--- | A point in time with nanosecond precision, represented as nanoseconds sinceWithOptions
+-- | A point in time with nanosecond precision, represented as nanoseconds since
 -- | the Unix epoch (1970-01-01T00:00:00Z). No time zone or calendar. Use
 -- | [`toZonedDateTimeISO`](#tozoneddatetimeiso) to interpret in a time zone.
 -- |
@@ -70,10 +70,12 @@ foreign import _fromString :: EffectFn1 String Instant
 -- | Parses an ISO 8601 instant string (e.g. `"2024-01-15T12:00:00Z"`). Throws on invalid input.
 -- |
 -- | ```purescript
--- | locale <- JS.Intl.Locale.new_ "en-US"
--- | instant <- Instant.fromString "2024-01-15T12:00:00Z"
--- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium", timeZone: "UTC" }
--- | Console.log (JS.Intl.DateTimeFormat.format formatter instant)
+-- | exampleFromString :: Effect Unit
+-- | exampleFromString = do
+-- |   locale <- JS.Intl.Locale.new_ "en-US"
+-- |   instant <- Instant.fromString "2024-01-15T12:00:00Z"
+-- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium", timeZone: "UTC" }
+-- |   Console.log (JS.Intl.DateTimeFormat.format formatter instant)
 -- | ```
 -- |
 -- | ```text
@@ -88,8 +90,10 @@ foreign import _fromEpochMilliseconds :: EffectFn1 Number Instant
 -- | Creates an Instant from epoch milliseconds.
 -- |
 -- | ```purescript
--- | instant <- Instant.fromEpochMilliseconds 1000.0
--- | Console.log (Instant.toString instant)
+-- | exampleFromEpochMilliseconds :: Effect Unit
+-- | exampleFromEpochMilliseconds = do
+-- |   instant <- Instant.fromEpochMilliseconds 1000.0
+-- |   Console.log (Instant.toString instant)
 -- | ```
 -- |
 -- | ```text
@@ -104,8 +108,10 @@ foreign import _fromEpochNanoseconds :: EffectFn1 BigInt Instant
 -- | Creates an Instant from epoch nanoseconds.
 -- |
 -- | ```purescript
--- | instant <- Instant.fromEpochNanoseconds (BigInt.fromInt 1000000000)
--- | Console.log (Instant.toString instant)
+-- | exampleFromEpochNanoseconds :: Effect Unit
+-- | exampleFromEpochNanoseconds = do
+-- |   instant <- Instant.fromEpochNanoseconds (BigInt.fromInt 1000000000)
+-- |   Console.log (Instant.toString instant)
 -- | ```
 -- |
 -- | ```text
@@ -118,14 +124,47 @@ fromEpochNanoseconds = Effect.Uncurried.runEffectFn1 _fromEpochNanoseconds
 foreign import _fromJSDate :: EffectFn1 JSDate Instant
 
 -- | Creates an Instant from a JavaScript Date.
+-- |
+-- | ```purescript
+-- | exampleFromJSDate :: Effect Unit
+-- | exampleFromJSDate = do
+-- |   jsDate <- JSDate.parse "2024-01-15T12:00:00Z"
+-- |   instant <- Instant.fromJSDate jsDate
+-- |   Console.log (Instant.toString instant)
+-- | ```
+
 fromJSDate :: JSDate -> Effect Instant
 fromJSDate = Effect.Uncurried.runEffectFn1 _fromJSDate
 
 -- Properties
 
--- | Milliseconds sinceWithOptions the Unix epoch.
+-- | Milliseconds since the Unix epoch.
+-- |
+-- | ```purescript
+-- | exampleEpochMilliseconds :: Effect Unit
+-- | exampleEpochMilliseconds = do
+-- |   instant <- Instant.fromString "1970-01-01T00:00:01Z"
+-- |   Console.log ("Epoch ms: " <> show (Instant.epochMilliseconds instant))
+-- | ```
+-- |
+-- | ```text
+-- | Epoch ms: 1000.0
+-- | ```
+
 foreign import epochMilliseconds :: Instant -> Number
--- | Nanoseconds sinceWithOptions the Unix epoch.
+-- | Nanoseconds since the Unix epoch.
+-- |
+-- | ```purescript
+-- | exampleEpochNanoseconds :: Effect Unit
+-- | exampleEpochNanoseconds = do
+-- |   instant <- Instant.fromString "1970-01-01T00:00:01Z"
+-- |   Console.log ("Epoch ns: " <> show (Instant.epochNanoseconds instant))
+-- | ```
+-- |
+-- | ```text
+-- | Epoch ns: 1000000000
+-- | ```
+
 foreign import epochNanoseconds :: Instant -> BigInt
 
 -- Arithmetic
@@ -135,10 +174,12 @@ foreign import _add :: EffectFn2 Duration Instant Instant
 -- | Adds a duration to an instant. Throws for calendar durations.
 -- |
 -- | ```purescript
--- | instant <- Instant.fromString "2024-01-15T12:00:00Z"
--- | oneHour <- Duration.from { hours: 1 }
--- | later <- Instant.add oneHour instant
--- | Console.log (Instant.toString later)
+-- | exampleAdd :: Effect Unit
+-- | exampleAdd = do
+-- |   instant <- Instant.fromString "2024-01-15T12:00:00Z"
+-- |   oneHour <- Duration.from { hours: 1 }
+-- |   later <- Instant.add oneHour instant
+-- |   Console.log (Instant.toString later)
 -- | ```
 -- |
 -- | ```text
@@ -153,10 +194,12 @@ foreign import _subtract :: EffectFn2 Duration Instant Instant
 -- | Subtracts a duration. Arg order: `subtract duration instant`.
 -- |
 -- | ```purescript
--- | instant <- Instant.fromString "2024-01-15T12:00:00Z"
--- | oneHour <- Duration.from { hours: 1 }
--- | earlier <- Instant.subtract oneHour instant
--- | Console.log (Instant.toString earlier)
+-- | exampleSubtract :: Effect Unit
+-- | exampleSubtract = do
+-- |   instant <- Instant.fromString "2024-01-15T12:00:00Z"
+-- |   oneHour <- Duration.from { hours: 1 }
+-- |   earlier <- Instant.subtract oneHour instant
+-- |   Console.log (Instant.toString earlier)
 -- | ```
 -- |
 -- | ```text
@@ -203,15 +246,17 @@ instance ConvertOption ToDifferenceOptions "roundingMode" String String where
 
 foreign import _untilWithOptions :: forall r. EffectFn3 { | r } Instant Instant Duration
 
--- | Duration from `subject` (last arg) untilWithOptions `other` (second arg). Arg order: `untilWithOptions options other subject`.
+-- | Duration from `subject` (last arg) until `other` (second arg). Arg order: `untilWithOptions options other subject`.
 -- |
 -- | ```purescript
--- | locale <- JS.Intl.Locale.new_ "en-US"
--- | earlier <- Instant.fromString "2020-01-09T00:00Z"
--- | later <- Instant.fromString "2020-01-09T04:00Z"
--- | result <- Instant.untilWithOptions { largestUnit: TemporalUnit.Hour } later earlier
--- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
--- | Console.log ("4 hours: " <> JS.Intl.DurationFormat.format formatter result)
+-- | exampleUntilWithOptions :: Effect Unit
+-- | exampleUntilWithOptions = do
+-- |   locale <- JS.Intl.Locale.new_ "en-US"
+-- |   earlier <- Instant.fromString "2020-01-09T00:00Z"
+-- |   later <- Instant.fromString "2020-01-09T04:00Z"
+-- |   result <- Instant.untilWithOptions { largestUnit: TemporalUnit.Hour } later earlier
+-- |   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
+-- |   Console.log ("4 hours: " <> JS.Intl.DurationFormat.format formatter result)
 -- | ```
 -- |
 -- | ```text
@@ -243,20 +288,36 @@ untilWithOptions providedOptions other instant =
 foreign import _until :: EffectFn2 Instant Instant Duration
 
 -- | Same as [`untilWithOptions`](#untilWithOptions) with default options.
+-- |
+-- | ```purescript
+-- | exampleUntil :: Effect Unit
+-- | exampleUntil = do
+-- |   earlier <- Instant.fromString "2020-01-09T00:00Z"
+-- |   later <- Instant.fromString "2020-01-09T04:00Z"
+-- |   result <- Instant.until later earlier
+-- |   Console.log (Duration.toString result)
+-- | ```
+-- |
+-- | ```text
+-- | PT14400S
+-- | ```
+
 until :: Instant -> Instant -> Effect Duration
 until = Effect.Uncurried.runEffectFn2 _until
 
 foreign import _sinceWithOptions :: forall r. EffectFn3 { | r } Instant Instant Duration
 
--- | Duration from `other` to `subject` (inverse of untilWithOptions). Arg order: `sinceWithOptions options other subject`.
+-- | Duration from `other` to `subject` (inverse of `untilWithOptions`). Arg order: `sinceWithOptions options other subject`.
 -- |
 -- | ```purescript
--- | locale <- JS.Intl.Locale.new_ "en-US"
--- | earlier <- Instant.fromString "2020-01-09T00:00Z"
--- | later <- Instant.fromString "2020-01-09T04:00Z"
--- | elapsed <- Instant.sinceWithOptions { largestUnit: TemporalUnit.Hour } earlier later
--- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
--- | Console.log ("Elapsed: " <> JS.Intl.DurationFormat.format formatter elapsed)
+-- | exampleSinceWithOptions :: Effect Unit
+-- | exampleSinceWithOptions = do
+-- |   locale <- JS.Intl.Locale.new_ "en-US"
+-- |   earlier <- Instant.fromString "2020-01-09T00:00Z"
+-- |   later <- Instant.fromString "2020-01-09T04:00Z"
+-- |   elapsed <- Instant.sinceWithOptions { largestUnit: TemporalUnit.Hour } earlier later
+-- |   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
+-- |   Console.log ("Elapsed: " <> JS.Intl.DurationFormat.format formatter elapsed)
 -- | ```
 -- |
 -- | ```text
@@ -288,6 +349,20 @@ sinceWithOptions providedOptions other instant =
 foreign import _since :: EffectFn2 Instant Instant Duration
 
 -- | Same as [`sinceWithOptions`](#sinceWithOptions) with default options.
+-- |
+-- | ```purescript
+-- | exampleSince :: Effect Unit
+-- | exampleSince = do
+-- |   earlier <- Instant.fromString "2020-01-09T00:00Z"
+-- |   later <- Instant.fromString "2020-01-09T04:00Z"
+-- |   elapsed <- Instant.since earlier later
+-- |   Console.log (Duration.toString elapsed)
+-- | ```
+-- |
+-- | ```text
+-- | PT14400S
+-- | ```
+
 since :: Instant -> Instant -> Effect Duration
 since = Effect.Uncurried.runEffectFn2 _since
 
@@ -324,13 +399,15 @@ foreign import _round :: forall r. EffectFn2 { | r } Instant Instant
 -- | Rounds the instant to the given smallest unit. Options: smallestUnit, roundingIncrement, roundingMode.
 -- |
 -- | ```purescript
--- | instant <- Instant.fromString "2024-01-15T12:00:00.789Z"
--- | rounded <- Instant.round
--- |   { smallestUnit: TemporalUnit.Second
--- |   , roundingMode: RoundingMode.HalfExpand
--- |   }
--- |   instant
--- | Console.log (Instant.toString rounded)
+-- | exampleRound :: Effect Unit
+-- | exampleRound = do
+-- |   instant <- Instant.fromString "2024-01-15T12:00:00.789Z"
+-- |   rounded <- Instant.round
+-- |     { smallestUnit: TemporalUnit.Second
+-- |     , roundingMode: RoundingMode.HalfExpand
+-- |     }
+-- |     instant
+-- |   Console.log (Instant.toString rounded)
 -- | ```
 -- |
 -- | ```text
@@ -360,11 +437,38 @@ round providedOptions instant =
 -- Conversions
 
 -- | Converts a purescript-datetime `Instant` to a Temporal `Instant`.
+-- |
+-- | ```purescript
+-- | exampleFromDateTimeInstant :: Effect Unit
+-- | exampleFromDateTimeInstant = do
+-- |   let dtInstant = DateTime.Instant.fromDateTime bottom
+-- |   instant <- Instant.fromDateTimeInstant dtInstant
+-- |   Console.log (Instant.toString instant)
+-- | ```
+-- |
+-- | ```text
+-- | -271820-01-01T00:00:00Z
+-- | ```
+
 fromDateTimeInstant :: DateTime.Instant.Instant -> Effect Instant
 fromDateTimeInstant instant = fromEpochMilliseconds (unwrap (DateTime.Instant.unInstant instant))
 
 -- | Converts a Temporal `Instant` to a purescript-datetime `Instant`.
 -- | Returns `Nothing` if the value is outside the datetime Instant range.
+-- |
+-- | ```purescript
+-- | exampleToDateTimeInstant :: Effect Unit
+-- | exampleToDateTimeInstant = do
+-- |   instant <- Instant.fromString "2024-01-15T12:00:00Z"
+-- |   case Instant.toDateTimeInstant instant of
+-- |     Just dtInstant -> Console.log (show dtInstant)
+-- |     Nothing -> Console.log "Out of range"
+-- | ```
+-- |
+-- | ```text
+-- | (Instant (Milliseconds 1705320000000.0))
+-- | ```
+
 toDateTimeInstant :: Instant -> Maybe DateTime.Instant.Instant
 toDateTimeInstant instant = DateTime.Instant.instant (Milliseconds (epochMilliseconds instant))
 
@@ -373,9 +477,11 @@ foreign import _toZonedDateTimeISO :: Fn2 String Instant ZonedDateTime
 -- | Converts the instant to a ZonedDateTime in the given time zone (e.g. `"America/New_York"`).
 -- |
 -- | ```purescript
--- | instant <- Instant.fromString "2024-01-15T12:00:00Z"
--- | zoned <- pure (Instant.toZonedDateTimeISO "America/New_York" instant)
--- | Console.log (ZonedDateTime.toString zoned)
+-- | exampleToZonedDateTimeISO :: Effect Unit
+-- | exampleToZonedDateTimeISO = do
+-- |   instant <- Instant.fromString "2024-01-15T12:00:00Z"
+-- |   zoned <- pure (Instant.toZonedDateTimeISO "America/New_York" instant)
+-- |   Console.log (ZonedDateTime.toString zoned)
 -- | ```
 -- |
 -- | ```text
@@ -423,20 +529,34 @@ instance ConvertOption ToToStringOptions "timeZone" String String where
 foreign import _toString :: forall r. Fn2 { | r } Instant String
 
 -- | Same as [`toStringWithOptions`](#tostring) with default options.
+-- |
+-- | ```purescript
+-- | exampleToString :: Effect Unit
+-- | exampleToString = do
+-- |   instant <- Instant.fromString "2024-01-15T12:00:00.789Z"
+-- |   Console.log (Instant.toString instant)
+-- | ```
+-- |
+-- | ```text
+-- | 2024-01-15T12:00:00.789Z
+-- | ```
+
 toString :: Instant -> String
 toString instant = Function.Uncurried.runFn2 _toString defaultToStringOptions instant
 
 -- | Serializes the instant to ISO 8601 format. Options: fractionalSecondDigits, smallestUnit, roundingMode, timeZone.
 -- |
 -- | ```purescript
--- | instant <- Instant.fromString "2024-01-15T12:00:00.789Z"
--- | Console.log
--- |   ( Instant.toStringWithOptions
--- |       { smallestUnit: TemporalUnit.Second
--- |       , timeZone: "UTC"
--- |       }
--- |       instant
--- |   )
+-- | exampleToStringWithOptions :: Effect Unit
+-- | exampleToStringWithOptions = do
+-- |   instant <- Instant.fromString "2024-01-15T12:00:00.789Z"
+-- |   Console.log
+-- |     ( Instant.toStringWithOptions
+-- |         { smallestUnit: TemporalUnit.Second
+-- |         , timeZone: "UTC"
+-- |         }
+-- |         instant
+-- |     )
 -- | ```
 -- |
 -- | ```text

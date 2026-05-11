@@ -11,7 +11,7 @@ import JS.Temporal.PlainDate as PlainDate
 import JS.Temporal.PlainDateTime as PlainDateTime
 import JS.Temporal.PlainTime as PlainTime
 import JS.Temporal.ZonedDateTime as ZonedDateTime
-import JS.Temporal.ZonedDateTime.Internal (compare) as ZonedDateTimeCompare
+
 
 nextWeeklyOccurrence
   :: ZonedDateTime.ZonedDateTime
@@ -29,8 +29,7 @@ nextWeeklyOccurrence now weekday eventTime eventTimeZone = do
   let plainDateTime = PlainDate.toPlainDateTime eventTime nextDate
   nextOccurrence <- PlainDateTime.toZonedDateTime eventTimeZone plainDateTime
 
-  let ordering = ZonedDateTimeCompare.compare now nextOccurrence
-  if ordering == GT then do
+  if now > nextOccurrence then do
     weeksDuration <- Duration.from { weeks: 1 }
     next <- ZonedDateTime.add weeksDuration nextOccurrence
     ZonedDateTime.withTimeZone (ZonedDateTime.timeZoneId now) next

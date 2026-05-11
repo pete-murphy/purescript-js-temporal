@@ -1,7 +1,5 @@
 module JS.Temporal.PlainDateTime.Internal
   ( PlainDateTime
-  , equals
-  , compare
   , toString
   ) where
 
@@ -17,20 +15,14 @@ foreign import data PlainDateTime :: Type
 
 foreign import _equals :: Fn2 PlainDateTime PlainDateTime Boolean
 foreign import _compare :: Fn2 PlainDateTime PlainDateTime Int
--- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
+-- | Default ISO 8601 serialization (no options).
 foreign import toString :: PlainDateTime -> String
 
-equals :: PlainDateTime -> PlainDateTime -> Boolean
-equals a b = Function.Uncurried.runFn2 _equals a b
-
-compare :: PlainDateTime -> PlainDateTime -> Ordering
-compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
-
 instance Eq PlainDateTime where
-  eq = equals
+  eq a b = Function.Uncurried.runFn2 _equals a b
 
 instance Ord PlainDateTime where
-  compare = compare
+  compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
 
 instance Show PlainDateTime where
   show = toString

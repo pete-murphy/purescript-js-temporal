@@ -17,6 +17,10 @@ run-examples:
     spago docs -f html
     open generated-docs/html/index.html
 
+# Check that every exported function has a corresponding doc example and vice-versa.
+check-doc-examples:
+    node script/check-doc-examples.mjs
+
 # Extract doc examples from examples/src/Examples/Docs/ into source -- | comments.
 # Runs Examples.Docs.Main to capture output with the dev Temporal polyfill.
 sync-doc-examples:

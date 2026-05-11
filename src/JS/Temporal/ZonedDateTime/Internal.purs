@@ -1,7 +1,5 @@
 module JS.Temporal.ZonedDateTime.Internal
   ( ZonedDateTime
-  , equals
-  , compare
   , toString
   ) where
 
@@ -17,20 +15,14 @@ foreign import data ZonedDateTime :: Type
 
 foreign import _equals :: Fn2 ZonedDateTime ZonedDateTime Boolean
 foreign import _compare :: Fn2 ZonedDateTime ZonedDateTime Int
--- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
+-- | Default ISO 8601 serialization (no options).
 foreign import toString :: ZonedDateTime -> String
 
-equals :: ZonedDateTime -> ZonedDateTime -> Boolean
-equals a b = Function.Uncurried.runFn2 _equals a b
-
-compare :: ZonedDateTime -> ZonedDateTime -> Ordering
-compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
-
 instance Eq ZonedDateTime where
-  eq = equals
+  eq a b = Function.Uncurried.runFn2 _equals a b
 
 instance Ord ZonedDateTime where
-  compare = compare
+  compare a b = intToOrdering (Function.Uncurried.runFn2 _compare a b)
 
 instance Show ZonedDateTime where
   show = toString

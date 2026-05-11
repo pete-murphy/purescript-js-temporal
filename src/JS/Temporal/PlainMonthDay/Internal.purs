@@ -1,6 +1,5 @@
 module JS.Temporal.PlainMonthDay.Internal
   ( PlainMonthDay
-  , equals
   , toString
   ) where
 
@@ -14,14 +13,11 @@ import Unsafe.Coerce as Unsafe.Coerce
 foreign import data PlainMonthDay :: Type
 
 foreign import _equals :: Fn2 PlainMonthDay PlainMonthDay Boolean
--- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
+-- | Default ISO 8601 serialization (no options).
 foreign import toString :: PlainMonthDay -> String
 
-equals :: PlainMonthDay -> PlainMonthDay -> Boolean
-equals a b = Function.Uncurried.runFn2 _equals a b
-
 instance Eq PlainMonthDay where
-  eq = equals
+  eq a b = Function.Uncurried.runFn2 _equals a b
 
 instance Show PlainMonthDay where
   show = toString

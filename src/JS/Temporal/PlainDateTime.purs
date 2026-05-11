@@ -1,6 +1,6 @@
 -- | A date and time (year, month, day, hour, minute, etc.) without time zone.
 -- | Use for wall-clock times that are not tied to a specific instant (e.g. "Jan 15,
--- | 2024 at 3pm"). Combine withWithOptions a time zone to get a ZonedDateTime.
+-- | 2024 at 3pm"). Combine with a time zone to get a ZonedDateTime.
 -- |
 -- | See <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal/PlainDateTime>
 module JS.Temporal.PlainDateTime
@@ -133,20 +133,16 @@ instance ConvertOption ToOverflowOptions "overflow" String String where
 
 foreign import _fromRecordWithOptions :: forall ro rc. EffectFn2 { | ro } { | rc } PlainDateTime
 
--- | Creates a PlainDateTime fromWithOptions component fields. Options: overflow.
+-- | Creates a PlainDateTime from component fields. Options: overflow.
 -- |
 -- | ```purescript
--- | locale <- JS.Intl.Locale.new_ "en-US"
--- | dateTime <- PlainDateTime.fromWithOptions { overflow: Overflow.Constrain }
--- |   { year: 2024
--- |   , month: 1
--- |   , day: 15
--- |   , hour: 9
--- |   , minute: 30
--- |   , second: 0
--- |   }
--- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
--- | Console.log (JS.Intl.DateTimeFormat.format formatter dateTime)
+-- | exampleFromWithOptions :: Effect Unit
+-- | exampleFromWithOptions = do
+-- |   locale <- JS.Intl.Locale.new_ "en-US"
+-- |   dateTime <- PlainDateTime.fromWithOptions { overflow: Overflow.Constrain }
+-- |     { year: 2024, month: 1, day: 15, hour: 9, minute: 30, second: 0 }
+-- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
+-- |   Console.log (JS.Intl.DateTimeFormat.format formatter dateTime)
 -- | ```
 -- |
 -- | ```text
@@ -179,17 +175,25 @@ foreign import _fromRecord :: forall r. EffectFn1 { | r } PlainDateTime
 -- | Same as [`fromWithOptions`](#fromWithOptions) withWithOptions default options.
 -- |
 -- | ```purescript
--- | locale <- JS.Intl.Locale.new_ "en-US"
--- | dateTime <- PlainDateTime.from
--- |   { year: 2024
--- |   , month: 1
--- |   , day: 15
--- |   , hour: 9
--- |   , minute: 30
--- |   , second: 0
--- |   }
--- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
--- | Console.log (JS.Intl.DateTimeFormat.format formatter dateTime)
+-- | exampleFrom :: Effect Unit
+-- | exampleFrom = do
+-- |   locale <- JS.Intl.Locale.new_ "en-US"
+-- |   dateTime <- PlainDateTime.from
+-- |     { year: 2024, month: 1, day: 15, hour: 9, minute: 30, second: 0 }
+-- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
+-- |   Console.log (JS.Intl.DateTimeFormat.format formatter dateTime)
+-- |
+-- | exampleFromStringWithOptions :: Effect Unit
+-- | exampleFromStringWithOptions = do
+-- |   dateTime <- PlainDateTime.fromStringWithOptions { overflow: Overflow.Constrain } "2024-01-15T09:30:00"
+-- |   Console.log (PlainDateTime.toString dateTime)
+-- |
+-- | exampleFromString :: Effect Unit
+-- | exampleFromString = do
+-- |   locale <- JS.Intl.Locale.new_ "en-US"
+-- |   dateTime <- PlainDateTime.fromString "2024-01-15T09:30:00"
+-- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
+-- |   Console.log (JS.Intl.DateTimeFormat.format formatter dateTime)
 -- | ```
 -- |
 -- | ```text
@@ -208,14 +212,14 @@ foreign import _fromStringWithOptions :: forall r. EffectFn2 { | r } String Plai
 -- | Parses a date-time string (e.g. `"2024-01-15T15:30:00"`). Options: overflow.
 -- |
 -- | ```purescript
--- | locale <- JS.Intl.Locale.new_ "en-US"
--- | dateTime <- PlainDateTime.fromStringWithOptions { overflow: Overflow.Constrain } "2024-01-15T09:30:00"
--- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
--- | Console.log (JS.Intl.DateTimeFormat.format formatter dateTime)
+-- | exampleFromStringWithOptions :: Effect Unit
+-- | exampleFromStringWithOptions = do
+-- |   dateTime <- PlainDateTime.fromStringWithOptions { overflow: Overflow.Constrain } "2024-01-15T09:30:00"
+-- |   Console.log (PlainDateTime.toString dateTime)
 -- | ```
 -- |
 -- | ```text
--- | January 15, 2024 at 9:30:00 AM
+-- | 2024-01-15T09:30:00
 -- | ```
 
 fromStringWithOptions
@@ -241,6 +245,19 @@ fromStringWithOptions providedOptions str =
 foreign import _fromString :: EffectFn1 String PlainDateTime
 
 -- | Same as [`fromStringWithOptions`](#fromstring) withWithOptions default options.
+-- |
+-- | ```purescript
+-- | exampleFromString :: Effect Unit
+-- | exampleFromString = do
+-- |   locale <- JS.Intl.Locale.new_ "en-US"
+-- |   dateTime <- PlainDateTime.fromString "2024-01-15T09:30:00"
+-- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
+-- |   Console.log (JS.Intl.DateTimeFormat.format formatter dateTime)
+-- | ```
+-- |
+-- | ```text
+-- | January 15, 2024 at 9:30:00 AM
+-- | ```
 
 fromString :: String -> Effect PlainDateTime
 fromString = Effect.Uncurried.runEffectFn1 _fromString
@@ -248,65 +265,334 @@ fromString = Effect.Uncurried.runEffectFn1 _fromString
 -- Properties
 
 -- | ISO calendar year number.
+-- |
+-- | ```purescript
+-- | exampleYear :: Effect Unit
+-- | exampleYear = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T09:30:00"
+-- |   Console.log ("Year: " <> show (PlainDateTime.year dt))
+-- | ```
+-- |
+-- | ```text
+-- | Year: 2024
+-- | ```
+
 foreign import year :: PlainDateTime -> Int
 -- | Month number within the year.
+-- |
+-- | ```purescript
+-- | exampleMonth :: Effect Unit
+-- | exampleMonth = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T09:30:00"
+-- |   Console.log ("Month: " <> show (PlainDateTime.month dt))
+-- | ```
+-- |
+-- | ```text
+-- | Month: 7
+-- | ```
+
 foreign import month :: PlainDateTime -> Int
 -- | Day of the month.
+-- |
+-- | ```purescript
+-- | exampleDay :: Effect Unit
+-- | exampleDay = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T09:30:00"
+-- |   Console.log ("Day: " <> show (PlainDateTime.day dt))
+-- | ```
+-- |
+-- | ```text
+-- | Day: 1
+-- | ```
+
 foreign import day :: PlainDateTime -> Int
 -- | Calendar-specific month code, such as `M01`.
+-- |
+-- | ```purescript
+-- | exampleMonthCode :: Effect Unit
+-- | exampleMonthCode = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T09:30:00"
+-- |   Console.log ("Month code: " <> PlainDateTime.monthCode dt)
+-- | ```
+-- |
+-- | ```text
+-- | Month code: M07
+-- | ```
+
 foreign import monthCode :: PlainDateTime -> String
--- | Day of the week, fromWithOptions `1` (Monday) to `7` (Sunday).
+-- | Day of the week, from `1` (Monday) to `7` (Sunday).
+-- |
+-- | ```purescript
+-- | exampleDayOfWeek :: Effect Unit
+-- | exampleDayOfWeek = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T09:30:00"
+-- |   Console.log ("Day of week: " <> show (PlainDateTime.dayOfWeek dt))
+-- | ```
+-- |
+-- | ```text
+-- | Day of week: 1
+-- | ```
+
 foreign import dayOfWeek :: PlainDateTime -> Int
 -- | Day number within the year.
+-- |
+-- | ```purescript
+-- | exampleDayOfYear :: Effect Unit
+-- | exampleDayOfYear = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T09:30:00"
+-- |   Console.log ("Day of year: " <> show (PlainDateTime.dayOfYear dt))
+-- | ```
+-- |
+-- | ```text
+-- | Day of year: 183
+-- | ```
+
 foreign import dayOfYear :: PlainDateTime -> Int
 -- | Number of days in the month.
+-- |
+-- | ```purescript
+-- | exampleDaysInMonth :: Effect Unit
+-- | exampleDaysInMonth = do
+-- |   dt <- PlainDateTime.fromString "2024-02-01T00:00:00"
+-- |   Console.log ("Days in Feb 2024: " <> show (PlainDateTime.daysInMonth dt))
+-- | ```
+-- |
+-- | ```text
+-- | Days in Feb 2024: 29
+-- | ```
+
 foreign import daysInMonth :: PlainDateTime -> Int
 -- | Number of days in the year.
+-- |
+-- | ```purescript
+-- | exampleDaysInYear :: Effect Unit
+-- | exampleDaysInYear = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T00:00:00"
+-- |   Console.log ("Days in 2024: " <> show (PlainDateTime.daysInYear dt))
+-- | ```
+-- |
+-- | ```text
+-- | Days in 2024: 366
+-- | ```
+
 foreign import daysInYear :: PlainDateTime -> Int
 -- | Number of days in the week for this calendar.
+-- |
+-- | ```purescript
+-- | exampleDaysInWeek :: Effect Unit
+-- | exampleDaysInWeek = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T00:00:00"
+-- |   Console.log ("Days in week: " <> show (PlainDateTime.daysInWeek dt))
+-- | ```
+-- |
+-- | ```text
+-- | Days in week: 7
+-- | ```
+
 foreign import daysInWeek :: PlainDateTime -> Int
 -- | Number of months in the year for this calendar.
+-- |
+-- | ```purescript
+-- | exampleMonthsInYear :: Effect Unit
+-- | exampleMonthsInYear = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T00:00:00"
+-- |   Console.log ("Months in year: " <> show (PlainDateTime.monthsInYear dt))
+-- | ```
+-- |
+-- | ```text
+-- | Months in year: 12
+-- | ```
+
 foreign import monthsInYear :: PlainDateTime -> Int
 -- | Whether the year is a leap year in this calendar.
+-- |
+-- | ```purescript
+-- | exampleInLeapYear :: Effect Unit
+-- | exampleInLeapYear = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T00:00:00"
+-- |   Console.log ("2024 is leap year: " <> show (PlainDateTime.inLeapYear dt))
+-- | ```
+-- |
+-- | ```text
+-- | 2024 is leap year: true
+-- | ```
+
 foreign import inLeapYear :: PlainDateTime -> Boolean
 -- | Calendar identifier, such as `"iso8601"`.
+-- |
+-- | ```purescript
+-- | exampleCalendarId :: Effect Unit
+-- | exampleCalendarId = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T00:00:00"
+-- |   Console.log ("Calendar: " <> PlainDateTime.calendarId dt)
+-- | ```
+-- |
+-- | ```text
+-- | Calendar: iso8601
+-- | ```
+
 foreign import calendarId :: PlainDateTime -> String
 
 foreign import _weekOfYear :: PlainDateTime -> Nullable Int
 
 -- | Week number within the year when defined by the calendar.
+-- |
+-- | ```purescript
+-- | exampleWeekOfYear :: Effect Unit
+-- | exampleWeekOfYear = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T09:30:00"
+-- |   Console.log ("Week of year: " <> show (PlainDateTime.weekOfYear dt))
+-- | ```
+-- |
+-- | ```text
+-- | Week of year: (Just 27)
+-- | ```
+
 weekOfYear :: PlainDateTime -> Maybe Int
 weekOfYear = toMaybe <<< _weekOfYear
 
 foreign import _yearOfWeek :: PlainDateTime -> Nullable Int
 
 -- | Week-numbering year when defined by the calendar.
+-- |
+-- | ```purescript
+-- | exampleYearOfWeek :: Effect Unit
+-- | exampleYearOfWeek = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T09:30:00"
+-- |   Console.log ("Year of week: " <> show (PlainDateTime.yearOfWeek dt))
+-- | ```
+-- |
+-- | ```text
+-- | Year of week: (Just 2024)
+-- | ```
+
 yearOfWeek :: PlainDateTime -> Maybe Int
 yearOfWeek = toMaybe <<< _yearOfWeek
 
 foreign import _era :: PlainDateTime -> Nullable String
 
 -- | Era identifier when the calendar uses eras.
+-- |
+-- | ```purescript
+-- | exampleEra :: Effect Unit
+-- | exampleEra = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T00:00:00"
+-- |   Console.log ("Era: " <> show (PlainDateTime.era dt))
+-- |
+-- | exampleEraYear :: Effect Unit
+-- | exampleEraYear = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T00:00:00"
+-- |   Console.log ("Era year: " <> show (PlainDateTime.eraYear dt))
+-- | ```
+-- |
+-- | ```text
+-- | Era: Nothing
+-- | ```
+
 era :: PlainDateTime -> Maybe String
 era = toMaybe <<< _era
 
 foreign import _eraYear :: PlainDateTime -> Nullable Int
 
 -- | Year number within the current era when available.
+-- |
+-- | ```purescript
+-- | exampleEraYear :: Effect Unit
+-- | exampleEraYear = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T00:00:00"
+-- |   Console.log ("Era year: " <> show (PlainDateTime.eraYear dt))
+-- | ```
+-- |
+-- | ```text
+-- | Era year: Nothing
+-- | ```
+
 eraYear :: PlainDateTime -> Maybe Int
 eraYear = toMaybe <<< _eraYear
 
 -- | Hour component.
+-- |
+-- | ```purescript
+-- | exampleHour :: Effect Unit
+-- | exampleHour = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T14:30:45"
+-- |   Console.log ("Hour: " <> show (PlainDateTime.hour dt))
+-- | ```
+-- |
+-- | ```text
+-- | Hour: 14
+-- | ```
+
 foreign import hour :: PlainDateTime -> Int
 -- | Minute component.
+-- |
+-- | ```purescript
+-- | exampleMinute :: Effect Unit
+-- | exampleMinute = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T14:30:45"
+-- |   Console.log ("Minute: " <> show (PlainDateTime.minute dt))
+-- | ```
+-- |
+-- | ```text
+-- | Minute: 30
+-- | ```
+
 foreign import minute :: PlainDateTime -> Int
 -- | Second component.
+-- |
+-- | ```purescript
+-- | exampleSecond :: Effect Unit
+-- | exampleSecond = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T14:30:45"
+-- |   Console.log ("Second: " <> show (PlainDateTime.second dt))
+-- | ```
+-- |
+-- | ```text
+-- | Second: 45
+-- | ```
+
 foreign import second :: PlainDateTime -> Int
 -- | Millisecond component.
+-- |
+-- | ```purescript
+-- | exampleMillisecond :: Effect Unit
+-- | exampleMillisecond = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T14:30:45.123"
+-- |   Console.log ("Millisecond: " <> show (PlainDateTime.millisecond dt))
+-- | ```
+-- |
+-- | ```text
+-- | Millisecond: 123
+-- | ```
+
 foreign import millisecond :: PlainDateTime -> Int
 -- | Microsecond component.
+-- |
+-- | ```purescript
+-- | exampleMicrosecond :: Effect Unit
+-- | exampleMicrosecond = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T14:30:45.123456"
+-- |   Console.log ("Microsecond: " <> show (PlainDateTime.microsecond dt))
+-- | ```
+-- |
+-- | ```text
+-- | Microsecond: 456
+-- | ```
+
 foreign import microsecond :: PlainDateTime -> Int
 -- | Nanosecond component.
+-- |
+-- | ```purescript
+-- | exampleNanosecond :: Effect Unit
+-- | exampleNanosecond = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T14:30:45.123456789"
+-- |   Console.log ("Nanosecond: " <> show (PlainDateTime.nanosecond dt))
+-- | ```
+-- |
+-- | ```text
+-- | Nanosecond: 789
+-- | ```
+
 foreign import nanosecond :: PlainDateTime -> Int
 
 -- Arithmetic
@@ -316,16 +602,16 @@ foreign import _addWithOptions :: forall r. EffectFn3 { | r } Duration PlainDate
 -- | Adds a duration. Arg order: `addWithOptions options duration subject`. Options: overflow.
 -- |
 -- | ```purescript
--- | locale <- JS.Intl.Locale.new_ "en-US"
--- | start <- PlainDateTime.fromString "2024-01-15T09:00:00"
--- | twoHours <- Duration.fromWithOptions { hours: 2 }
--- | end <- PlainDateTime.addWithOptions { overflow: Overflow.Constrain } twoHours start
--- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
--- | Console.log (JS.Intl.DateTimeFormat.format formatter end)
+-- | exampleAddWithOptions :: Effect Unit
+-- | exampleAddWithOptions = do
+-- |   start <- PlainDateTime.fromString "2024-01-15T09:00:00"
+-- |   twoHours <- Duration.from { hours: 2 }
+-- |   end <- PlainDateTime.addWithOptions { overflow: Overflow.Constrain } twoHours start
+-- |   Console.log (PlainDateTime.toString end)
 -- | ```
 -- |
 -- | ```text
--- | January 15, 2024 at 11:00:00 AM
+-- | 2024-01-15T11:00:00
 -- | ```
 
 addWithOptions
@@ -352,7 +638,20 @@ addWithOptions providedOptions duration plainDateTime =
 
 foreign import _add :: EffectFn2 Duration PlainDateTime PlainDateTime
 
--- | Same as [`addWithOptions`](#addWithOptions) withWithOptions default options.
+-- | Same as [`addWithOptions`](#addWithOptions) with default options.
+-- |
+-- | ```purescript
+-- | exampleAdd :: Effect Unit
+-- | exampleAdd = do
+-- |   start <- PlainDateTime.fromString "2024-01-15T09:00:00"
+-- |   twoHours <- Duration.from { hours: 2 }
+-- |   end <- PlainDateTime.add twoHours start
+-- |   Console.log (PlainDateTime.toString end)
+-- | ```
+-- |
+-- | ```text
+-- | 2024-01-15T11:00:00
+-- | ```
 
 add :: Duration -> PlainDateTime -> Effect PlainDateTime
 add = Effect.Uncurried.runEffectFn2 _add
@@ -363,16 +662,16 @@ foreign import _subtractWithOptions :: forall r. EffectFn3 { | r } Duration Plai
 -- | Options: overflow.
 -- |
 -- | ```purescript
--- | locale <- JS.Intl.Locale.new_ "en-US"
--- | start <- PlainDateTime.fromString "2024-01-15T11:00:00"
--- | twoHours <- Duration.fromWithOptions { hours: 2 }
--- | earlier <- PlainDateTime.subtractWithOptions { overflow: Overflow.Constrain } twoHours start
--- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
--- | Console.log (JS.Intl.DateTimeFormat.format formatter earlier)
+-- | exampleSubtractWithOptions :: Effect Unit
+-- | exampleSubtractWithOptions = do
+-- |   start <- PlainDateTime.fromString "2024-01-15T11:00:00"
+-- |   twoHours <- Duration.from { hours: 2 }
+-- |   earlier <- PlainDateTime.subtractWithOptions { overflow: Overflow.Constrain } twoHours start
+-- |   Console.log (PlainDateTime.toString earlier)
 -- | ```
 -- |
 -- | ```text
--- | January 15, 2024 at 9:00:00 AM
+-- | 2024-01-15T09:00:00
 -- | ```
 
 subtractWithOptions
@@ -399,7 +698,20 @@ subtractWithOptions providedOptions duration plainDateTime =
 
 foreign import _subtract :: EffectFn2 Duration PlainDateTime PlainDateTime
 
--- | Same as [`subtractWithOptions`](#subtractWithOptions) withWithOptions default options.
+-- | Same as [`subtractWithOptions`](#subtractWithOptions) with default options.
+-- |
+-- | ```purescript
+-- | exampleSubtract :: Effect Unit
+-- | exampleSubtract = do
+-- |   start <- PlainDateTime.fromString "2024-01-15T11:00:00"
+-- |   twoHours <- Duration.from { hours: 2 }
+-- |   earlier <- PlainDateTime.subtract twoHours start
+-- |   Console.log (PlainDateTime.toString earlier)
+-- | ```
+-- |
+-- | ```text
+-- | 2024-01-15T09:00:00
+-- | ```
 
 subtract :: Duration -> PlainDateTime -> Effect PlainDateTime
 subtract = Effect.Uncurried.runEffectFn2 _subtract
@@ -421,18 +733,18 @@ type WithFields =
 
 foreign import _withWithOptions :: forall ro rf. EffectFn3 { | ro } { | rf } PlainDateTime PlainDateTime
 
--- | Returns a new PlainDateTime withWithOptions specified fields replaced. Options: overflow.
+-- | Returns a new PlainDateTime with specified fields replaced. Options: overflow.
 -- |
 -- | ```purescript
--- | locale <- JS.Intl.Locale.new_ "en-US"
--- | dateTime <- PlainDateTime.fromString "2024-01-15T09:30:45"
--- | noon <- PlainDateTime.withWithOptions { overflow: Overflow.Constrain } { hour: 12, minute: 0, second: 0 } dateTime
--- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
--- | Console.log (JS.Intl.DateTimeFormat.format formatter noon)
+-- | exampleWithWithOptions :: Effect Unit
+-- | exampleWithWithOptions = do
+-- |   dateTime <- PlainDateTime.fromString "2024-01-15T09:30:45"
+-- |   noon <- PlainDateTime.withWithOptions { overflow: Overflow.Constrain } { hour: 12, minute: 0, second: 0 } dateTime
+-- |   Console.log (PlainDateTime.toString noon)
 -- | ```
 -- |
 -- | ```text
--- | January 15, 2024 at 12:00:00 PM
+-- | 2024-01-15T12:00:00
 -- | ```
 
 withWithOptions
@@ -460,7 +772,32 @@ withWithOptions options fields plainDateTime =
 
 foreign import _with :: forall r. EffectFn2 { | r } PlainDateTime PlainDateTime
 
--- | Same as [`withWithOptions`](#withWithOptions) withWithOptions default options.
+-- | Same as [`withWithOptions`](#withWithOptions) with default options.
+-- |
+-- | ```purescript
+-- | exampleWith :: Effect Unit
+-- | exampleWith = do
+-- |   dateTime <- PlainDateTime.fromString "2024-01-15T09:30:45"
+-- |   noon <- PlainDateTime.with { hour: 12, minute: 0, second: 0 } dateTime
+-- |   Console.log (PlainDateTime.toString noon)
+-- |
+-- | exampleWithPlainTime :: Effect Unit
+-- | exampleWithPlainTime = do
+-- |   dateTime <- PlainDateTime.fromString "2024-01-15T09:30:00"
+-- |   closingTime <- PlainTime.fromString "17:00:00"
+-- |   updated <- PlainDateTime.withPlainTime closingTime dateTime
+-- |   Console.log (PlainDateTime.toString updated)
+-- |
+-- | exampleWithCalendar :: Effect Unit
+-- | exampleWithCalendar = do
+-- |   dateTime <- PlainDateTime.fromString "2019-05-01T09:30:00"
+-- |   japanese <- PlainDateTime.withCalendar "japanese" dateTime
+-- |   Console.log (PlainDateTime.calendarId japanese)
+-- | ```
+-- |
+-- | ```text
+-- | 2024-01-15T12:00:00
+-- | ```
 
 with
   :: forall fields rest
@@ -472,19 +809,19 @@ with = Effect.Uncurried.runEffectFn2 _with
 
 foreign import _withPlainTime :: EffectFn2 PlainTime PlainDateTime PlainDateTime
 
--- | Returns a new PlainDateTime withWithOptions the time component replaced.
+-- | Returns a new PlainDateTime with the time component replaced.
 -- |
 -- | ```purescript
--- | locale <- JS.Intl.Locale.new_ "en-US"
--- | dateTime <- PlainDateTime.fromString "2024-01-15T09:30:00"
--- | closingTime <- PlainTime.fromString "17:00:00"
--- | updated <- PlainDateTime.withPlainTime closingTime dateTime
--- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
--- | Console.log (JS.Intl.DateTimeFormat.format formatter updated)
+-- | exampleWithPlainTime :: Effect Unit
+-- | exampleWithPlainTime = do
+-- |   dateTime <- PlainDateTime.fromString "2024-01-15T09:30:00"
+-- |   closingTime <- PlainTime.fromString "17:00:00"
+-- |   updated <- PlainDateTime.withPlainTime closingTime dateTime
+-- |   Console.log (PlainDateTime.toString updated)
 -- | ```
 -- |
 -- | ```text
--- | January 15, 2024 at 5:00:00 PM
+-- | 2024-01-15T17:00:00
 -- | ```
 
 withPlainTime :: PlainTime -> PlainDateTime -> Effect PlainDateTime
@@ -495,9 +832,11 @@ foreign import _withCalendar :: EffectFn2 String PlainDateTime PlainDateTime
 -- | Returns a new PlainDateTime that uses a different calendar.
 -- |
 -- | ```purescript
--- | dateTime <- PlainDateTime.fromString "2019-05-01T09:30:00"
--- | japanese <- PlainDateTime.withCalendar "japanese" dateTime
--- | Console.log (PlainDateTime.calendarId japanese)
+-- | exampleWithCalendar :: Effect Unit
+-- | exampleWithCalendar = do
+-- |   dateTime <- PlainDateTime.fromString "2019-05-01T09:30:00"
+-- |   japanese <- PlainDateTime.withCalendar "japanese" dateTime
+-- |   Console.log (PlainDateTime.calendarId japanese)
 -- | ```
 -- |
 -- | ```text
@@ -544,37 +883,35 @@ instance ConvertOption ToDifferenceOptions "roundingMode" String String where
 
 foreign import _untilWithOptions :: forall r. EffectFn3 { | r } PlainDateTime PlainDateTime Duration
 
--- | Computes the duration fromWithOptions `subject` (last arg) untilWithOptions `other` (second arg).
+-- | Computes the duration from `subject` (last arg) until `other` (second arg).
 -- | Positive when `other` is later. Arg order: `untilWithOptions options other subject`.
 -- |
 -- | Options: largestUnit, smallestUnit, roundingIncrement, roundingMode.
 -- |
 -- | ```purescript
--- | locale <- JS.Intl.Locale.new_ "en-US"
--- | now <- Now.plainDateTimeISO_
--- |   >>= PlainDateTime.round { smallestUnit: TemporalUnit.Second }
--- | nextBilling <- do
--- |   aprilFirst <- PlainDateTime.from
--- |     { year: PlainDateTime.year now
--- |     , month: 4
--- |     , day: 1
--- |     }
--- |   if aprilFirst < now then do
--- |     oneYear <- Duration.fromWithOptions { years: 1 }
--- |     PlainDateTime.add oneYear aprilFirst
--- |   else
--- |     pure aprilFirst
--- |
--- | duration <- PlainDateTime.untilWithOptions
--- |   { smallestUnit: TemporalUnit.Day }
--- |   nextBilling
--- |   now
--- | durationFormatter <- JS.Intl.DurationFormat.new [ locale ] { style: JS.Intl.Options.DurationFormatStyle.Long }
--- | Console.log (JS.Intl.DurationFormat.format durationFormatter duration <> " untilWithOptions next billing")
+-- | exampleUntilWithOptions :: Effect Unit
+-- | exampleUntilWithOptions = do
+-- |   locale <- JS.Intl.Locale.new_ "en-US"
+-- |   now <- Now.plainDateTimeISO
+-- |     >>= PlainDateTime.round { smallestUnit: TemporalUnit.Second }
+-- |   nextBilling <- do
+-- |     aprilFirst <- PlainDateTime.from
+-- |       { year: PlainDateTime.year now, month: 4, day: 1 }
+-- |     if aprilFirst < now then do
+-- |       oneYear <- Duration.from { years: 1 }
+-- |       PlainDateTime.add oneYear aprilFirst
+-- |     else
+-- |       pure aprilFirst
+-- |   duration <- PlainDateTime.untilWithOptions
+-- |     { smallestUnit: TemporalUnit.Day }
+-- |     nextBilling
+-- |     now
+-- |   durationFormatter <- JS.Intl.DurationFormat.new [ locale ] { style: JS.Intl.Options.DurationFormatStyle.Long }
+-- |   Console.log (JS.Intl.DurationFormat.format durationFormatter duration <> " until next billing")
 -- | ```
 -- |
 -- | ```text
--- | 17 days untilWithOptions next billing
+-- | 324 days until next billing
 -- | ```
 
 untilWithOptions
@@ -601,22 +938,37 @@ untilWithOptions providedOptions other plainDateTime =
 
 foreign import _until :: EffectFn2 PlainDateTime PlainDateTime Duration
 
--- | Same as [`untilWithOptions`](#untilWithOptions) withWithOptions default options.
+-- | Same as [`untilWithOptions`](#untilWithOptions) with default options.
+-- |
+-- | ```purescript
+-- | exampleUntil :: Effect Unit
+-- | exampleUntil = do
+-- |   start <- PlainDateTime.fromString "2024-01-01T00:00:00"
+-- |   end <- PlainDateTime.fromString "2024-03-15T12:00:00"
+-- |   duration <- PlainDateTime.until end start
+-- |   Console.log (Duration.toString duration)
+-- | ```
+-- |
+-- | ```text
+-- | P74DT12H
+-- | ```
 
 until :: PlainDateTime -> PlainDateTime -> Effect Duration
 until = Effect.Uncurried.runEffectFn2 _until
 
 foreign import _sinceWithOptions :: forall r. EffectFn3 { | r } PlainDateTime PlainDateTime Duration
 
--- | Duration fromWithOptions `other` to `subject` (inverse of untilWithOptions). Arg order: `sinceWithOptions options other subject`.
+-- | Duration from `other` to `subject` (inverse of `untilWithOptions`). Arg order: `sinceWithOptions options other subject`.
 -- |
 -- | ```purescript
--- | locale <- JS.Intl.Locale.new_ "en-US"
--- | start <- PlainDateTime.fromString "2024-01-01T00:00:00"
--- | end <- PlainDateTime.fromString "2024-03-15T12:00:00"
--- | elapsed <- PlainDateTime.sinceWithOptions { largestUnit: TemporalUnit.Day } start end
--- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: JS.Intl.Options.DurationFormatStyle.Long }
--- | Console.log ("Elapsed: " <> JS.Intl.DurationFormat.format formatter elapsed)
+-- | exampleSinceWithOptions :: Effect Unit
+-- | exampleSinceWithOptions = do
+-- |   locale <- JS.Intl.Locale.new_ "en-US"
+-- |   start <- PlainDateTime.fromString "2024-01-01T00:00:00"
+-- |   end <- PlainDateTime.fromString "2024-03-15T12:00:00"
+-- |   elapsed <- PlainDateTime.sinceWithOptions { largestUnit: TemporalUnit.Day } start end
+-- |   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: JS.Intl.Options.DurationFormatStyle.Long }
+-- |   Console.log ("Elapsed: " <> JS.Intl.DurationFormat.format formatter elapsed)
 -- | ```
 -- |
 -- | ```text
@@ -647,7 +999,20 @@ sinceWithOptions providedOptions other plainDateTime =
 
 foreign import _since :: EffectFn2 PlainDateTime PlainDateTime Duration
 
--- | Same as [`sinceWithOptions`](#sinceWithOptions) withWithOptions default options.
+-- | Same as [`sinceWithOptions`](#sinceWithOptions) with default options.
+-- |
+-- | ```purescript
+-- | exampleSince :: Effect Unit
+-- | exampleSince = do
+-- |   start <- PlainDateTime.fromString "2024-01-01T00:00:00"
+-- |   end <- PlainDateTime.fromString "2024-03-15T12:00:00"
+-- |   elapsed <- PlainDateTime.since start end
+-- |   Console.log (Duration.toString elapsed)
+-- | ```
+-- |
+-- | ```text
+-- | P74DT12H
+-- | ```
 
 since :: PlainDateTime -> PlainDateTime -> Effect Duration
 since = Effect.Uncurried.runEffectFn2 _since
@@ -685,15 +1050,15 @@ foreign import _round :: forall r. EffectFn2 { | r } PlainDateTime PlainDateTime
 -- | Rounds to a specified unit. Options: smallestUnit, roundingIncrement, roundingMode.
 -- |
 -- | ```purescript
--- | locale <- JS.Intl.Locale.new_ "en-US"
--- | dateTime <- PlainDateTime.fromString "2024-01-15T09:30:45.123"
--- | rounded <- PlainDateTime.round { smallestUnit: TemporalUnit.Minute } dateTime
--- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
--- | Console.log (JS.Intl.DateTimeFormat.format formatter rounded)
+-- | exampleRound :: Effect Unit
+-- | exampleRound = do
+-- |   dateTime <- PlainDateTime.fromString "2024-01-15T09:30:45.123"
+-- |   rounded <- PlainDateTime.round { smallestUnit: TemporalUnit.Minute } dateTime
+-- |   Console.log (PlainDateTime.toString rounded)
 -- | ```
 -- |
 -- | ```text
--- | January 15, 2024 at 9:31:00 AM
+-- | 2024-01-15T09:31:00
 -- | ```
 
 round
@@ -758,11 +1123,13 @@ instance ConvertOption ToToStringOptions "roundingMode" String String where
 
 foreign import _toString :: forall r. Fn2 { | r } PlainDateTime String
 
--- | Default ISO 8601 serialization (no options). Prefer over `toStringWithOptions {}`.
+-- | Default ISO 8601 serialization (no options).
 -- |
 -- | ```purescript
--- | dateTime <- PlainDateTime.fromString "2024-01-15T09:30:00"
--- | Console.log (PlainDateTime.toString dateTime)
+-- | exampleToString :: Effect Unit
+-- | exampleToString = do
+-- |   dateTime <- PlainDateTime.fromString "2024-01-15T09:30:00"
+-- |   Console.log (PlainDateTime.toString dateTime)
 -- | ```
 -- |
 -- | ```text
@@ -775,8 +1142,10 @@ toString plainDateTime = Function.Uncurried.runFn2 _toString defaultToStringOpti
 -- | Serializes to ISO 8601 format. Options: fractionalSecondDigits, smallestUnit, roundingMode, calendarName.
 -- |
 -- | ```purescript
--- | dateTime <- PlainDateTime.fromString "2024-01-15T09:30:00"
--- | Console.log (PlainDateTime.toStringWithOptions { smallestUnit: TemporalUnit.Minute } dateTime)
+-- | exampleToStringWithOptions :: Effect Unit
+-- | exampleToStringWithOptions = do
+-- |   dateTime <- PlainDateTime.fromString "2024-01-15T09:30:00"
+-- |   Console.log (PlainDateTime.toStringWithOptions { smallestUnit: TemporalUnit.Minute } dateTime)
 -- | ```
 -- |
 -- | ```text
@@ -803,11 +1172,24 @@ toStringWithOptions providedOptions plainDateTime =
     )
     plainDateTime
 
--- Instances (Eq, Ord, Show fromWithOptions Internal)
+-- Instances (Eq, Ord, Show from Internal)
 
 -- Conversions
 
 -- | Converts a purescript-datetime `DateTime` to a `PlainDateTime`.
+-- |
+-- | ```purescript
+-- | exampleFromDateTime :: Effect Unit
+-- | exampleFromDateTime = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T12:00:00"
+-- |   roundTripped <- PlainDateTime.fromDateTime (PlainDateTime.toDateTime dt)
+-- |   Console.log (PlainDateTime.toString roundTripped)
+-- | ```
+-- |
+-- | ```text
+-- | 2024-07-01T12:00:00
+-- | ```
+
 fromDateTime :: DateTime -> Effect PlainDateTime
 fromDateTime dateTime = do
   plainDate <- PlainDate.fromDate (DateTime.date dateTime)
@@ -815,6 +1197,18 @@ fromDateTime dateTime = do
   pure (PlainDate.toPlainDateTime plainTime plainDate)
 
 -- | Converts a `PlainDateTime` to a purescript-datetime `DateTime`.
+-- |
+-- | ```purescript
+-- | exampleToDateTime :: Effect Unit
+-- | exampleToDateTime = do
+-- |   dt <- PlainDateTime.fromString "2024-07-01T12:00:00"
+-- |   Console.log (show (PlainDateTime.toDateTime dt))
+-- | ```
+-- |
+-- | ```text
+-- | (DateTime (Date (Year 2024) July (Day 1)) (Time (Hour 12) (Minute 0) (Second 0) (Millisecond 0)))
+-- | ```
+
 toDateTime :: PlainDateTime -> DateTime
 toDateTime plainDateTime =
   DateTime
@@ -826,15 +1220,14 @@ foreign import _toPlainDate :: Fn1 PlainDateTime PlainDate
 -- | Extracts the date component.
 -- |
 -- | ```purescript
--- | locale <- JS.Intl.Locale.new_ "en-US"
--- | dateTime <- PlainDateTime.fromString "2024-01-15T09:30:00"
--- | date <- pure (PlainDateTime.toPlainDate dateTime)
--- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
--- | Console.log (JS.Intl.DateTimeFormat.format formatter date)
+-- | exampleToPlainDate :: Effect Unit
+-- | exampleToPlainDate = do
+-- |   dateTime <- PlainDateTime.fromString "2024-01-15T09:30:00"
+-- |   Console.log (PlainDate.toString (PlainDateTime.toPlainDate dateTime))
 -- | ```
 -- |
 -- | ```text
--- | January 15, 2024
+-- | 2024-01-15
 -- | ```
 
 toPlainDate :: PlainDateTime -> PlainDate
@@ -845,35 +1238,30 @@ foreign import _toPlainTime :: Fn1 PlainDateTime PlainTime
 -- | Extracts the time component.
 -- |
 -- | ```purescript
--- | locale <- JS.Intl.Locale.new_ "en-US"
--- | dateTime <- PlainDateTime.fromString "2024-01-15T09:30:00"
--- | time <- pure (PlainDateTime.toPlainTime dateTime)
--- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
--- | Console.log (JS.Intl.DateTimeFormat.format formatter time)
+-- | exampleToPlainTime :: Effect Unit
+-- | exampleToPlainTime = do
+-- |   dateTime <- PlainDateTime.fromString "2024-01-15T09:30:00"
+-- |   Console.log (PlainTime.toString (PlainDateTime.toPlainTime dateTime))
 -- | ```
 -- |
 -- | ```text
--- | 9:30:00 AM
+-- | 09:30:00
 -- | ```
 
 toPlainTime :: PlainDateTime -> PlainTime
 toPlainTime = Function.Uncurried.runFn1 _toPlainTime
 
-foreign import _toZonedDateTimeWithPlainTime :: EffectFn2 String PlainDateTime ZonedDateTime
+foreign import _toZonedDateTime :: EffectFn2 String PlainDateTime ZonedDateTime
 
 -- | Interprets this date-time as occurring in the given time zone.
 -- |
 -- | ```purescript
--- | locale <- JS.Intl.Locale.new_ "en-US"
--- | plain <- PlainDateTime.fromString "2024-01-15T09:30:00"
--- | zoned <- PlainDateTime.toZonedDateTime "America/New_York" plain
--- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
--- | Console.log (JS.Intl.DateTimeFormat.format formatter zoned)
--- | ```
--- |
--- | ```text
--- | January 15, 2024 at 9:30:00 AM
+-- | exampleToZonedDateTime :: Effect Unit
+-- | exampleToZonedDateTime = do
+-- |   plain <- PlainDateTime.fromString "2024-01-15T09:30:00"
+-- |   zoned <- PlainDateTime.toZonedDateTime "America/New_York" plain
+-- |   Console.log (ZonedDateTime.toString zoned)
 -- | ```
 
 toZonedDateTime :: String -> PlainDateTime -> Effect ZonedDateTime
-toZonedDateTime = Effect.Uncurried.runEffectFn2 _toZonedDateTimeWithPlainTime
+toZonedDateTime = Effect.Uncurried.runEffectFn2 _toZonedDateTime

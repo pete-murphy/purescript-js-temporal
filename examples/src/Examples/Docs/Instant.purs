@@ -3,6 +3,9 @@ module Examples.Docs.Instant where
 
 import Prelude
 
+import Data.DateTime.Instant as DateTime.Instant
+import Data.JSDate as JSDate
+import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.BigInt as BigInt
@@ -15,17 +18,6 @@ import JS.Temporal.Options.RoundingMode as RoundingMode
 import JS.Temporal.Options.TemporalUnit as TemporalUnit
 import JS.Temporal.ZonedDateTime as ZonedDateTime
 
--- [EXAMPLE JS.Temporal.Instant.fromEpochNanoseconds_]
-exampleFromEpochNanoseconds_ :: Effect Unit
-exampleFromEpochNanoseconds_ = do
-  locale <- JS.Intl.Locale.new_ "en-US"
-  instant <- Instant.fromEpochNanoseconds (BigInt.fromInt 0)
-  formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium", timeZone: "UTC" }
-  Console.log (JS.Intl.DateTimeFormat.format formatter instant)
-
--- [/EXAMPLE]
-
--- [EXAMPLE JS.Temporal.Instant.fromString]
 exampleFromString :: Effect Unit
 exampleFromString = do
   locale <- JS.Intl.Locale.new_ "en-US"
@@ -33,25 +25,32 @@ exampleFromString = do
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium", timeZone: "UTC" }
   Console.log (JS.Intl.DateTimeFormat.format formatter instant)
 
--- [/EXAMPLE]
-
--- [EXAMPLE JS.Temporal.Instant.fromEpochMilliseconds]
 exampleFromEpochMilliseconds :: Effect Unit
 exampleFromEpochMilliseconds = do
   instant <- Instant.fromEpochMilliseconds 1000.0
   Console.log (Instant.toString instant)
 
--- [/EXAMPLE]
-
--- [EXAMPLE JS.Temporal.Instant.fromEpochNanoseconds]
 exampleFromEpochNanoseconds :: Effect Unit
 exampleFromEpochNanoseconds = do
   instant <- Instant.fromEpochNanoseconds (BigInt.fromInt 1000000000)
   Console.log (Instant.toString instant)
 
--- [/EXAMPLE]
+exampleFromJSDate :: Effect Unit
+exampleFromJSDate = do
+  jsDate <- JSDate.parse "2024-01-15T12:00:00Z"
+  instant <- Instant.fromJSDate jsDate
+  Console.log (Instant.toString instant)
 
--- [EXAMPLE JS.Temporal.Instant.add]
+exampleEpochMilliseconds :: Effect Unit
+exampleEpochMilliseconds = do
+  instant <- Instant.fromString "1970-01-01T00:00:01Z"
+  Console.log ("Epoch ms: " <> show (Instant.epochMilliseconds instant))
+
+exampleEpochNanoseconds :: Effect Unit
+exampleEpochNanoseconds = do
+  instant <- Instant.fromString "1970-01-01T00:00:01Z"
+  Console.log ("Epoch ns: " <> show (Instant.epochNanoseconds instant))
+
 exampleAdd :: Effect Unit
 exampleAdd = do
   instant <- Instant.fromString "2024-01-15T12:00:00Z"
@@ -59,9 +58,6 @@ exampleAdd = do
   later <- Instant.add oneHour instant
   Console.log (Instant.toString later)
 
--- [/EXAMPLE]
-
--- [EXAMPLE JS.Temporal.Instant.subtract]
 exampleSubtract :: Effect Unit
 exampleSubtract = do
   instant <- Instant.fromString "2024-01-15T12:00:00Z"
@@ -69,11 +65,8 @@ exampleSubtract = do
   earlier <- Instant.subtract oneHour instant
   Console.log (Instant.toString earlier)
 
--- [/EXAMPLE]
-
--- [EXAMPLE JS.Temporal.Instant.until]
-exampleUntil :: Effect Unit
-exampleUntil = do
+exampleUntilWithOptions :: Effect Unit
+exampleUntilWithOptions = do
   locale <- JS.Intl.Locale.new_ "en-US"
   earlier <- Instant.fromString "2020-01-09T00:00Z"
   later <- Instant.fromString "2020-01-09T04:00Z"
@@ -81,11 +74,15 @@ exampleUntil = do
   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
   Console.log ("4 hours: " <> JS.Intl.DurationFormat.format formatter result)
 
--- [/EXAMPLE]
+exampleUntil :: Effect Unit
+exampleUntil = do
+  earlier <- Instant.fromString "2020-01-09T00:00Z"
+  later <- Instant.fromString "2020-01-09T04:00Z"
+  result <- Instant.until later earlier
+  Console.log (Duration.toString result)
 
--- [EXAMPLE JS.Temporal.Instant.since]
-exampleSince :: Effect Unit
-exampleSince = do
+exampleSinceWithOptions :: Effect Unit
+exampleSinceWithOptions = do
   locale <- JS.Intl.Locale.new_ "en-US"
   earlier <- Instant.fromString "2020-01-09T00:00Z"
   later <- Instant.fromString "2020-01-09T04:00Z"
@@ -93,9 +90,13 @@ exampleSince = do
   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
   Console.log ("Elapsed: " <> JS.Intl.DurationFormat.format formatter elapsed)
 
--- [/EXAMPLE]
+exampleSince :: Effect Unit
+exampleSince = do
+  earlier <- Instant.fromString "2020-01-09T00:00Z"
+  later <- Instant.fromString "2020-01-09T04:00Z"
+  elapsed <- Instant.since earlier later
+  Console.log (Duration.toString elapsed)
 
--- [EXAMPLE JS.Temporal.Instant.round]
 exampleRound :: Effect Unit
 exampleRound = do
   instant <- Instant.fromString "2024-01-15T12:00:00.789Z"
@@ -106,20 +107,27 @@ exampleRound = do
     instant
   Console.log (Instant.toString rounded)
 
--- [/EXAMPLE]
+exampleFromDateTimeInstant :: Effect Unit
+exampleFromDateTimeInstant = do
+  let dtInstant = DateTime.Instant.fromDateTime bottom
+  instant <- Instant.fromDateTimeInstant dtInstant
+  Console.log (Instant.toString instant)
 
--- [EXAMPLE JS.Temporal.Instant.toZonedDateTimeISO]
+exampleToDateTimeInstant :: Effect Unit
+exampleToDateTimeInstant = do
+  instant <- Instant.fromString "2024-01-15T12:00:00Z"
+  case Instant.toDateTimeInstant instant of
+    Just dtInstant -> Console.log (show dtInstant)
+    Nothing -> Console.log "Out of range"
+
 exampleToZonedDateTimeISO :: Effect Unit
 exampleToZonedDateTimeISO = do
   instant <- Instant.fromString "2024-01-15T12:00:00Z"
   zoned <- pure (Instant.toZonedDateTimeISO "America/New_York" instant)
   Console.log (ZonedDateTime.toString zoned)
 
--- [/EXAMPLE]
-
--- [EXAMPLE JS.Temporal.Instant.toString]
-exampleToString :: Effect Unit
-exampleToString = do
+exampleToStringWithOptions :: Effect Unit
+exampleToStringWithOptions = do
   instant <- Instant.fromString "2024-01-15T12:00:00.789Z"
   Console.log
     ( Instant.toStringWithOptions
@@ -128,5 +136,8 @@ exampleToString = do
         }
         instant
     )
--- [/EXAMPLE]
 
+exampleToString :: Effect Unit
+exampleToString = do
+  instant <- Instant.fromString "2024-01-15T12:00:00.789Z"
+  Console.log (Instant.toString instant)

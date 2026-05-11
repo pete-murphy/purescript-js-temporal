@@ -89,19 +89,12 @@ export function _round(options, pdt) {
   return pdt.round(options);
 }
 
-export function _compare(a, b) {
-  return Temporal.PlainDateTime.compare(a, b);
-}
 
-export function _equals(a, b) {
-  return a.equals(b);
-}
 
 export function _toString(options, pdt) {
   return pdt.toString(options);
 }
 
-export const toString_ = (pdt) => pdt.toString();
 
 export function _toPlainDate(pdt) {
   return pdt.toPlainDate();

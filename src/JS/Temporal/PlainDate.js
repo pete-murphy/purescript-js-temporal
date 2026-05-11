@@ -95,16 +95,9 @@ export function _toZonedDateTime(timeZone, pd) {
   return pd.toZonedDateTime(timeZone);
 }
 
-export function _compare(a, b) {
-  return Temporal.PlainDate.compare(a, b);
-}
 
-export function _equals(a, b) {
-  return a.equals(b);
-}
 
 export function _toString(options, pd) {
   return pd.toString(options);
 }
 
-export const toString_ = (pd) => pd.toString();

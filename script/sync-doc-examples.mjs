@@ -3,10 +3,10 @@
  * Syncs compilable doc examples from examples/src/Examples/Docs/*.purs
  * into the -- | doc comments of src/JS/Temporal/*.purs.
  *
- * Examples are delimited by:
- *   -- [EXAMPLE Qualified.Module.Name.functionName]
- *   ... code ...
- *   -- [/EXAMPLE]
+ * Convention: each Examples.Docs.<Foo> module has exampleBar for every
+ * function bar exported from JS.Temporal.<Foo>. The qualified name is
+ * derived automatically (e.g. Examples.Docs.Instant.exampleFromString
+ * maps to JS.Temporal.Instant.fromString).
  *
  * Runs Examples.Docs.Main to capture stdout, then injects both code and
  * output blocks into source docs. The docs runner is executed with the
@@ -17,7 +17,7 @@
 
 import { execSync } from "child_process";
 import { readFileSync, readdirSync, writeFileSync } from "fs";
-import { join } from "path";
+import { basename, join } from "path";
 import { pathToFileURL } from "url";
 
 const ROOT = new URL("..", import.meta.url).pathname;
@@ -73,37 +73,79 @@ function runDocsRunnerAndParseOutput() {
 }
 
 /**
- * Extracts all [EXAMPLE ...] blocks from a file.
+ * Derives the JS.Temporal module name from a docs file path.
+ * e.g. .../Examples/Docs/Instant.purs -> "JS.Temporal.Instant"
+ */
+function docsFileToModule(filePath) {
+  const name = basename(filePath, ".purs");
+  return `JS.Temporal.${name}`;
+}
+
+/**
+ * Converts an example function name to the target export name.
+ * "exampleFromString" -> "fromString"
+ */
+function exampleNameToExport(name) {
+  const withoutPrefix = name.slice("example".length);
+  return withoutPrefix.charAt(0).toLowerCase() + withoutPrefix.slice(1);
+}
+
+/**
+ * Checks if a line is a top-level declaration start (non-indented, non-comment, non-blank).
+ */
+function isTopLevelDeclarationStart(line) {
+  if (line.trim() === "") return false;
+  if (line.startsWith(" ") || line.startsWith("\t")) return false;
+  if (line.startsWith("--")) return false;
+  return true;
+}
+
+/**
+ * Extracts all example functions from a docs file using naming convention.
  * @returns Array of { qualifiedName: string, code: string }
  */
 function extractExamples(filePath) {
   const content = readFileSync(filePath, "utf-8");
   const lines = content.split("\n");
+  const moduleName = docsFileToModule(filePath);
   const examples = [];
 
+  // First pass: find all exampleFoo declaration start lines
+  const exampleStarts = [];
   for (let i = 0; i < lines.length; i++) {
-    const startMatch = lines[i].match(/^\s*--\s*\[EXAMPLE\s+(.+?)\]\s*$/);
-    if (startMatch) {
-      const qualifiedName = startMatch[1].trim();
-      const startLine = i + 1;
-      let endLine = -1;
-
-      for (let j = i + 1; j < lines.length; j++) {
-        if (lines[j].match(/^\s*--\s*\[\/EXAMPLE\]\s*$/)) {
-          endLine = j;
-          break;
-        }
+    const match = lines[i].match(/^(example[A-Z][A-Za-z0-9_']*)\s/);
+    if (match) {
+      const fnName = match[1];
+      // Only record the first occurrence (type signature line)
+      if (!exampleStarts.some((e) => e.fnName === fnName)) {
+        exampleStarts.push({ fnName, startLine: i });
       }
-
-      if (endLine === -1) {
-        console.warn(`Warning: No [/EXAMPLE] found for ${qualifiedName} in ${filePath}`);
-        continue;
-      }
-
-      const codeLines = lines.slice(startLine, endLine);
-      const code = dedent(codeLines.join("\n"));
-      examples.push({ qualifiedName, code });
     }
+  }
+
+  // Second pass: extract code for each example (from start to next top-level decl or EOF)
+  for (let idx = 0; idx < exampleStarts.length; idx++) {
+    const { fnName, startLine } = exampleStarts[idx];
+    const exportName = exampleNameToExport(fnName);
+    const qualifiedName = `${moduleName}.${exportName}`;
+
+    // Find the end: next example start, or next unrelated top-level decl, or EOF
+    let endLine = lines.length;
+    for (let j = startLine + 1; j < lines.length; j++) {
+      if (isTopLevelDeclarationStart(lines[j]) && !lines[j].startsWith(fnName)) {
+        endLine = j;
+        break;
+      }
+    }
+
+    // Trim trailing blank lines
+    while (endLine > startLine && lines[endLine - 1].trim() === "") {
+      endLine--;
+    }
+
+    const codeLines = lines.slice(startLine, endLine);
+    const code = dedent(codeLines.join("\n"));
+    examples.push({ qualifiedName, code });
   }
 
   return examples;

@@ -36,6 +36,20 @@ main :: Effect Unit
 main = do
   runExample "JS.Temporal.Duration.fromString" Duration.exampleFromString
   runExample "JS.Temporal.Duration.from" Duration.exampleFrom
+  runExample "JS.Temporal.Duration.years" Duration.exampleYears
+  runExample "JS.Temporal.Duration.months" Duration.exampleMonths
+  runExample "JS.Temporal.Duration.weeks" Duration.exampleWeeks
+  runExample "JS.Temporal.Duration.days" Duration.exampleDays
+  runExample "JS.Temporal.Duration.hours" Duration.exampleHours
+  runExample "JS.Temporal.Duration.minutes" Duration.exampleMinutes
+  runExample "JS.Temporal.Duration.seconds" Duration.exampleSeconds
+  runExample "JS.Temporal.Duration.milliseconds" Duration.exampleMilliseconds
+  runExample "JS.Temporal.Duration.microseconds" Duration.exampleMicroseconds
+  runExample "JS.Temporal.Duration.nanoseconds" Duration.exampleNanoseconds
+  runExample "JS.Temporal.Duration.sign" Duration.exampleSign
+  runExample "JS.Temporal.Duration.blank" Duration.exampleBlank
+  runExample "JS.Temporal.Duration.negated" Duration.exampleNegated
+  runExample "JS.Temporal.Duration.abs" Duration.exampleAbs
   runExample "JS.Temporal.Duration.total" Duration.exampleTotal
   runExample "JS.Temporal.Duration.add" Duration.exampleAdd
   runExample "JS.Temporal.Duration.subtract" Duration.exampleSubtract
@@ -43,16 +57,26 @@ main = do
   runExample "JS.Temporal.Duration.compare" Duration.exampleCompare
   runExample "JS.Temporal.Duration.round" Duration.exampleRound
   runExample "JS.Temporal.Duration.toString" Duration.exampleToString
-  runExample "JS.Temporal.Instant.fromEpochNanoseconds_" Instant.exampleFromEpochNanoseconds_
+  runExample "JS.Temporal.Duration.toStringWithOptions" Duration.exampleToStringWithOptions
+  runExample "JS.Temporal.Duration.fromMilliseconds" Duration.exampleFromMilliseconds
+  runExample "JS.Temporal.Duration.toMilliseconds" Duration.exampleToMilliseconds
   runExample "JS.Temporal.Instant.fromString" Instant.exampleFromString
   runExample "JS.Temporal.Instant.fromEpochMilliseconds" Instant.exampleFromEpochMilliseconds
   runExample "JS.Temporal.Instant.fromEpochNanoseconds" Instant.exampleFromEpochNanoseconds
+  runExample "JS.Temporal.Instant.fromJSDate" Instant.exampleFromJSDate
+  runExample "JS.Temporal.Instant.epochMilliseconds" Instant.exampleEpochMilliseconds
+  runExample "JS.Temporal.Instant.epochNanoseconds" Instant.exampleEpochNanoseconds
   runExample "JS.Temporal.Instant.add" Instant.exampleAdd
   runExample "JS.Temporal.Instant.subtract" Instant.exampleSubtract
+  runExample "JS.Temporal.Instant.untilWithOptions" Instant.exampleUntilWithOptions
   runExample "JS.Temporal.Instant.until" Instant.exampleUntil
+  runExample "JS.Temporal.Instant.sinceWithOptions" Instant.exampleSinceWithOptions
   runExample "JS.Temporal.Instant.since" Instant.exampleSince
   runExample "JS.Temporal.Instant.round" Instant.exampleRound
+  runExample "JS.Temporal.Instant.fromDateTimeInstant" Instant.exampleFromDateTimeInstant
+  runExample "JS.Temporal.Instant.toDateTimeInstant" Instant.exampleToDateTimeInstant
   runExample "JS.Temporal.Instant.toZonedDateTimeISO" Instant.exampleToZonedDateTimeISO
+  runExample "JS.Temporal.Instant.toStringWithOptions" Instant.exampleToStringWithOptions
   runExample "JS.Temporal.Instant.toString" Instant.exampleToString
   runExample "JS.Temporal.Now.instant" Now.exampleInstant
   runExample "JS.Temporal.Now.plainDateISO" Now.examplePlainDateISO
@@ -64,66 +88,199 @@ main = do
   runExample "JS.Temporal.Now.zonedDateTimeISO" Now.exampleZonedDateTimeISO
   runExample "JS.Temporal.Now.zonedDateTimeISOWithTimeZone" Now.exampleZonedDateTimeISOWithTimeZone
   runExample "JS.Temporal.Now.timeZoneId" Now.exampleTimeZoneId
+  runExample "JS.Temporal.PlainDate.fromWithOptions" PlainDate.exampleFromWithOptions
   runExample "JS.Temporal.PlainDate.from" PlainDate.exampleFrom
+  runExample "JS.Temporal.PlainDate.fromDate" PlainDate.exampleFromDate
+  runExample "JS.Temporal.PlainDate.fromStringWithOptions" PlainDate.exampleFromStringWithOptions
   runExample "JS.Temporal.PlainDate.fromString" PlainDate.exampleFromString
+  runExample "JS.Temporal.PlainDate.year" PlainDate.exampleYear
+  runExample "JS.Temporal.PlainDate.month" PlainDate.exampleMonth
+  runExample "JS.Temporal.PlainDate.day" PlainDate.exampleDay
+  runExample "JS.Temporal.PlainDate.monthCode" PlainDate.exampleMonthCode
+  runExample "JS.Temporal.PlainDate.calendarId" PlainDate.exampleCalendarId
+  runExample "JS.Temporal.PlainDate.dayOfWeek" PlainDate.exampleDayOfWeek
+  runExample "JS.Temporal.PlainDate.dayOfYear" PlainDate.exampleDayOfYear
+  runExample "JS.Temporal.PlainDate.weekOfYear" PlainDate.exampleWeekOfYear
+  runExample "JS.Temporal.PlainDate.yearOfWeek" PlainDate.exampleYearOfWeek
+  runExample "JS.Temporal.PlainDate.daysInMonth" PlainDate.exampleDaysInMonth
+  runExample "JS.Temporal.PlainDate.daysInWeek" PlainDate.exampleDaysInWeek
+  runExample "JS.Temporal.PlainDate.daysInYear" PlainDate.exampleDaysInYear
+  runExample "JS.Temporal.PlainDate.monthsInYear" PlainDate.exampleMonthsInYear
+  runExample "JS.Temporal.PlainDate.inLeapYear" PlainDate.exampleInLeapYear
+  runExample "JS.Temporal.PlainDate.era" PlainDate.exampleEra
+  runExample "JS.Temporal.PlainDate.eraYear" PlainDate.exampleEraYear
+  runExample "JS.Temporal.PlainDate.addWithOptions" PlainDate.exampleAddWithOptions
   runExample "JS.Temporal.PlainDate.add" PlainDate.exampleAdd
-  runExample "JS.Temporal.PlainDate.until" PlainDate.exampleUntil
-  runExample "JS.Temporal.PlainDate.since" PlainDate.exampleSince
+  runExample "JS.Temporal.PlainDate.subtractWithOptions" PlainDate.exampleSubtractWithOptions
+  runExample "JS.Temporal.PlainDate.subtract" PlainDate.exampleSubtract
+  runExample "JS.Temporal.PlainDate.withWithOptions" PlainDate.exampleWithWithOptions
   runExample "JS.Temporal.PlainDate.with" PlainDate.exampleWith
   runExample "JS.Temporal.PlainDate.withCalendar" PlainDate.exampleWithCalendar
-  runExample "JS.Temporal.PlainDate.subtract" PlainDate.exampleSubtract
-  runExample "JS.Temporal.PlainDate.toString" PlainDate.exampleToString
-  runExample "JS.Temporal.PlainDate.toPlainYearMonth" PlainDate.exampleToPlainYearMonth
-  runExample "JS.Temporal.PlainDate.toPlainMonthDay" PlainDate.exampleToPlainMonthDay
+  runExample "JS.Temporal.PlainDate.untilWithOptions" PlainDate.exampleUntilWithOptions
+  runExample "JS.Temporal.PlainDate.until" PlainDate.exampleUntil
+  runExample "JS.Temporal.PlainDate.sinceWithOptions" PlainDate.exampleSinceWithOptions
+  runExample "JS.Temporal.PlainDate.since" PlainDate.exampleSince
+  runExample "JS.Temporal.PlainDate.toDate" PlainDate.exampleToDate
   runExample "JS.Temporal.PlainDate.toPlainDateTime" PlainDate.exampleToPlainDateTime
+  runExample "JS.Temporal.PlainDate.toPlainMonthDay" PlainDate.exampleToPlainMonthDay
+  runExample "JS.Temporal.PlainDate.toPlainYearMonth" PlainDate.exampleToPlainYearMonth
+  runExample "JS.Temporal.PlainDate.toZonedDateTimeWithPlainTime" PlainDate.exampleToZonedDateTimeWithPlainTime
   runExample "JS.Temporal.PlainDate.toZonedDateTime" PlainDate.exampleToZonedDateTime
+  runExample "JS.Temporal.PlainDate.toStringWithOptions" PlainDate.exampleToStringWithOptions
+  runExample "JS.Temporal.PlainDate.toString" PlainDate.exampleToString
+  runExample "JS.Temporal.PlainDateTime.fromWithOptions" PlainDateTime.exampleFromWithOptions
   runExample "JS.Temporal.PlainDateTime.from" PlainDateTime.exampleFrom
+  runExample "JS.Temporal.PlainDateTime.fromStringWithOptions" PlainDateTime.exampleFromStringWithOptions
   runExample "JS.Temporal.PlainDateTime.fromString" PlainDateTime.exampleFromString
+  runExample "JS.Temporal.PlainDateTime.year" PlainDateTime.exampleYear
+  runExample "JS.Temporal.PlainDateTime.month" PlainDateTime.exampleMonth
+  runExample "JS.Temporal.PlainDateTime.day" PlainDateTime.exampleDay
+  runExample "JS.Temporal.PlainDateTime.monthCode" PlainDateTime.exampleMonthCode
+  runExample "JS.Temporal.PlainDateTime.dayOfWeek" PlainDateTime.exampleDayOfWeek
+  runExample "JS.Temporal.PlainDateTime.dayOfYear" PlainDateTime.exampleDayOfYear
+  runExample "JS.Temporal.PlainDateTime.weekOfYear" PlainDateTime.exampleWeekOfYear
+  runExample "JS.Temporal.PlainDateTime.yearOfWeek" PlainDateTime.exampleYearOfWeek
+  runExample "JS.Temporal.PlainDateTime.daysInMonth" PlainDateTime.exampleDaysInMonth
+  runExample "JS.Temporal.PlainDateTime.daysInYear" PlainDateTime.exampleDaysInYear
+  runExample "JS.Temporal.PlainDateTime.daysInWeek" PlainDateTime.exampleDaysInWeek
+  runExample "JS.Temporal.PlainDateTime.monthsInYear" PlainDateTime.exampleMonthsInYear
+  runExample "JS.Temporal.PlainDateTime.inLeapYear" PlainDateTime.exampleInLeapYear
+  runExample "JS.Temporal.PlainDateTime.calendarId" PlainDateTime.exampleCalendarId
+  runExample "JS.Temporal.PlainDateTime.era" PlainDateTime.exampleEra
+  runExample "JS.Temporal.PlainDateTime.eraYear" PlainDateTime.exampleEraYear
+  runExample "JS.Temporal.PlainDateTime.hour" PlainDateTime.exampleHour
+  runExample "JS.Temporal.PlainDateTime.minute" PlainDateTime.exampleMinute
+  runExample "JS.Temporal.PlainDateTime.second" PlainDateTime.exampleSecond
+  runExample "JS.Temporal.PlainDateTime.millisecond" PlainDateTime.exampleMillisecond
+  runExample "JS.Temporal.PlainDateTime.microsecond" PlainDateTime.exampleMicrosecond
+  runExample "JS.Temporal.PlainDateTime.nanosecond" PlainDateTime.exampleNanosecond
+  runExample "JS.Temporal.PlainDateTime.addWithOptions" PlainDateTime.exampleAddWithOptions
   runExample "JS.Temporal.PlainDateTime.add" PlainDateTime.exampleAdd
+  runExample "JS.Temporal.PlainDateTime.subtractWithOptions" PlainDateTime.exampleSubtractWithOptions
   runExample "JS.Temporal.PlainDateTime.subtract" PlainDateTime.exampleSubtract
+  runExample "JS.Temporal.PlainDateTime.withWithOptions" PlainDateTime.exampleWithWithOptions
   runExample "JS.Temporal.PlainDateTime.with" PlainDateTime.exampleWith
   runExample "JS.Temporal.PlainDateTime.withPlainTime" PlainDateTime.exampleWithPlainTime
   runExample "JS.Temporal.PlainDateTime.withCalendar" PlainDateTime.exampleWithCalendar
+  runExample "JS.Temporal.PlainDateTime.untilWithOptions" PlainDateTime.exampleUntilWithOptions
+  runExample "JS.Temporal.PlainDateTime.until" PlainDateTime.exampleUntil
+  runExample "JS.Temporal.PlainDateTime.sinceWithOptions" PlainDateTime.exampleSinceWithOptions
+  runExample "JS.Temporal.PlainDateTime.since" PlainDateTime.exampleSince
   runExample "JS.Temporal.PlainDateTime.round" PlainDateTime.exampleRound
+  runExample "JS.Temporal.PlainDateTime.toStringWithOptions" PlainDateTime.exampleToStringWithOptions
   runExample "JS.Temporal.PlainDateTime.toString" PlainDateTime.exampleToString
+  runExample "JS.Temporal.PlainDateTime.fromDateTime" PlainDateTime.exampleFromDateTime
+  runExample "JS.Temporal.PlainDateTime.toDateTime" PlainDateTime.exampleToDateTime
   runExample "JS.Temporal.PlainDateTime.toPlainDate" PlainDateTime.exampleToPlainDate
   runExample "JS.Temporal.PlainDateTime.toPlainTime" PlainDateTime.exampleToPlainTime
   runExample "JS.Temporal.PlainDateTime.toZonedDateTime" PlainDateTime.exampleToZonedDateTime
-  runExample "JS.Temporal.PlainDateTime.until" PlainDateTime.exampleUntil
-  runExample "JS.Temporal.PlainDateTime.since" PlainDateTime.exampleSince
+  runExample "JS.Temporal.PlainMonthDay.fromWithOptions" PlainMonthDay.exampleFromWithOptions
   runExample "JS.Temporal.PlainMonthDay.from" PlainMonthDay.exampleFrom
+  runExample "JS.Temporal.PlainMonthDay.fromStringWithOptions" PlainMonthDay.exampleFromStringWithOptions
   runExample "JS.Temporal.PlainMonthDay.fromString" PlainMonthDay.exampleFromString
+  runExample "JS.Temporal.PlainMonthDay.monthCode" PlainMonthDay.exampleMonthCode
+  runExample "JS.Temporal.PlainMonthDay.day" PlainMonthDay.exampleDay
+  runExample "JS.Temporal.PlainMonthDay.calendarId" PlainMonthDay.exampleCalendarId
+  runExample "JS.Temporal.PlainMonthDay.withWithOptions" PlainMonthDay.exampleWithWithOptions
   runExample "JS.Temporal.PlainMonthDay.with" PlainMonthDay.exampleWith
-  runExample "JS.Temporal.PlainMonthDay.toString" PlainMonthDay.exampleToString
   runExample "JS.Temporal.PlainMonthDay.toPlainDate" PlainMonthDay.exampleToPlainDate
+  runExample "JS.Temporal.PlainMonthDay.toStringWithOptions" PlainMonthDay.exampleToStringWithOptions
+  runExample "JS.Temporal.PlainMonthDay.toString" PlainMonthDay.exampleToString
+  runExample "JS.Temporal.PlainTime.fromWithOptions" PlainTime.exampleFromWithOptions
   runExample "JS.Temporal.PlainTime.from" PlainTime.exampleFrom
+  runExample "JS.Temporal.PlainTime.fromStringWithOptions" PlainTime.exampleFromStringWithOptions
   runExample "JS.Temporal.PlainTime.fromString" PlainTime.exampleFromString
+  runExample "JS.Temporal.PlainTime.hour" PlainTime.exampleHour
+  runExample "JS.Temporal.PlainTime.minute" PlainTime.exampleMinute
+  runExample "JS.Temporal.PlainTime.second" PlainTime.exampleSecond
+  runExample "JS.Temporal.PlainTime.millisecond" PlainTime.exampleMillisecond
+  runExample "JS.Temporal.PlainTime.microsecond" PlainTime.exampleMicrosecond
+  runExample "JS.Temporal.PlainTime.nanosecond" PlainTime.exampleNanosecond
   runExample "JS.Temporal.PlainTime.add" PlainTime.exampleAdd
   runExample "JS.Temporal.PlainTime.subtract" PlainTime.exampleSubtract
+  runExample "JS.Temporal.PlainTime.withWithOptions" PlainTime.exampleWithWithOptions
   runExample "JS.Temporal.PlainTime.with" PlainTime.exampleWith
+  runExample "JS.Temporal.PlainTime.untilWithOptions" PlainTime.exampleUntilWithOptions
   runExample "JS.Temporal.PlainTime.until" PlainTime.exampleUntil
+  runExample "JS.Temporal.PlainTime.sinceWithOptions" PlainTime.exampleSinceWithOptions
   runExample "JS.Temporal.PlainTime.since" PlainTime.exampleSince
   runExample "JS.Temporal.PlainTime.round" PlainTime.exampleRound
+  runExample "JS.Temporal.PlainTime.fromTime" PlainTime.exampleFromTime
+  runExample "JS.Temporal.PlainTime.toTime" PlainTime.exampleToTime
+  runExample "JS.Temporal.PlainTime.toStringWithOptions" PlainTime.exampleToStringWithOptions
   runExample "JS.Temporal.PlainTime.toString" PlainTime.exampleToString
+  runExample "JS.Temporal.PlainYearMonth.fromWithOptions" PlainYearMonth.exampleFromWithOptions
   runExample "JS.Temporal.PlainYearMonth.from" PlainYearMonth.exampleFrom
+  runExample "JS.Temporal.PlainYearMonth.fromStringWithOptions" PlainYearMonth.exampleFromStringWithOptions
   runExample "JS.Temporal.PlainYearMonth.fromString" PlainYearMonth.exampleFromString
+  runExample "JS.Temporal.PlainYearMonth.year" PlainYearMonth.exampleYear
+  runExample "JS.Temporal.PlainYearMonth.month" PlainYearMonth.exampleMonth
+  runExample "JS.Temporal.PlainYearMonth.monthCode" PlainYearMonth.exampleMonthCode
+  runExample "JS.Temporal.PlainYearMonth.daysInMonth" PlainYearMonth.exampleDaysInMonth
+  runExample "JS.Temporal.PlainYearMonth.daysInYear" PlainYearMonth.exampleDaysInYear
+  runExample "JS.Temporal.PlainYearMonth.monthsInYear" PlainYearMonth.exampleMonthsInYear
+  runExample "JS.Temporal.PlainYearMonth.inLeapYear" PlainYearMonth.exampleInLeapYear
+  runExample "JS.Temporal.PlainYearMonth.calendarId" PlainYearMonth.exampleCalendarId
+  runExample "JS.Temporal.PlainYearMonth.era" PlainYearMonth.exampleEra
+  runExample "JS.Temporal.PlainYearMonth.eraYear" PlainYearMonth.exampleEraYear
+  runExample "JS.Temporal.PlainYearMonth.addWithOptions" PlainYearMonth.exampleAddWithOptions
   runExample "JS.Temporal.PlainYearMonth.add" PlainYearMonth.exampleAdd
+  runExample "JS.Temporal.PlainYearMonth.subtractWithOptions" PlainYearMonth.exampleSubtractWithOptions
   runExample "JS.Temporal.PlainYearMonth.subtract" PlainYearMonth.exampleSubtract
+  runExample "JS.Temporal.PlainYearMonth.withWithOptions" PlainYearMonth.exampleWithWithOptions
   runExample "JS.Temporal.PlainYearMonth.with" PlainYearMonth.exampleWith
-  runExample "JS.Temporal.PlainYearMonth.until" PlainYearMonth.exampleUntil
-  runExample "JS.Temporal.PlainYearMonth.since" PlainYearMonth.exampleSince
-  runExample "JS.Temporal.PlainYearMonth.toString" PlainYearMonth.exampleToString
   runExample "JS.Temporal.PlainYearMonth.toPlainDate" PlainYearMonth.exampleToPlainDate
+  runExample "JS.Temporal.PlainYearMonth.untilWithOptions" PlainYearMonth.exampleUntilWithOptions
+  runExample "JS.Temporal.PlainYearMonth.until" PlainYearMonth.exampleUntil
+  runExample "JS.Temporal.PlainYearMonth.sinceWithOptions" PlainYearMonth.exampleSinceWithOptions
+  runExample "JS.Temporal.PlainYearMonth.since" PlainYearMonth.exampleSince
+  runExample "JS.Temporal.PlainYearMonth.toStringWithOptions" PlainYearMonth.exampleToStringWithOptions
+  runExample "JS.Temporal.PlainYearMonth.toString" PlainYearMonth.exampleToString
+  runExample "JS.Temporal.ZonedDateTime.fromWithOptions" ZonedDateTime.exampleFromWithOptions
+  runExample "JS.Temporal.ZonedDateTime.from" ZonedDateTime.exampleFrom
   runExample "JS.Temporal.ZonedDateTime.fromStringWithOptions" ZonedDateTime.exampleFromStringWithOptions
-  runExample "JS.Temporal.ZonedDateTime.fromStringWithOptions" ZonedDateTime.exampleFromStringWithOptions
+  runExample "JS.Temporal.ZonedDateTime.fromString" ZonedDateTime.exampleFromString
+  runExample "JS.Temporal.ZonedDateTime.year" ZonedDateTime.exampleYear
+  runExample "JS.Temporal.ZonedDateTime.month" ZonedDateTime.exampleMonth
+  runExample "JS.Temporal.ZonedDateTime.day" ZonedDateTime.exampleDay
+  runExample "JS.Temporal.ZonedDateTime.monthCode" ZonedDateTime.exampleMonthCode
+  runExample "JS.Temporal.ZonedDateTime.hour" ZonedDateTime.exampleHour
+  runExample "JS.Temporal.ZonedDateTime.minute" ZonedDateTime.exampleMinute
+  runExample "JS.Temporal.ZonedDateTime.second" ZonedDateTime.exampleSecond
+  runExample "JS.Temporal.ZonedDateTime.millisecond" ZonedDateTime.exampleMillisecond
+  runExample "JS.Temporal.ZonedDateTime.microsecond" ZonedDateTime.exampleMicrosecond
+  runExample "JS.Temporal.ZonedDateTime.nanosecond" ZonedDateTime.exampleNanosecond
+  runExample "JS.Temporal.ZonedDateTime.dayOfWeek" ZonedDateTime.exampleDayOfWeek
+  runExample "JS.Temporal.ZonedDateTime.dayOfYear" ZonedDateTime.exampleDayOfYear
+  runExample "JS.Temporal.ZonedDateTime.weekOfYear" ZonedDateTime.exampleWeekOfYear
+  runExample "JS.Temporal.ZonedDateTime.yearOfWeek" ZonedDateTime.exampleYearOfWeek
+  runExample "JS.Temporal.ZonedDateTime.daysInMonth" ZonedDateTime.exampleDaysInMonth
+  runExample "JS.Temporal.ZonedDateTime.daysInYear" ZonedDateTime.exampleDaysInYear
+  runExample "JS.Temporal.ZonedDateTime.daysInWeek" ZonedDateTime.exampleDaysInWeek
+  runExample "JS.Temporal.ZonedDateTime.monthsInYear" ZonedDateTime.exampleMonthsInYear
+  runExample "JS.Temporal.ZonedDateTime.inLeapYear" ZonedDateTime.exampleInLeapYear
+  runExample "JS.Temporal.ZonedDateTime.calendarId" ZonedDateTime.exampleCalendarId
+  runExample "JS.Temporal.ZonedDateTime.era" ZonedDateTime.exampleEra
+  runExample "JS.Temporal.ZonedDateTime.eraYear" ZonedDateTime.exampleEraYear
+  runExample "JS.Temporal.ZonedDateTime.timeZoneId" ZonedDateTime.exampleTimeZoneId
+  runExample "JS.Temporal.ZonedDateTime.offset" ZonedDateTime.exampleOffset
+  runExample "JS.Temporal.ZonedDateTime.offsetNanoseconds" ZonedDateTime.exampleOffsetNanoseconds
+  runExample "JS.Temporal.ZonedDateTime.hoursInDay" ZonedDateTime.exampleHoursInDay
+  runExample "JS.Temporal.ZonedDateTime.epochMilliseconds" ZonedDateTime.exampleEpochMilliseconds
+  runExample "JS.Temporal.ZonedDateTime.epochNanoseconds" ZonedDateTime.exampleEpochNanoseconds
+  runExample "JS.Temporal.ZonedDateTime.addWithOptions" ZonedDateTime.exampleAddWithOptions
   runExample "JS.Temporal.ZonedDateTime.add" ZonedDateTime.exampleAdd
+  runExample "JS.Temporal.ZonedDateTime.subtractWithOptions" ZonedDateTime.exampleSubtractWithOptions
   runExample "JS.Temporal.ZonedDateTime.subtract" ZonedDateTime.exampleSubtract
+  runExample "JS.Temporal.ZonedDateTime.withWithOptions" ZonedDateTime.exampleWithWithOptions
   runExample "JS.Temporal.ZonedDateTime.with" ZonedDateTime.exampleWith
   runExample "JS.Temporal.ZonedDateTime.withTimeZone" ZonedDateTime.exampleWithTimeZone
   runExample "JS.Temporal.ZonedDateTime.withCalendar" ZonedDateTime.exampleWithCalendar
   runExample "JS.Temporal.ZonedDateTime.withPlainTime" ZonedDateTime.exampleWithPlainTime
   runExample "JS.Temporal.ZonedDateTime.withPlainDate" ZonedDateTime.exampleWithPlainDate
+  runExample "JS.Temporal.ZonedDateTime.untilWithOptions" ZonedDateTime.exampleUntilWithOptions
   runExample "JS.Temporal.ZonedDateTime.until" ZonedDateTime.exampleUntil
+  runExample "JS.Temporal.ZonedDateTime.sinceWithOptions" ZonedDateTime.exampleSinceWithOptions
   runExample "JS.Temporal.ZonedDateTime.since" ZonedDateTime.exampleSince
   runExample "JS.Temporal.ZonedDateTime.round" ZonedDateTime.exampleRound
   runExample "JS.Temporal.ZonedDateTime.startOfDay" ZonedDateTime.exampleStartOfDay
@@ -134,4 +291,5 @@ main = do
   runExample "JS.Temporal.ZonedDateTime.toPlainTime" ZonedDateTime.exampleToPlainTime
   runExample "JS.Temporal.ZonedDateTime.toPlainYearMonth" ZonedDateTime.exampleToPlainYearMonth
   runExample "JS.Temporal.ZonedDateTime.toPlainMonthDay" ZonedDateTime.exampleToPlainMonthDay
+  runExample "JS.Temporal.ZonedDateTime.toStringWithOptions" ZonedDateTime.exampleToStringWithOptions
   runExample "JS.Temporal.ZonedDateTime.toString" ZonedDateTime.exampleToString

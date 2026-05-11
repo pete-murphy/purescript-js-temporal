@@ -177,11 +177,10 @@ foreign import _fromRecordWithOptions :: forall ro rc. EffectFn2 { | ro } { | rc
 -- |     { year: 2024, month: 1, day: 15, hour: 12, minute: 0, second: 0, timeZone: "America/New_York" }
 -- |   Console.log (ZonedDateTime.toString zoned)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15T12:00:00-05:00[America/New_York]
 -- | ```
-
 fromWithOptions
   :: forall optsProvided provided rest
    . Union provided rest ZonedDateTimeComponents
@@ -205,7 +204,7 @@ fromWithOptions providedOptions components =
 
 foreign import _fromRecord :: forall r. EffectFn1 { | r } ZonedDateTime
 
--- | Same as [`fromWithOptions`](#fromWithOptions) with default options.
+-- | Same as [`fromWithOptions`](#v:fromWithOptions) with default options.
 -- |
 -- | ```purescript
 -- | exampleFrom :: Effect Unit
@@ -213,22 +212,11 @@ foreign import _fromRecord :: forall r. EffectFn1 { | r } ZonedDateTime
 -- |   zoned <- ZonedDateTime.from
 -- |     { year: 2024, month: 1, day: 15, hour: 12, minute: 0, second: 0, timeZone: "America/New_York" }
 -- |   Console.log (ZonedDateTime.toString zoned)
--- |
--- | exampleFromStringWithOptions :: Effect Unit
--- | exampleFromStringWithOptions = do
--- |   zoned <- ZonedDateTime.fromStringWithOptions { overflow: Overflow.Constrain } "2024-01-15T12:00:00-05:00[America/New_York]"
--- |   Console.log (ZonedDateTime.toString zoned)
--- |
--- | exampleFromString :: Effect Unit
--- | exampleFromString = do
--- |   zoned <- ZonedDateTime.fromString "1970-01-01T00:00:00+00:00[UTC]"
--- |   Console.log (ZonedDateTime.toString zoned)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15T12:00:00-05:00[America/New_York]
 -- | ```
-
 from
   :: forall provided rest
    . Union provided rest ZonedDateTimeComponents
@@ -246,11 +234,10 @@ foreign import _fromStringWithOptions :: forall r. EffectFn2 { | r } String Zone
 -- |   zoned <- ZonedDateTime.fromStringWithOptions { overflow: Overflow.Constrain } "2024-01-15T12:00:00-05:00[America/New_York]"
 -- |   Console.log (ZonedDateTime.toString zoned)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15T12:00:00-05:00[America/New_York]
 -- | ```
-
 fromStringWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -273,7 +260,7 @@ fromStringWithOptions providedOptions str =
 
 foreign import _fromString :: EffectFn1 String ZonedDateTime
 
--- | Same as [`fromStringWithOptions`](#fromstring) with default options.
+-- | Same as [`fromStringWithOptions`](#v:fromStringWithOptions) with default options.
 -- |
 -- | ```purescript
 -- | exampleFromString :: Effect Unit
@@ -281,11 +268,10 @@ foreign import _fromString :: EffectFn1 String ZonedDateTime
 -- |   zoned <- ZonedDateTime.fromString "1970-01-01T00:00:00+00:00[UTC]"
 -- |   Console.log (ZonedDateTime.toString zoned)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 1970-01-01T00:00:00+00:00[UTC]
 -- | ```
-
 fromString :: String -> Effect ZonedDateTime
 fromString = Effect.Uncurried.runEffectFn1 _fromString
 
@@ -299,12 +285,12 @@ fromString = Effect.Uncurried.runEffectFn1 _fromString
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T12:00:00[America/New_York]"
 -- |   Console.log ("Year: " <> show (ZonedDateTime.year zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Year: 2024
 -- | ```
-
 foreign import year :: ZonedDateTime -> Int
+
 -- | Calendar month number in this zoned date-time's calendar.
 -- |
 -- | ```purescript
@@ -313,12 +299,12 @@ foreign import year :: ZonedDateTime -> Int
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T12:00:00[America/New_York]"
 -- |   Console.log ("Month: " <> show (ZonedDateTime.month zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Month: 7
 -- | ```
-
 foreign import month :: ZonedDateTime -> Int
+
 -- | Day of the month in this zoned date-time's calendar.
 -- |
 -- | ```purescript
@@ -327,12 +313,12 @@ foreign import month :: ZonedDateTime -> Int
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T12:00:00[America/New_York]"
 -- |   Console.log ("Day: " <> show (ZonedDateTime.day zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Day: 1
 -- | ```
-
 foreign import day :: ZonedDateTime -> Int
+
 -- | Calendar-specific month code (for example `"M01"`).
 -- |
 -- | ```purescript
@@ -341,12 +327,12 @@ foreign import day :: ZonedDateTime -> Int
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T12:00:00[America/New_York]"
 -- |   Console.log ("Month code: " <> ZonedDateTime.monthCode zoned)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Month code: M07
 -- | ```
-
 foreign import monthCode :: ZonedDateTime -> String
+
 -- | Hour of the day in the zoned wall-clock view.
 -- |
 -- | ```purescript
@@ -355,12 +341,12 @@ foreign import monthCode :: ZonedDateTime -> String
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T14:30:00[America/New_York]"
 -- |   Console.log ("Hour: " <> show (ZonedDateTime.hour zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Hour: 14
 -- | ```
-
 foreign import hour :: ZonedDateTime -> Int
+
 -- | Minute of the hour in the zoned wall-clock view.
 -- |
 -- | ```purescript
@@ -369,12 +355,12 @@ foreign import hour :: ZonedDateTime -> Int
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T14:30:00[America/New_York]"
 -- |   Console.log ("Minute: " <> show (ZonedDateTime.minute zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Minute: 30
 -- | ```
-
 foreign import minute :: ZonedDateTime -> Int
+
 -- | Second of the minute in the zoned wall-clock view.
 -- |
 -- | ```purescript
@@ -383,12 +369,12 @@ foreign import minute :: ZonedDateTime -> Int
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T14:30:45[America/New_York]"
 -- |   Console.log ("Second: " <> show (ZonedDateTime.second zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Second: 45
 -- | ```
-
 foreign import second :: ZonedDateTime -> Int
+
 -- | Millisecond of the second in the zoned wall-clock view.
 -- |
 -- | ```purescript
@@ -397,12 +383,12 @@ foreign import second :: ZonedDateTime -> Int
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T14:30:45.123[America/New_York]"
 -- |   Console.log ("Millisecond: " <> show (ZonedDateTime.millisecond zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Millisecond: 123
 -- | ```
-
 foreign import millisecond :: ZonedDateTime -> Int
+
 -- | Microsecond of the millisecond in the zoned wall-clock view.
 -- |
 -- | ```purescript
@@ -411,12 +397,12 @@ foreign import millisecond :: ZonedDateTime -> Int
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T14:30:45.123456[America/New_York]"
 -- |   Console.log ("Microsecond: " <> show (ZonedDateTime.microsecond zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Microsecond: 456
 -- | ```
-
 foreign import microsecond :: ZonedDateTime -> Int
+
 -- | Nanosecond of the microsecond in the zoned wall-clock view.
 -- |
 -- | ```purescript
@@ -425,12 +411,12 @@ foreign import microsecond :: ZonedDateTime -> Int
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T14:30:45.123456789[America/New_York]"
 -- |   Console.log ("Nanosecond: " <> show (ZonedDateTime.nanosecond zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Nanosecond: 789
 -- | ```
-
 foreign import nanosecond :: ZonedDateTime -> Int
+
 -- | ISO day of week, from `1` (Monday) to `7` (Sunday).
 -- |
 -- | ```purescript
@@ -439,12 +425,12 @@ foreign import nanosecond :: ZonedDateTime -> Int
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T12:00:00[America/New_York]"
 -- |   Console.log ("Day of week: " <> show (ZonedDateTime.dayOfWeek zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Day of week: 1
 -- | ```
-
 foreign import dayOfWeek :: ZonedDateTime -> Int
+
 -- | Day number within the year in this zoned date-time's calendar.
 -- |
 -- | ```purescript
@@ -453,12 +439,12 @@ foreign import dayOfWeek :: ZonedDateTime -> Int
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T12:00:00[America/New_York]"
 -- |   Console.log ("Day of year: " <> show (ZonedDateTime.dayOfYear zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Day of year: 183
 -- | ```
-
 foreign import dayOfYear :: ZonedDateTime -> Int
+
 -- | Number of days in the current month.
 -- |
 -- | ```purescript
@@ -467,12 +453,12 @@ foreign import dayOfYear :: ZonedDateTime -> Int
 -- |   zoned <- ZonedDateTime.fromString "2024-02-01T12:00:00[America/New_York]"
 -- |   Console.log ("Days in Feb 2024: " <> show (ZonedDateTime.daysInMonth zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Days in Feb 2024: 29
 -- | ```
-
 foreign import daysInMonth :: ZonedDateTime -> Int
+
 -- | Number of days in the current year.
 -- |
 -- | ```purescript
@@ -481,12 +467,12 @@ foreign import daysInMonth :: ZonedDateTime -> Int
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T12:00:00[America/New_York]"
 -- |   Console.log ("Days in 2024: " <> show (ZonedDateTime.daysInYear zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Days in 2024: 366
 -- | ```
-
 foreign import daysInYear :: ZonedDateTime -> Int
+
 -- | Number of days in the current week according to the calendar.
 -- |
 -- | ```purescript
@@ -495,12 +481,12 @@ foreign import daysInYear :: ZonedDateTime -> Int
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T12:00:00[America/New_York]"
 -- |   Console.log ("Days in week: " <> show (ZonedDateTime.daysInWeek zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Days in week: 7
 -- | ```
-
 foreign import daysInWeek :: ZonedDateTime -> Int
+
 -- | Number of months in the current year.
 -- |
 -- | ```purescript
@@ -509,12 +495,12 @@ foreign import daysInWeek :: ZonedDateTime -> Int
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T12:00:00[America/New_York]"
 -- |   Console.log ("Months in year: " <> show (ZonedDateTime.monthsInYear zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Months in year: 12
 -- | ```
-
 foreign import monthsInYear :: ZonedDateTime -> Int
+
 -- | Whether the current year is a leap year in this calendar.
 -- |
 -- | ```purescript
@@ -523,12 +509,12 @@ foreign import monthsInYear :: ZonedDateTime -> Int
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T12:00:00[America/New_York]"
 -- |   Console.log ("2024 is leap year: " <> show (ZonedDateTime.inLeapYear zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024 is leap year: true
 -- | ```
-
 foreign import inLeapYear :: ZonedDateTime -> Boolean
+
 -- | Identifier of the current calendar (for example `"iso8601"`).
 -- |
 -- | ```purescript
@@ -537,12 +523,12 @@ foreign import inLeapYear :: ZonedDateTime -> Boolean
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T12:00:00[America/New_York]"
 -- |   Console.log ("Calendar: " <> ZonedDateTime.calendarId zoned)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Calendar: iso8601
 -- | ```
-
 foreign import calendarId :: ZonedDateTime -> String
+
 -- | Identifier of the associated time zone (for example `"America/New_York"`).
 -- |
 -- | ```purescript
@@ -551,12 +537,12 @@ foreign import calendarId :: ZonedDateTime -> String
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T12:00:00[America/New_York]"
 -- |   Console.log ("Time zone: " <> ZonedDateTime.timeZoneId zoned)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Time zone: America/New_York
 -- | ```
-
 foreign import timeZoneId :: ZonedDateTime -> String
+
 -- | Numeric UTC offset string for this instant in the associated time zone.
 -- |
 -- | ```purescript
@@ -564,18 +550,13 @@ foreign import timeZoneId :: ZonedDateTime -> String
 -- | exampleOffset = do
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T12:00:00[America/New_York]"
 -- |   Console.log ("Offset: " <> ZonedDateTime.offset zoned)
--- |
--- | exampleOffsetNanoseconds :: Effect Unit
--- | exampleOffsetNanoseconds = do
--- |   zoned <- ZonedDateTime.fromString "2024-07-01T12:00:00[America/New_York]"
--- |   Console.log ("Offset ns: " <> show (ZonedDateTime.offsetNanoseconds zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Offset: -04:00
 -- | ```
-
 foreign import offset :: ZonedDateTime -> String
+
 -- | UTC offset for this instant, in nanoseconds.
 -- |
 -- | ```purescript
@@ -584,12 +565,12 @@ foreign import offset :: ZonedDateTime -> String
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T12:00:00[America/New_York]"
 -- |   Console.log ("Offset ns: " <> show (ZonedDateTime.offsetNanoseconds zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Offset ns: -14400000000000
 -- | ```
-
 foreign import offsetNanoseconds :: ZonedDateTime -> Int
+
 -- | Number of wall-clock hours in this calendar day in the associated time zone.
 -- |
 -- | ```purescript
@@ -598,12 +579,12 @@ foreign import offsetNanoseconds :: ZonedDateTime -> Int
 -- |   zoned <- ZonedDateTime.fromString "2024-03-10T12:00:00[America/New_York]"
 -- |   Console.log ("Hours in day (DST spring forward): " <> show (ZonedDateTime.hoursInDay zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Hours in day (DST spring forward): 23
 -- | ```
-
 foreign import hoursInDay :: ZonedDateTime -> Int
+
 -- | Milliseconds since the Unix epoch for the represented instant.
 -- |
 -- | ```purescript
@@ -612,12 +593,12 @@ foreign import hoursInDay :: ZonedDateTime -> Int
 -- |   zoned <- ZonedDateTime.fromString "1970-01-01T00:00:01+00:00[UTC]"
 -- |   Console.log ("Epoch ms: " <> show (ZonedDateTime.epochMilliseconds zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Epoch ms: 1000.0
 -- | ```
-
 foreign import epochMilliseconds :: ZonedDateTime -> Number
+
 -- | Nanoseconds since the Unix epoch for the represented instant.
 -- |
 -- | ```purescript
@@ -626,11 +607,10 @@ foreign import epochMilliseconds :: ZonedDateTime -> Number
 -- |   zoned <- ZonedDateTime.fromString "1970-01-01T00:00:01+00:00[UTC]"
 -- |   Console.log ("Epoch ns: " <> show (ZonedDateTime.epochNanoseconds zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Epoch ns: 1000000000
 -- | ```
-
 foreign import epochNanoseconds :: ZonedDateTime -> BigInt
 
 foreign import _weekOfYear :: ZonedDateTime -> Nullable Int
@@ -643,11 +623,10 @@ foreign import _weekOfYear :: ZonedDateTime -> Nullable Int
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T12:00:00[America/New_York]"
 -- |   Console.log ("Week of year: " <> show (ZonedDateTime.weekOfYear zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Week of year: (Just 27)
 -- | ```
-
 weekOfYear :: ZonedDateTime -> Maybe Int
 weekOfYear = toMaybe <<< _weekOfYear
 
@@ -661,11 +640,10 @@ foreign import _yearOfWeek :: ZonedDateTime -> Nullable Int
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T12:00:00[America/New_York]"
 -- |   Console.log ("Year of week: " <> show (ZonedDateTime.yearOfWeek zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Year of week: (Just 2024)
 -- | ```
-
 yearOfWeek :: ZonedDateTime -> Maybe Int
 yearOfWeek = toMaybe <<< _yearOfWeek
 
@@ -678,17 +656,11 @@ foreign import _era :: ZonedDateTime -> Nullable String
 -- | exampleEra = do
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T12:00:00[America/New_York]"
 -- |   Console.log ("Era: " <> show (ZonedDateTime.era zoned))
--- |
--- | exampleEraYear :: Effect Unit
--- | exampleEraYear = do
--- |   zoned <- ZonedDateTime.fromString "2024-07-01T12:00:00[America/New_York]"
--- |   Console.log ("Era year: " <> show (ZonedDateTime.eraYear zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Era: Nothing
 -- | ```
-
 era :: ZonedDateTime -> Maybe String
 era = toMaybe <<< _era
 
@@ -702,11 +674,10 @@ foreign import _eraYear :: ZonedDateTime -> Nullable Int
 -- |   zoned <- ZonedDateTime.fromString "2024-07-01T12:00:00[America/New_York]"
 -- |   Console.log ("Era year: " <> show (ZonedDateTime.eraYear zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Era year: Nothing
 -- | ```
-
 eraYear :: ZonedDateTime -> Maybe Int
 eraYear = toMaybe <<< _eraYear
 
@@ -746,11 +717,10 @@ foreign import _addWithOptions :: forall r. EffectFn3 { | r } Duration ZonedDate
 -- |   later <- ZonedDateTime.addWithOptions { overflow: Overflow.Constrain } twoHours start
 -- |   Console.log (ZonedDateTime.toString later)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15T14:00:00-05:00[America/New_York]
 -- | ```
-
 addWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -775,7 +745,7 @@ addWithOptions providedOptions duration zonedDateTime =
 
 foreign import _add :: EffectFn2 Duration ZonedDateTime ZonedDateTime
 
--- | Same as [`addWithOptions`](#addWithOptions) with default options.
+-- | Same as [`addWithOptions`](#v:addWithOptions) with default options.
 -- |
 -- | ```purescript
 -- | exampleAdd :: Effect Unit
@@ -785,11 +755,10 @@ foreign import _add :: EffectFn2 Duration ZonedDateTime ZonedDateTime
 -- |   later <- ZonedDateTime.add twoHours start
 -- |   Console.log (ZonedDateTime.toString later)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15T14:00:00-05:00[America/New_York]
 -- | ```
-
 add :: Duration -> ZonedDateTime -> Effect ZonedDateTime
 add = Effect.Uncurried.runEffectFn2 _add
 
@@ -805,11 +774,10 @@ foreign import _subtractWithOptions :: forall r. EffectFn3 { | r } Duration Zone
 -- |   earlier <- ZonedDateTime.subtractWithOptions { overflow: Overflow.Constrain } twoHours zoned
 -- |   Console.log (ZonedDateTime.toString earlier)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-03-15T12:00:00-04:00[America/New_York]
 -- | ```
-
 subtractWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -834,7 +802,7 @@ subtractWithOptions providedOptions duration zonedDateTime =
 
 foreign import _subtract :: EffectFn2 Duration ZonedDateTime ZonedDateTime
 
--- | Same as [`subtractWithOptions`](#subtractWithOptions) with default options.
+-- | Same as [`subtractWithOptions`](#v:subtractWithOptions) with default options.
 -- |
 -- | ```purescript
 -- | exampleSubtract :: Effect Unit
@@ -844,11 +812,10 @@ foreign import _subtract :: EffectFn2 Duration ZonedDateTime ZonedDateTime
 -- |   earlier <- ZonedDateTime.subtract twoHours zoned
 -- |   Console.log (ZonedDateTime.toString earlier)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-03-15T12:00:00-04:00[America/New_York]
 -- | ```
-
 subtract :: Duration -> ZonedDateTime -> Effect ZonedDateTime
 subtract = Effect.Uncurried.runEffectFn2 _subtract
 
@@ -879,11 +846,10 @@ foreign import _withWithOptions :: forall ro rf. EffectFn3 { | ro } { | rf } Zon
 -- |   noon <- ZonedDateTime.withWithOptions { overflow: Overflow.Constrain } { hour: 12, minute: 0, second: 0 } meeting
 -- |   Console.log (ZonedDateTime.toString noon)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15T12:00:00-05:00[America/New_York]
 -- | ```
-
 withWithOptions
   :: forall optsProvided fields rest
    . Union fields rest WithFields
@@ -909,7 +875,7 @@ withWithOptions options fields zonedDateTime =
 
 foreign import _with :: forall r. EffectFn2 { | r } ZonedDateTime ZonedDateTime
 
--- | Same as [`withWithOptions`](#withWithOptions) with default options.
+-- | Same as [`withWithOptions`](#v:withWithOptions) with default options.
 -- |
 -- | ```purescript
 -- | exampleWith :: Effect Unit
@@ -917,38 +883,11 @@ foreign import _with :: forall r. EffectFn2 { | r } ZonedDateTime ZonedDateTime
 -- |   meeting <- ZonedDateTime.fromString "2024-01-15T09:30:45-05:00[America/New_York]"
 -- |   noon <- ZonedDateTime.with { hour: 12, minute: 0, second: 0 } meeting
 -- |   Console.log (ZonedDateTime.toString noon)
--- |
--- | exampleWithTimeZone :: Effect Unit
--- | exampleWithTimeZone = do
--- |   zoned <- ZonedDateTime.fromString "2024-01-15T12:00:00-05:00[America/New_York]"
--- |   inTokyo <- ZonedDateTime.withTimeZone "Asia/Tokyo" zoned
--- |   Console.log (ZonedDateTime.toString inTokyo)
--- |
--- | exampleWithCalendar :: Effect Unit
--- | exampleWithCalendar = do
--- |   zoned <- ZonedDateTime.fromString "2024-01-15T12:00:00-05:00[America/New_York]"
--- |   gregory <- ZonedDateTime.withCalendar "gregory" zoned
--- |   Console.log (ZonedDateTime.toStringWithOptions { calendarName: CalendarName.Always } gregory)
--- |
--- | exampleWithPlainTime :: Effect Unit
--- | exampleWithPlainTime = do
--- |   zoned <- ZonedDateTime.fromString "2024-01-15T09:30:45-05:00[America/New_York]"
--- |   closingTime <- PlainTime.fromString "17:00:00"
--- |   updated <- ZonedDateTime.withPlainTime closingTime zoned
--- |   Console.log (ZonedDateTime.toString updated)
--- |
--- | exampleWithPlainDate :: Effect Unit
--- | exampleWithPlainDate = do
--- |   zoned <- ZonedDateTime.fromString "2024-01-15T09:30:45-05:00[America/New_York]"
--- |   nextDay <- PlainDate.fromString "2024-01-16"
--- |   updated <- ZonedDateTime.withPlainDate nextDay zoned
--- |   Console.log (ZonedDateTime.toString updated)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15T12:00:00-05:00[America/New_York]
 -- | ```
-
 with
   :: forall fields rest
    . Union fields rest WithFields
@@ -968,11 +907,10 @@ foreign import _withTimeZone :: EffectFn2 String ZonedDateTime ZonedDateTime
 -- |   inTokyo <- ZonedDateTime.withTimeZone "Asia/Tokyo" zoned
 -- |   Console.log (ZonedDateTime.toString inTokyo)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-16T02:00:00+09:00[Asia/Tokyo]
 -- | ```
-
 withTimeZone :: String -> ZonedDateTime -> Effect ZonedDateTime
 withTimeZone = Effect.Uncurried.runEffectFn2 _withTimeZone
 
@@ -987,11 +925,10 @@ foreign import _withCalendar :: EffectFn2 String ZonedDateTime ZonedDateTime
 -- |   gregory <- ZonedDateTime.withCalendar "gregory" zoned
 -- |   Console.log (ZonedDateTime.toStringWithOptions { calendarName: CalendarName.Always } gregory)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15T12:00:00-05:00[America/New_York][u-ca=gregory]
 -- | ```
-
 withCalendar :: String -> ZonedDateTime -> Effect ZonedDateTime
 withCalendar = Effect.Uncurried.runEffectFn2 _withCalendar
 
@@ -1007,11 +944,10 @@ foreign import _withPlainTime :: EffectFn2 PlainTime ZonedDateTime ZonedDateTime
 -- |   updated <- ZonedDateTime.withPlainTime closingTime zoned
 -- |   Console.log (ZonedDateTime.toString updated)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15T17:00:00-05:00[America/New_York]
 -- | ```
-
 withPlainTime :: PlainTime -> ZonedDateTime -> Effect ZonedDateTime
 withPlainTime = Effect.Uncurried.runEffectFn2 _withPlainTime
 
@@ -1027,11 +963,10 @@ foreign import _withPlainDate :: EffectFn2 PlainDate ZonedDateTime ZonedDateTime
 -- |   updated <- ZonedDateTime.withPlainDate nextDay zoned
 -- |   Console.log (ZonedDateTime.toString updated)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-16T09:30:45-05:00[America/New_York]
 -- | ```
-
 withPlainDate :: PlainDate -> ZonedDateTime -> Effect ZonedDateTime
 withPlainDate = Effect.Uncurried.runEffectFn2 _withPlainDate
 
@@ -1084,11 +1019,10 @@ foreign import _untilWithOptions :: forall r. EffectFn3 { | r } ZonedDateTime Zo
 -- |   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- |   Console.log ("Flight time: " <> JS.Intl.DurationFormat.format formatter flightTime)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Flight time: 12 hours, 55 minutes
 -- | ```
-
 untilWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -1113,7 +1047,7 @@ untilWithOptions providedOptions other zonedDateTime =
 
 foreign import _until :: EffectFn2 ZonedDateTime ZonedDateTime Duration
 
--- | Same as [`untilWithOptions`](#untilWithOptions) with default options. Arg order: `until other subject`.
+-- | Same as [`untilWithOptions`](#v:untilWithOptions) with default options. Arg order: `until other subject`.
 -- |
 -- | ```purescript
 -- | exampleUntil :: Effect Unit
@@ -1123,11 +1057,10 @@ foreign import _until :: EffectFn2 ZonedDateTime ZonedDateTime Duration
 -- |   duration <- ZonedDateTime.until end start
 -- |   Console.log (Duration.toString duration)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | PT24H
 -- | ```
-
 until :: ZonedDateTime -> ZonedDateTime -> Effect Duration
 until = Effect.Uncurried.runEffectFn2 _until
 
@@ -1145,11 +1078,10 @@ foreign import _sinceWithOptions :: forall r. EffectFn3 { | r } ZonedDateTime Zo
 -- |   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- |   Console.log ("Elapsed: " <> JS.Intl.DurationFormat.format formatter elapsed)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Elapsed: 1,787 hours
 -- | ```
-
 sinceWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -1174,7 +1106,7 @@ sinceWithOptions providedOptions other zonedDateTime =
 
 foreign import _since :: EffectFn2 ZonedDateTime ZonedDateTime Duration
 
--- | Same as [`sinceWithOptions`](#sinceWithOptions) with default options. Arg order: `since other subject`.
+-- | Same as [`sinceWithOptions`](#v:sinceWithOptions) with default options. Arg order: `since other subject`.
 -- |
 -- | ```purescript
 -- | exampleSince :: Effect Unit
@@ -1184,11 +1116,10 @@ foreign import _since :: EffectFn2 ZonedDateTime ZonedDateTime Duration
 -- |   elapsed <- ZonedDateTime.since start end
 -- |   Console.log (Duration.toString elapsed)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | PT1787H
 -- | ```
-
 since :: ZonedDateTime -> ZonedDateTime -> Effect Duration
 since = Effect.Uncurried.runEffectFn2 _since
 
@@ -1232,11 +1163,10 @@ foreign import _round :: forall r. EffectFn2 { | r } ZonedDateTime ZonedDateTime
 -- |   rounded <- ZonedDateTime.round { smallestUnit: TemporalUnit.Minute, roundingMode: RoundingMode.HalfExpand } zoned
 -- |   Console.log (ZonedDateTime.toString rounded)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15T09:31:00-05:00[America/New_York]
 -- | ```
-
 round
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -1270,11 +1200,10 @@ foreign import _startOfDay :: EffectFn1 ZonedDateTime ZonedDateTime
 -- |   start <- ZonedDateTime.startOfDay zoned
 -- |   Console.log (ZonedDateTime.toString start)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-03-10T00:00:00-05:00[America/New_York]
 -- | ```
-
 startOfDay :: ZonedDateTime -> Effect ZonedDateTime
 startOfDay = Effect.Uncurried.runEffectFn1 _startOfDay
 
@@ -1296,11 +1225,10 @@ foreign import _getTimeZoneTransition
 -- |     Nothing -> Console.log "No transition"
 -- |     Just transition -> Console.log (ZonedDateTime.toString transition)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-03-10T03:00:00-04:00[America/New_York]
 -- | ```
-
 getTimeZoneTransition :: String -> ZonedDateTime -> Maybe ZonedDateTime
 getTimeZoneTransition direction zonedDateTime =
   Function.Uncurried.runFn4 _getTimeZoneTransition Nothing Just direction zonedDateTime
@@ -1317,11 +1245,10 @@ foreign import _toInstant :: Fn1 ZonedDateTime Instant
 -- |   zoned <- ZonedDateTime.fromString "2024-01-15T12:00:00-05:00[America/New_York]"
 -- |   Console.log (Instant.toString (ZonedDateTime.toInstant zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15T17:00:00Z
 -- | ```
-
 toInstant :: ZonedDateTime -> Instant
 toInstant = Function.Uncurried.runFn1 _toInstant
 
@@ -1335,11 +1262,10 @@ foreign import _toPlainDateTime :: Fn1 ZonedDateTime PlainDateTime
 -- |   zoned <- ZonedDateTime.fromString "2024-01-15T12:00:00-05:00[America/New_York]"
 -- |   Console.log (PlainDateTime.toString (ZonedDateTime.toPlainDateTime zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15T12:00:00
 -- | ```
-
 toPlainDateTime :: ZonedDateTime -> PlainDateTime
 toPlainDateTime = Function.Uncurried.runFn1 _toPlainDateTime
 
@@ -1353,11 +1279,10 @@ foreign import _toPlainDate :: Fn1 ZonedDateTime PlainDate
 -- |   zoned <- ZonedDateTime.fromString "2024-01-15T12:00:00-05:00[America/New_York]"
 -- |   Console.log (PlainDate.toString (ZonedDateTime.toPlainDate zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15
 -- | ```
-
 toPlainDate :: ZonedDateTime -> PlainDate
 toPlainDate = Function.Uncurried.runFn1 _toPlainDate
 
@@ -1371,11 +1296,10 @@ foreign import _toPlainTime :: Fn1 ZonedDateTime PlainTime
 -- |   zoned <- ZonedDateTime.fromString "2024-01-15T12:00:00-05:00[America/New_York]"
 -- |   Console.log (PlainTime.toString (ZonedDateTime.toPlainTime zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 12:00:00
 -- | ```
-
 toPlainTime :: ZonedDateTime -> PlainTime
 toPlainTime = Function.Uncurried.runFn1 _toPlainTime
 
@@ -1389,11 +1313,10 @@ foreign import _toPlainYearMonth :: Fn1 ZonedDateTime PlainYearMonth
 -- |   zoned <- ZonedDateTime.fromString "2024-01-15T12:00:00-05:00[America/New_York]"
 -- |   Console.log (PlainYearMonth.toString (ZonedDateTime.toPlainYearMonth zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01
 -- | ```
-
 toPlainYearMonth :: ZonedDateTime -> PlainYearMonth
 toPlainYearMonth = Function.Uncurried.runFn1 _toPlainYearMonth
 
@@ -1407,11 +1330,10 @@ foreign import _toPlainMonthDay :: Fn1 ZonedDateTime PlainMonthDay
 -- |   zoned <- ZonedDateTime.fromString "2024-01-15T12:00:00-05:00[America/New_York]"
 -- |   Console.log (PlainMonthDay.toString (ZonedDateTime.toPlainMonthDay zoned))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 01-15
 -- | ```
-
 toPlainMonthDay :: ZonedDateTime -> PlainMonthDay
 toPlainMonthDay = Function.Uncurried.runFn1 _toPlainMonthDay
 
@@ -1463,7 +1385,7 @@ instance ConvertOption ToToStringOptions "roundingMode" String String where
 
 foreign import _toString :: forall r. Fn2 { | r } ZonedDateTime String
 
--- | Same as [`toStringWithOptions`](#tostring) with default options.
+-- | Same as [`toStringWithOptions`](#v:toStringWithOptions) with default options.
 -- |
 -- | ```purescript
 -- | exampleToString :: Effect Unit
@@ -1471,11 +1393,10 @@ foreign import _toString :: forall r. Fn2 { | r } ZonedDateTime String
 -- |   zoned <- ZonedDateTime.fromString "2024-01-15T12:00:00-05:00[America/New_York]"
 -- |   Console.log (ZonedDateTime.toString zoned)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15T12:00:00-05:00[America/New_York]
 -- | ```
-
 toString :: ZonedDateTime -> String
 toString zonedDateTime = Function.Uncurried.runFn2 _toString defaultToStringOptions zonedDateTime
 
@@ -1493,11 +1414,10 @@ toString zonedDateTime = Function.Uncurried.runFn2 _toString defaultToStringOpti
 -- |         zoned
 -- |     )
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15T12:00-05:00[America/New_York]
 -- | ```
-
 toStringWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults

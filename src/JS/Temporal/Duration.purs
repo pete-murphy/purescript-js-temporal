@@ -106,11 +106,10 @@ foreign import _from :: forall r. EffectFn1 { | r } Duration
 -- |   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- |   Console.log (JS.Intl.DurationFormat.format formatter twoHours)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2 hours
 -- | ```
-
 from
   :: forall provided rest
    . Union provided rest DurationComponents
@@ -131,11 +130,10 @@ foreign import _fromString :: EffectFn1 String Duration
 -- |   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- |   Console.log (JS.Intl.DurationFormat.format formatter duration)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2 hours, 30 minutes
 -- | ```
-
 fromString :: String -> Effect Duration
 fromString = Effect.Uncurried.runEffectFn1 _fromString
 
@@ -149,12 +147,12 @@ fromString = Effect.Uncurried.runEffectFn1 _fromString
 -- |   duration <- Duration.from { years: 3, months: 6 }
 -- |   Console.log ("Years: " <> show (Duration.years duration))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Years: 3
 -- | ```
-
 foreign import years :: Duration -> Int
+
 -- | Month component of the duration.
 -- |
 -- | ```purescript
@@ -163,12 +161,12 @@ foreign import years :: Duration -> Int
 -- |   duration <- Duration.from { years: 3, months: 6 }
 -- |   Console.log ("Months: " <> show (Duration.months duration))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Months: 6
 -- | ```
-
 foreign import months :: Duration -> Int
+
 -- | Week component of the duration.
 -- |
 -- | ```purescript
@@ -177,12 +175,12 @@ foreign import months :: Duration -> Int
 -- |   duration <- Duration.from { weeks: 2 }
 -- |   Console.log ("Weeks: " <> show (Duration.weeks duration))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Weeks: 2
 -- | ```
-
 foreign import weeks :: Duration -> Int
+
 -- | Day component of the duration.
 -- |
 -- | ```purescript
@@ -191,12 +189,12 @@ foreign import weeks :: Duration -> Int
 -- |   duration <- Duration.from { days: 10 }
 -- |   Console.log ("Days: " <> show (Duration.days duration))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Days: 10
 -- | ```
-
 foreign import days :: Duration -> Int
+
 -- | Hour component of the duration.
 -- |
 -- | ```purescript
@@ -205,12 +203,12 @@ foreign import days :: Duration -> Int
 -- |   duration <- Duration.from { hours: 5 }
 -- |   Console.log ("Hours: " <> show (Duration.hours duration))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Hours: 5
 -- | ```
-
 foreign import hours :: Duration -> Int
+
 -- | Minute component of the duration.
 -- |
 -- | ```purescript
@@ -219,12 +217,12 @@ foreign import hours :: Duration -> Int
 -- |   duration <- Duration.from { minutes: 45 }
 -- |   Console.log ("Minutes: " <> show (Duration.minutes duration))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Minutes: 45
 -- | ```
-
 foreign import minutes :: Duration -> Int
+
 -- | Second component of the duration.
 -- |
 -- | ```purescript
@@ -233,12 +231,12 @@ foreign import minutes :: Duration -> Int
 -- |   duration <- Duration.from { seconds: 30 }
 -- |   Console.log ("Seconds: " <> show (Duration.seconds duration))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Seconds: 30
 -- | ```
-
 foreign import seconds :: Duration -> Int
+
 -- | Millisecond component of the duration.
 -- |
 -- | ```purescript
@@ -247,12 +245,12 @@ foreign import seconds :: Duration -> Int
 -- |   duration <- Duration.from { milliseconds: 500 }
 -- |   Console.log ("Milliseconds: " <> show (Duration.milliseconds duration))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Milliseconds: 500
 -- | ```
-
 foreign import milliseconds :: Duration -> Int
+
 -- | Microsecond component of the duration.
 -- |
 -- | ```purescript
@@ -261,12 +259,12 @@ foreign import milliseconds :: Duration -> Int
 -- |   duration <- Duration.from { microseconds: 250 }
 -- |   Console.log ("Microseconds: " <> show (Duration.microseconds duration))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Microseconds: 250
 -- | ```
-
 foreign import microseconds :: Duration -> Int
+
 -- | Nanosecond component of the duration.
 -- |
 -- | ```purescript
@@ -275,11 +273,10 @@ foreign import microseconds :: Duration -> Int
 -- |   duration <- Duration.from { nanoseconds: 100 }
 -- |   Console.log ("Nanoseconds: " <> show (Duration.nanoseconds duration))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Nanoseconds: 100
 -- | ```
-
 foreign import nanoseconds :: Duration -> Int
 
 -- | Returns 1 if positive, -1 if negative, 0 if zero.
@@ -292,12 +289,11 @@ foreign import nanoseconds :: Duration -> Int
 -- |   negated <- pure (Duration.negated positive)
 -- |   Console.log ("Sign of -2h: " <> show (Duration.sign negated))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Sign of 2h: 1
 -- | Sign of -2h: -1
 -- | ```
-
 foreign import sign :: Duration -> Int
 
 -- | True if all components are zero.
@@ -305,12 +301,16 @@ foreign import sign :: Duration -> Int
 -- | ```purescript
 -- | exampleBlank :: Effect Unit
 -- | exampleBlank = do
--- |   zero <- Duration.from {}
+-- |   zero <- Duration.from { hours: 0 }
 -- |   nonZero <- Duration.from { hours: 1 }
 -- |   Console.log ("Zero is blank: " <> show (Duration.blank zero))
 -- |   Console.log ("1h is blank: " <> show (Duration.blank nonZero))
 -- | ```
-
+-- | ---
+-- | ```text
+-- | Zero is blank: true
+-- | 1h is blank: false
+-- | ```
 foreign import blank :: Duration -> Boolean
 
 -- Arithmetic
@@ -331,11 +331,10 @@ foreign import _add :: EffectFn2 Duration Duration Duration
 -- |   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- |   Console.log (JS.Intl.DurationFormat.format formatter combined)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2 hours, 30 minutes
 -- | ```
-
 add :: Duration -> Duration -> Effect Duration
 add = Effect.Uncurried.runEffectFn2 _add
 
@@ -354,11 +353,10 @@ foreign import _subtract :: EffectFn2 Duration Duration Duration
 -- |   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- |   Console.log (JS.Intl.DurationFormat.format formatter remainder)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | -2 hours
 -- | ```
-
 subtract :: Duration -> Duration -> Effect Duration
 subtract = Effect.Uncurried.runEffectFn2 _subtract
 
@@ -373,11 +371,10 @@ subtract = Effect.Uncurried.runEffectFn2 _subtract
 -- |   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- |   Console.log (JS.Intl.DurationFormat.format formatter neg)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | -2 hours, 30 minutes
 -- | ```
-
 foreign import negated :: Duration -> Duration
 
 -- | Returns the duration with positive sign. Pure, does not throw.
@@ -392,11 +389,10 @@ foreign import negated :: Duration -> Duration
 -- |   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- |   Console.log (JS.Intl.DurationFormat.format formatter positive)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2 hours
 -- | ```
-
 foreign import abs :: Duration -> Duration
 
 foreign import _with :: forall r. EffectFn2 { | r } Duration Duration
@@ -413,11 +409,10 @@ foreign import _with :: forall r. EffectFn2 { | r } Duration Duration
 -- |   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- |   Console.log (JS.Intl.DurationFormat.format formatter updated)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2 hours, 45 minutes
 -- | ```
-
 with
   :: forall provided rest
    . Union provided rest DurationComponents
@@ -442,11 +437,10 @@ foreign import _compare :: EffectFn2 Duration Duration Int
 -- |   ordering <- Duration.compare longer shorter
 -- |   Console.log ("Comparison result: " <> show ordering)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Comparison result: GT
 -- | ```
-
 compare :: Duration -> Duration -> Effect Ordering
 compare a b = intToOrdering <$> Effect.Uncurried.runEffectFn2 _compare a b
 
@@ -505,10 +499,13 @@ foreign import _round :: forall r. EffectFn2 { | r } Duration Duration
 -- | exampleRound :: Effect Unit
 -- | exampleRound = do
 -- |   roundedSource <- Duration.from { hours: 1, minutes: 30, seconds: 45 }
--- |   rounded <- Duration.round { smallestUnit: TemporalUnit.Minute } roundedSource
--- |   Console.log (Duration.toStringWithOptions { smallestUnit: TemporalUnit.Minute } rounded)
+-- |   rounded <- Duration.round { largestUnit: TemporalUnit.Hour, smallestUnit: TemporalUnit.Second } roundedSource
+-- |   Console.log (Duration.toString rounded)
 -- | ```
-
+-- | ---
+-- | ```text
+-- | PT1H30M45S
+-- | ```
 round
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -568,11 +565,10 @@ foreign import _total :: forall r. EffectFn2 { | r } Duration Number
 -- |   numberFormatter <- JS.Intl.NumberFormat.new [ locale ] { minimumFractionDigits: 1, maximumFractionDigits: 1 }
 -- |   Console.log ("Total hours: " <> JS.Intl.NumberFormat.format numberFormatter totalHours)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Total hours: 2.5
 -- | ```
-
 total
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -620,24 +616,18 @@ instance ConvertOption ToDurationToStringOptions "smallestUnit" TemporalUnit Str
 instance ConvertOption ToDurationToStringOptions "smallestUnit" String String where
   convertOption _ _ = identity
 
--- | Same as [`toStringWithOptions`](#tostring) with default options.
+-- | Same as [`toStringWithOptions`](#v:toStringWithOptions) with default options.
 -- |
 -- | ```purescript
 -- | exampleToString :: Effect Unit
 -- | exampleToString = do
 -- |   duration <- Duration.from { hours: 2, minutes: 30, seconds: 15, milliseconds: 400 }
 -- |   Console.log (Duration.toString duration)
--- |
--- | exampleToStringWithOptions :: Effect Unit
--- | exampleToStringWithOptions = do
--- |   duration <- Duration.from { hours: 2, minutes: 30, seconds: 15, milliseconds: 400 }
--- |   Console.log (Duration.toStringWithOptions { smallestUnit: TemporalUnit.Second } duration)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | PT2H30M15.4S
 -- | ```
-
 toString :: Duration -> String
 toString duration = Function.Uncurried.runFn2 _toString defaultDurationToStringOptions duration
 
@@ -649,11 +639,10 @@ toString duration = Function.Uncurried.runFn2 _toString defaultDurationToStringO
 -- |   duration <- Duration.from { hours: 2, minutes: 30, seconds: 15, milliseconds: 400 }
 -- |   Console.log (Duration.toStringWithOptions { smallestUnit: TemporalUnit.Second } duration)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | PT2H30M15S
 -- | ```
-
 toStringWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -701,11 +690,10 @@ millisecondsPerSecond = 1000
 -- |     Just (Milliseconds ms) -> Console.log ("Milliseconds: " <> show ms)
 -- |     Nothing -> Console.log "Cannot convert (has calendar units)"
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Milliseconds: 5000.0
 -- | ```
-
 toMilliseconds :: Duration -> Maybe Milliseconds
 toMilliseconds duration
   | years duration /= 0 = Nothing
@@ -754,11 +742,10 @@ decomposeMilliseconds totalMs =
 -- |   duration <- Duration.fromMilliseconds (Milliseconds 5000.0)
 -- |   Console.log (Duration.toString duration)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | PT5S
 -- | ```
-
 fromMilliseconds :: Milliseconds -> Effect Duration
 fromMilliseconds ms =
   let

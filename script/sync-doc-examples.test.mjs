@@ -43,14 +43,12 @@ function testReplacesDuplicateManagedBlocksAndPreservesProse() {
     "-- | ```purescript",
     '-- | freshExample <- log "hello"',
     "-- | ```",
-    "-- |",
+    "-- | ---",
     "-- | ```text",
     "-- | hello",
     "-- | ```",
     "-- |",
     "-- | Options: alpha, beta.",
-    "-- |",
-    "",
     "example",
     "  :: Effect Unit",
     "example = pure unit",
@@ -90,7 +88,6 @@ function testAppendsExampleToExistingDocWithoutManagedRegion() {
     "-- | ```purescript",
     '-- | parsed <- pure "ok"',
     "-- | ```",
-    "",
     "fromValue :: String -> Effect Unit",
     "fromValue _ = pure unit",
     "",
@@ -121,7 +118,6 @@ function testInsertsDocCommentWhenNoDocBlockExists() {
     "-- | ```purescript",
     "-- | pure unit",
     "-- | ```",
-    "",
     "withoutDocs :: Effect Unit",
     "withoutDocs = pure unit",
     "",
@@ -151,11 +147,10 @@ function testSupportsForeignImportDeclarations() {
     "-- | ```purescript",
     "-- | now <- Now.instant",
     "-- | ```",
-    "-- |",
+    "-- | ---",
     "-- | ```text",
     "-- | March 8, 2026 at 4:22:02 AM",
     "-- | ```",
-    "",
     'foreign import instant :: Effect Instant',
     "",
   ].join("\n");
@@ -199,12 +194,60 @@ function testSecondRunIsIdempotent() {
   assert.equal(firstPassContent, secondPassContent);
 }
 
+function testEnsuresBlankLineBeforeDocComment() {
+  // Simulates consecutive declarations where a previous sync left no
+  // blank line between one declaration and the next doc comment.
+  const originalContent = [
+    "module Example where",
+    "",
+    "-- | First doc.",
+    "first :: Effect Unit",
+    "first = pure unit",
+    "-- | Second doc.",
+    "",
+    "second :: Effect Unit",
+    "second = pure unit",
+    "",
+  ].join("\n");
+
+  const updatedContent = updateSourceContent(
+    originalContent,
+    "second",
+    'log "two"',
+    "two"
+  );
+
+  const expectedContent = [
+    "module Example where",
+    "",
+    "-- | First doc.",
+    "first :: Effect Unit",
+    "first = pure unit",
+    "",
+    "-- | Second doc.",
+    "-- |",
+    "-- | ```purescript",
+    '-- | log "two"',
+    "-- | ```",
+    "-- | ---",
+    "-- | ```text",
+    "-- | two",
+    "-- | ```",
+    "second :: Effect Unit",
+    "second = pure unit",
+    "",
+  ].join("\n");
+
+  assert.equal(updatedContent, expectedContent);
+}
+
 function runTests() {
   testReplacesDuplicateManagedBlocksAndPreservesProse();
   testAppendsExampleToExistingDocWithoutManagedRegion();
   testInsertsDocCommentWhenNoDocBlockExists();
   testSupportsForeignImportDeclarations();
   testSecondRunIsIdempotent();
+  testEnsuresBlankLineBeforeDocComment();
   console.log("sync-doc-examples tests passed");
 }
 

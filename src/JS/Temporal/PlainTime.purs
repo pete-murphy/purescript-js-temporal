@@ -105,11 +105,10 @@ foreign import _fromRecordWithOptions :: forall ro rc. EffectFn2 { | ro } { | rc
 -- |     { hour: 9, minute: 30, second: 0 }
 -- |   Console.log (PlainTime.toString time)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 09:30:00
 -- | ```
-
 fromWithOptions
   :: forall optsProvided provided rest
    . Union provided rest PlainTimeComponents
@@ -133,7 +132,7 @@ fromWithOptions providedOptions components =
 
 foreign import _fromRecord :: forall r. EffectFn1 { | r } PlainTime
 
--- | Same as [`fromWithOptions`](#fromWithOptions) with default options.
+-- | Same as [`fromWithOptions`](#v:fromWithOptions) with default options.
 -- |
 -- | ```purescript
 -- | exampleFrom :: Effect Unit
@@ -142,24 +141,11 @@ foreign import _fromRecord :: forall r. EffectFn1 { | r } PlainTime
 -- |   time <- PlainTime.from { hour: 9, minute: 30, second: 0 }
 -- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
 -- |   Console.log (JS.Intl.DateTimeFormat.format formatter time)
--- |
--- | exampleFromStringWithOptions :: Effect Unit
--- | exampleFromStringWithOptions = do
--- |   time <- PlainTime.fromStringWithOptions { overflow: Overflow.Constrain } "15:30:00"
--- |   Console.log (PlainTime.toString time)
--- |
--- | exampleFromString :: Effect Unit
--- | exampleFromString = do
--- |   locale <- JS.Intl.Locale.new_ "en-US"
--- |   time <- PlainTime.fromString "15:30:00"
--- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
--- |   Console.log (JS.Intl.DateTimeFormat.format formatter time)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 9:30:00 AM
 -- | ```
-
 from
   :: forall provided rest
    . Union provided rest PlainTimeComponents
@@ -177,11 +163,10 @@ foreign import _fromStringWithOptions :: forall r. EffectFn2 { | r } String Plai
 -- |   time <- PlainTime.fromStringWithOptions { overflow: Overflow.Constrain } "15:30:00"
 -- |   Console.log (PlainTime.toString time)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 15:30:00
 -- | ```
-
 fromStringWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -204,7 +189,7 @@ fromStringWithOptions providedOptions str =
 
 foreign import _fromString :: EffectFn1 String PlainTime
 
--- | Same as [`fromStringWithOptions`](#fromstring) with default options.
+-- | Same as [`fromStringWithOptions`](#v:fromStringWithOptions) with default options.
 -- |
 -- | ```purescript
 -- | exampleFromString :: Effect Unit
@@ -214,11 +199,10 @@ foreign import _fromString :: EffectFn1 String PlainTime
 -- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
 -- |   Console.log (JS.Intl.DateTimeFormat.format formatter time)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 3:30:00 PM
 -- | ```
-
 fromString :: String -> Effect PlainTime
 fromString = Effect.Uncurried.runEffectFn1 _fromString
 
@@ -232,12 +216,12 @@ fromString = Effect.Uncurried.runEffectFn1 _fromString
 -- |   time <- PlainTime.fromString "14:30:45"
 -- |   Console.log ("Hour: " <> show (PlainTime.hour time))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Hour: 14
 -- | ```
-
 foreign import hour :: PlainTime -> Int
+
 -- | Minute component.
 -- |
 -- | ```purescript
@@ -246,12 +230,12 @@ foreign import hour :: PlainTime -> Int
 -- |   time <- PlainTime.fromString "14:30:45"
 -- |   Console.log ("Minute: " <> show (PlainTime.minute time))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Minute: 30
 -- | ```
-
 foreign import minute :: PlainTime -> Int
+
 -- | Second component.
 -- |
 -- | ```purescript
@@ -260,12 +244,12 @@ foreign import minute :: PlainTime -> Int
 -- |   time <- PlainTime.fromString "14:30:45"
 -- |   Console.log ("Second: " <> show (PlainTime.second time))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Second: 45
 -- | ```
-
 foreign import second :: PlainTime -> Int
+
 -- | Millisecond component.
 -- |
 -- | ```purescript
@@ -274,12 +258,12 @@ foreign import second :: PlainTime -> Int
 -- |   time <- PlainTime.fromString "14:30:45.123"
 -- |   Console.log ("Millisecond: " <> show (PlainTime.millisecond time))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Millisecond: 123
 -- | ```
-
 foreign import millisecond :: PlainTime -> Int
+
 -- | Microsecond component.
 -- |
 -- | ```purescript
@@ -288,12 +272,12 @@ foreign import millisecond :: PlainTime -> Int
 -- |   time <- PlainTime.fromString "14:30:45.123456"
 -- |   Console.log ("Microsecond: " <> show (PlainTime.microsecond time))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Microsecond: 456
 -- | ```
-
 foreign import microsecond :: PlainTime -> Int
+
 -- | Nanosecond component.
 -- |
 -- | ```purescript
@@ -302,11 +286,10 @@ foreign import microsecond :: PlainTime -> Int
 -- |   time <- PlainTime.fromString "14:30:45.123456789"
 -- |   Console.log ("Nanosecond: " <> show (PlainTime.nanosecond time))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Nanosecond: 789
 -- | ```
-
 foreign import nanosecond :: PlainTime -> Int
 
 -- Arithmetic
@@ -323,11 +306,10 @@ foreign import _add :: EffectFn2 Duration PlainTime PlainTime
 -- |   later <- PlainTime.add twoHours time
 -- |   Console.log (PlainTime.toString later)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 16:30:00
 -- | ```
-
 add :: Duration -> PlainTime -> Effect PlainTime
 add = Effect.Uncurried.runEffectFn2 _add
 
@@ -343,11 +325,10 @@ foreign import _subtract :: EffectFn2 Duration PlainTime PlainTime
 -- |   earlier <- PlainTime.subtract twoHours time
 -- |   Console.log (PlainTime.toString earlier)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 12:30:00
 -- | ```
-
 subtract :: Duration -> PlainTime -> Effect PlainTime
 subtract = Effect.Uncurried.runEffectFn2 _subtract
 
@@ -373,11 +354,10 @@ foreign import _withWithOptions :: forall ro rf. EffectFn3 { | ro } { | rf } Pla
 -- |   noon <- PlainTime.withWithOptions { overflow: Overflow.Constrain } { hour: 12, minute: 0, second: 0 } time
 -- |   Console.log (PlainTime.toString noon)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 12:00:00
 -- | ```
-
 withWithOptions
   :: forall optsProvided fields rest
    . Union fields rest WithFields
@@ -403,7 +383,7 @@ withWithOptions options fields plainTime =
 
 foreign import _with :: forall r. EffectFn2 { | r } PlainTime PlainTime
 
--- | Same as [`withWithOptions`](#withWithOptions) with default options.
+-- | Same as [`withWithOptions`](#v:withWithOptions) with default options.
 -- |
 -- | ```purescript
 -- | exampleWith :: Effect Unit
@@ -412,11 +392,10 @@ foreign import _with :: forall r. EffectFn2 { | r } PlainTime PlainTime
 -- |   noon <- PlainTime.with { hour: 12, minute: 0, second: 0 } time
 -- |   Console.log (PlainTime.toString noon)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 12:00:00
 -- | ```
-
 with
   :: forall fields rest
    . Union fields rest WithFields
@@ -474,11 +453,10 @@ foreign import _untilWithOptions :: forall r. EffectFn3 { | r } PlainTime PlainT
 -- |   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- |   Console.log (JS.Intl.DurationFormat.format formatter duration)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 8 hours, 30 minutes
 -- | ```
-
 untilWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -503,7 +481,7 @@ untilWithOptions providedOptions other plainTime =
 
 foreign import _until :: EffectFn2 PlainTime PlainTime Duration
 
--- | Same as [`untilWithOptions`](#untilWithOptions) with default options.
+-- | Same as [`untilWithOptions`](#v:untilWithOptions) with default options.
 -- |
 -- | ```purescript
 -- | exampleUntil :: Effect Unit
@@ -513,11 +491,10 @@ foreign import _until :: EffectFn2 PlainTime PlainTime Duration
 -- |   duration <- PlainTime.until end start
 -- |   Console.log (Duration.toString duration)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | PT8H30M
 -- | ```
-
 until :: PlainTime -> PlainTime -> Effect Duration
 until = Effect.Uncurried.runEffectFn2 _until
 
@@ -535,11 +512,10 @@ foreign import _sinceWithOptions :: forall r. EffectFn3 { | r } PlainTime PlainT
 -- |   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- |   Console.log (JS.Intl.DurationFormat.format formatter duration)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 4 hours, 30 minutes
 -- | ```
-
 sinceWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -564,7 +540,7 @@ sinceWithOptions providedOptions other plainTime =
 
 foreign import _since :: EffectFn2 PlainTime PlainTime Duration
 
--- | Same as [`sinceWithOptions`](#sinceWithOptions) with default options.
+-- | Same as [`sinceWithOptions`](#v:sinceWithOptions) with default options.
 -- |
 -- | ```purescript
 -- | exampleSince :: Effect Unit
@@ -574,11 +550,10 @@ foreign import _since :: EffectFn2 PlainTime PlainTime Duration
 -- |   duration <- PlainTime.since earlier later
 -- |   Console.log (Duration.toString duration)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | PT4H30M
 -- | ```
-
 since :: PlainTime -> PlainTime -> Effect Duration
 since = Effect.Uncurried.runEffectFn2 _since
 
@@ -594,11 +569,10 @@ since = Effect.Uncurried.runEffectFn2 _since
 -- |   roundTripped <- PlainTime.fromTime (PlainTime.toTime time)
 -- |   Console.log (PlainTime.toString roundTripped)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 14:30:00
 -- | ```
-
 fromTime :: Time -> Effect PlainTime
 fromTime time =
   from
@@ -617,11 +591,10 @@ fromTime time =
 -- |   time <- PlainTime.fromString "14:30:00"
 -- |   Console.log (show (PlainTime.toTime time))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | (Time (Hour 14) (Minute 30) (Second 0) (Millisecond 0))
 -- | ```
-
 toTime :: PlainTime -> Time
 toTime plain =
   unsafePartial fromJust
@@ -671,11 +644,10 @@ foreign import _round :: forall r. EffectFn2 { | r } PlainTime PlainTime
 -- |   rounded <- PlainTime.round { smallestUnit: TemporalUnit.Minute } time
 -- |   Console.log (PlainTime.toString rounded)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 09:31:00
 -- | ```
-
 round
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -731,7 +703,7 @@ instance ConvertOption ToToStringOptions "roundingMode" String String where
 
 foreign import _toString :: forall r. Fn2 { | r } PlainTime String
 
--- | Same as [`toStringWithOptions`](#tostring) with default options.
+-- | Same as [`toStringWithOptions`](#v:toStringWithOptions) with default options.
 -- |
 -- | ```purescript
 -- | exampleToString :: Effect Unit
@@ -739,11 +711,10 @@ foreign import _toString :: forall r. Fn2 { | r } PlainTime String
 -- |   time <- PlainTime.fromString "14:30:45.123"
 -- |   Console.log (PlainTime.toString time)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 14:30:45.123
 -- | ```
-
 toString :: PlainTime -> String
 toString plainTime = Function.Uncurried.runFn2 _toString defaultToStringOptions plainTime
 
@@ -755,11 +726,10 @@ toString plainTime = Function.Uncurried.runFn2 _toString defaultToStringOptions 
 -- |   time <- PlainTime.fromString "14:30:45.123"
 -- |   Console.log (PlainTime.toStringWithOptions { smallestUnit: TemporalUnit.Millisecond } time)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 14:30:45.123
 -- | ```
-
 toStringWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults

@@ -102,7 +102,7 @@ function isTopLevelDeclarationStart(line) {
 
 /**
  * Extracts all example functions from a docs file using naming convention.
- * @returns Array of { qualifiedName: string, code: string }
+ * @returns Array of { qualifiedName: string, code: string, prose: string | null }
  */
 function extractExamples(filePath) {
   const content = readFileSync(filePath, "utf-8");
@@ -123,16 +123,26 @@ function extractExamples(filePath) {
     }
   }
 
-  // Second pass: extract code for each example (from start to next top-level decl or EOF)
+  // Second pass: extract code and prose for each example
   for (let idx = 0; idx < exampleStarts.length; idx++) {
     const { fnName, startLine } = exampleStarts[idx];
     const exportName = exampleNameToExport(fnName);
     const qualifiedName = `${moduleName}.${exportName}`;
 
+    // Look backwards from startLine for -- | doc comment prose
+    let proseStart = startLine;
+    while (proseStart > 0 && lines[proseStart - 1].trimStart().startsWith("-- |")) {
+      proseStart--;
+    }
+    const proseLines = lines.slice(proseStart, startLine);
+    const prose = proseLines.length > 0
+      ? proseLines.map((l) => l.replace(/^\s*-- \| ?/, "")).join("\n").trim() || null
+      : null;
+
     // Find the end: next example start, or next unrelated top-level decl, or EOF
     let endLine = lines.length;
     for (let j = startLine + 1; j < lines.length; j++) {
-      if (isTopLevelDeclarationStart(lines[j]) && !lines[j].startsWith(fnName)) {
+      if (isTopLevelDeclarationStart(lines[j]) && !new RegExp(`^${escapeRegex(fnName)}(?:\\s|$)`).test(lines[j])) {
         endLine = j;
         break;
       }
@@ -143,9 +153,19 @@ function extractExamples(filePath) {
       endLine--;
     }
 
+    // Trim trailing doc comment lines (-- |) that belong to the next example
+    while (endLine > startLine && lines[endLine - 1].trimStart().startsWith("-- |")) {
+      endLine--;
+    }
+
+    // Trim any additional blank lines after removing doc comments
+    while (endLine > startLine && lines[endLine - 1].trim() === "") {
+      endLine--;
+    }
+
     const codeLines = lines.slice(startLine, endLine);
     const code = dedent(codeLines.join("\n"));
-    examples.push({ qualifiedName, code });
+    examples.push({ qualifiedName, code, prose });
   }
 
   return examples;
@@ -195,7 +215,7 @@ function formatExampleBlocks(code, output) {
   const outputFence = "```text";
   const outputLines = output.split("\n");
   const outputBlock = [outputFence, ...outputLines, "```"].map((l) => `-- | ${l}`).join("\n");
-  return codeBlock + "\n-- |\n" + outputBlock;
+  return codeBlock + "\n-- | ---\n" + outputBlock;
 }
 
 // Opening fence - match "```purescript" in a doc line
@@ -387,6 +407,11 @@ function replaceManagedExampleRegion(docLines, exampleCode, exampleOutput) {
       continue;
     }
 
+    // Skip --- separator lines between managed fence blocks
+    if (content === "---" && insertionIndex !== null) {
+      continue;
+    }
+
     remainingDocLines.push(normalizeDocCommentLine(docLines[lineIndex]));
   }
 
@@ -416,8 +441,11 @@ function replaceManagedExampleRegion(docLines, exampleCode, exampleOutput) {
 
 /**
  * Updates the source content with the new doc comment.
+ * When `prose` is provided (from the example file), it replaces any existing
+ * non-fenced prose in the source doc comment. When `prose` is null, existing
+ * prose is preserved.
  */
-function updateSourceContent(content, functionName, exampleCode, exampleOutput) {
+function updateSourceContent(content, functionName, exampleCode, exampleOutput, prose) {
   const lines = splitLines(content);
   const block = findFunctionDocBlock(lines, functionName);
   if (!block) {
@@ -425,7 +453,13 @@ function updateSourceContent(content, functionName, exampleCode, exampleOutput) 
   }
 
   let newDocLines;
-  if (block.hasDoc) {
+  if (prose != null) {
+    // Prose comes from the example file — build the full doc comment from scratch
+    const proseDocLines = prose.split("\n").map((l) => (l.trim() === "" ? "-- |" : `-- | ${l}`));
+    const exampleBlockLines = formatExampleBlocks(exampleCode, exampleOutput).split("\n");
+    newDocLines = [...proseDocLines, "-- |", ...exampleBlockLines];
+    newDocLines = collapseRepeatedBlankDocCommentLines(newDocLines);
+  } else if (block.hasDoc) {
     newDocLines = replaceManagedExampleRegion(
       block.docLines,
       exampleCode,
@@ -435,22 +469,30 @@ function updateSourceContent(content, functionName, exampleCode, exampleOutput) 
     newDocLines = formatExampleBlocks(exampleCode, exampleOutput).split("\n");
   }
 
+  newDocLines = trimTrailingBlankDocCommentLines(newDocLines);
+
   const beforeDocBlock = lines.slice(0, block.docStartIndex);
   const declarationAndAfter = lines.slice(block.functionLineIndex);
 
-  return [...beforeDocBlock, ...newDocLines, "", ...declarationAndAfter].join("\n");
+  // Ensure a blank line separates the preceding code from the doc comment
+  if (beforeDocBlock.length > 0 && beforeDocBlock[beforeDocBlock.length - 1].trim() !== "") {
+    beforeDocBlock.push("");
+  }
+
+  return [...beforeDocBlock, ...newDocLines, ...declarationAndAfter].join("\n");
 }
 
 /**
  * Updates the source file with the new doc comment.
  */
-function updateSourceFile(filePath, functionName, exampleCode, exampleOutput) {
+function updateSourceFile(filePath, functionName, exampleCode, exampleOutput, prose) {
   const content = readFileSync(filePath, "utf-8");
   const newContent = updateSourceContent(
     content,
     functionName,
     exampleCode,
-    exampleOutput
+    exampleOutput,
+    prose
   );
 
   if (newContent === null) {
@@ -462,27 +504,120 @@ function updateSourceFile(filePath, functionName, exampleCode, exampleOutput) {
   return true;
 }
 
-function main() {
-  const outputMap = runDocsRunnerAndParseOutput();
-  const docFiles = readdirSync(DOCS_DIR).filter((fileName) => fileName.endsWith(".purs"));
-  let syncedCount = 0;
+/**
+ * Generates Examples.Docs.Main from discovered example functions.
+ * @returns Array of all { qualifiedName, code, prose, docsModuleName, exampleFnName }
+ */
+function generateMainModule(docFiles) {
+  const allExamples = [];
 
   for (const fileName of docFiles) {
     const docFilePath = join(DOCS_DIR, fileName);
+    const name = basename(fileName, ".purs");
+    const docsModuleName = name; // e.g. "Duration"
     const examples = extractExamples(docFilePath);
 
-    for (const { qualifiedName, code } of examples) {
-      const { filePath, functionName } = qualifiedNameToPath(qualifiedName);
-      const output = outputMap.get(qualifiedName) ?? null;
-      try {
-        const didUpdate = updateSourceFile(filePath, functionName, code, output);
-        if (didUpdate) {
-          console.log(`Synced ${qualifiedName} -> ${filePath}${output ? " (with output)" : ""}`);
-          syncedCount++;
-        }
-      } catch (err) {
-        console.error(`Error syncing ${qualifiedName}:`, err.message);
+    for (const example of examples) {
+      const { filePath, functionName } = qualifiedNameToPath(example.qualifiedName);
+      const exampleFnName = "example" + functionName.charAt(0).toUpperCase() + functionName.slice(1);
+      allExamples.push({
+        ...example,
+        docsModuleName,
+        exampleFnName,
+      });
+    }
+  }
+
+  // Group by module for imports
+  const moduleGroups = new Map();
+  for (const ex of allExamples) {
+    if (!moduleGroups.has(ex.docsModuleName)) {
+      moduleGroups.set(ex.docsModuleName, []);
+    }
+    moduleGroups.get(ex.docsModuleName).push(ex);
+  }
+
+  const sortedModuleNames = [...moduleGroups.keys()].sort();
+
+  const importLines = sortedModuleNames.map(
+    (mod) => `import Examples.Docs.${mod} as ${mod}`
+  );
+
+  const runExampleLines = [];
+  for (const mod of sortedModuleNames) {
+    const examples = moduleGroups.get(mod);
+    for (const ex of examples) {
+      runExampleLines.push(
+        `  runExample ${JSON.stringify(ex.qualifiedName)} ${mod}.${ex.exampleFnName}`
+      );
+    }
+  }
+
+  const mainContent = [
+    "-- | Runs all doc examples in a stable order, emitting machine-parsable markers",
+    "-- | around each example's output for the sync script to capture.",
+    "-- |",
+    "-- | Run with: spago run -p js-temporal-examples -m Examples.Docs.Main",
+    "-- | The sync script invokes this and parses stdout for --- OUTPUT <qualifiedName> --- ... --- /OUTPUT ---",
+    "-- |",
+    "-- | THIS FILE IS AUTO-GENERATED by sync-doc-examples.mjs. Do not edit manually.",
+    "module Examples.Docs.Main where",
+    "",
+    "import Prelude",
+    "",
+    "import Data.Either (Either(..))",
+    "import Effect (Effect)",
+    "import Effect.Class.Console as Console",
+    "import Effect.Exception as Effect.Exception",
+    ...importLines,
+    "",
+    "runExample :: String -> Effect Unit -> Effect Unit",
+    "runExample qualifiedName eff = do",
+    '  Console.log (\"--- OUTPUT \" <> qualifiedName <> \" ---\")',
+    "  result <- Effect.Exception.try eff",
+    "  case result of",
+    "    Left error ->",
+    '      Console.log (\"[[EXAMPLE ERROR]] \" <> Effect.Exception.message error)',
+    "    Right _ ->",
+    "      pure unit",
+    '  Console.log \"--- /OUTPUT ---\"',
+    "",
+    "main :: Effect Unit",
+    "main = do",
+    ...runExampleLines,
+    "",
+  ].join("\n");
+
+  const mainPath = join(DOCS_DIR, "Main.purs");
+  writeFileSync(mainPath, mainContent, "utf-8");
+  console.log(`Generated ${mainPath} (${allExamples.length} examples)`);
+
+  return allExamples;
+}
+
+function main() {
+  const docFiles = readdirSync(DOCS_DIR)
+    .filter((fileName) => fileName.endsWith(".purs") && fileName !== "Main.purs");
+
+  // Step 1: Generate Main.purs from discovered examples
+  const allExamples = generateMainModule(docFiles);
+
+  // Step 2: Run the examples to capture output
+  const outputMap = runDocsRunnerAndParseOutput();
+
+  // Step 3: Sync doc comments into source files
+  let syncedCount = 0;
+  for (const { qualifiedName, code, prose } of allExamples) {
+    const { filePath, functionName } = qualifiedNameToPath(qualifiedName);
+    const output = outputMap.get(qualifiedName) ?? null;
+    try {
+      const didUpdate = updateSourceFile(filePath, functionName, code, output, prose);
+      if (didUpdate) {
+        console.log(`Synced ${qualifiedName} -> ${filePath}${output ? " (with output)" : ""}`);
+        syncedCount++;
       }
+    } catch (err) {
+      console.error(`Error syncing ${qualifiedName}:`, err.message);
     }
   }
 

@@ -77,11 +77,10 @@ foreign import _fromString :: EffectFn1 String Instant
 -- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium", timeZone: "UTC" }
 -- |   Console.log (JS.Intl.DateTimeFormat.format formatter instant)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | January 15, 2024 at 12:00:00 PM
 -- | ```
-
 fromString :: String -> Effect Instant
 fromString = Effect.Uncurried.runEffectFn1 _fromString
 
@@ -95,11 +94,10 @@ foreign import _fromEpochMilliseconds :: EffectFn1 Number Instant
 -- |   instant <- Instant.fromEpochMilliseconds 1000.0
 -- |   Console.log (Instant.toString instant)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 1970-01-01T00:00:01Z
 -- | ```
-
 fromEpochMilliseconds :: Number -> Effect Instant
 fromEpochMilliseconds = Effect.Uncurried.runEffectFn1 _fromEpochMilliseconds
 
@@ -113,11 +111,10 @@ foreign import _fromEpochNanoseconds :: EffectFn1 BigInt Instant
 -- |   instant <- Instant.fromEpochNanoseconds (BigInt.fromInt 1000000000)
 -- |   Console.log (Instant.toString instant)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 1970-01-01T00:00:01Z
 -- | ```
-
 fromEpochNanoseconds :: BigInt -> Effect Instant
 fromEpochNanoseconds = Effect.Uncurried.runEffectFn1 _fromEpochNanoseconds
 
@@ -132,7 +129,10 @@ foreign import _fromJSDate :: EffectFn1 JSDate Instant
 -- |   instant <- Instant.fromJSDate jsDate
 -- |   Console.log (Instant.toString instant)
 -- | ```
-
+-- | ---
+-- | ```text
+-- | 2024-01-15T12:00:00Z
+-- | ```
 fromJSDate :: JSDate -> Effect Instant
 fromJSDate = Effect.Uncurried.runEffectFn1 _fromJSDate
 
@@ -146,12 +146,12 @@ fromJSDate = Effect.Uncurried.runEffectFn1 _fromJSDate
 -- |   instant <- Instant.fromString "1970-01-01T00:00:01Z"
 -- |   Console.log ("Epoch ms: " <> show (Instant.epochMilliseconds instant))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Epoch ms: 1000.0
 -- | ```
-
 foreign import epochMilliseconds :: Instant -> Number
+
 -- | Nanoseconds since the Unix epoch.
 -- |
 -- | ```purescript
@@ -160,11 +160,10 @@ foreign import epochMilliseconds :: Instant -> Number
 -- |   instant <- Instant.fromString "1970-01-01T00:00:01Z"
 -- |   Console.log ("Epoch ns: " <> show (Instant.epochNanoseconds instant))
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Epoch ns: 1000000000
 -- | ```
-
 foreign import epochNanoseconds :: Instant -> BigInt
 
 -- Arithmetic
@@ -181,11 +180,10 @@ foreign import _add :: EffectFn2 Duration Instant Instant
 -- |   later <- Instant.add oneHour instant
 -- |   Console.log (Instant.toString later)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15T13:00:00Z
 -- | ```
-
 add :: Duration -> Instant -> Effect Instant
 add = Effect.Uncurried.runEffectFn2 _add
 
@@ -201,11 +199,10 @@ foreign import _subtract :: EffectFn2 Duration Instant Instant
 -- |   earlier <- Instant.subtract oneHour instant
 -- |   Console.log (Instant.toString earlier)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15T11:00:00Z
 -- | ```
-
 subtract :: Duration -> Instant -> Effect Instant
 subtract = Effect.Uncurried.runEffectFn2 _subtract
 
@@ -258,11 +255,10 @@ foreign import _untilWithOptions :: forall r. EffectFn3 { | r } Instant Instant 
 -- |   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- |   Console.log ("4 hours: " <> JS.Intl.DurationFormat.format formatter result)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 4 hours: 4 hours
 -- | ```
-
 untilWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -287,7 +283,7 @@ untilWithOptions providedOptions other instant =
 
 foreign import _until :: EffectFn2 Instant Instant Duration
 
--- | Same as [`untilWithOptions`](#untilWithOptions) with default options.
+-- | Same as [`untilWithOptions`](#v:untilWithOptions) with default options.
 -- |
 -- | ```purescript
 -- | exampleUntil :: Effect Unit
@@ -297,11 +293,10 @@ foreign import _until :: EffectFn2 Instant Instant Duration
 -- |   result <- Instant.until later earlier
 -- |   Console.log (Duration.toString result)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | PT14400S
 -- | ```
-
 until :: Instant -> Instant -> Effect Duration
 until = Effect.Uncurried.runEffectFn2 _until
 
@@ -319,11 +314,10 @@ foreign import _sinceWithOptions :: forall r. EffectFn3 { | r } Instant Instant 
 -- |   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- |   Console.log ("Elapsed: " <> JS.Intl.DurationFormat.format formatter elapsed)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Elapsed: 4 hours
 -- | ```
-
 sinceWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -348,7 +342,7 @@ sinceWithOptions providedOptions other instant =
 
 foreign import _since :: EffectFn2 Instant Instant Duration
 
--- | Same as [`sinceWithOptions`](#sinceWithOptions) with default options.
+-- | Same as [`sinceWithOptions`](#v:sinceWithOptions) with default options.
 -- |
 -- | ```purescript
 -- | exampleSince :: Effect Unit
@@ -358,11 +352,10 @@ foreign import _since :: EffectFn2 Instant Instant Duration
 -- |   elapsed <- Instant.since earlier later
 -- |   Console.log (Duration.toString elapsed)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | PT14400S
 -- | ```
-
 since :: Instant -> Instant -> Effect Duration
 since = Effect.Uncurried.runEffectFn2 _since
 
@@ -409,11 +402,10 @@ foreign import _round :: forall r. EffectFn2 { | r } Instant Instant
 -- |     instant
 -- |   Console.log (Instant.toString rounded)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15T12:00:01Z
 -- | ```
-
 round
   :: forall provided
    . ConvertOptionsWithDefaults
@@ -445,11 +437,10 @@ round providedOptions instant =
 -- |   instant <- Instant.fromDateTimeInstant dtInstant
 -- |   Console.log (Instant.toString instant)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | -271820-01-01T00:00:00Z
 -- | ```
-
 fromDateTimeInstant :: DateTime.Instant.Instant -> Effect Instant
 fromDateTimeInstant instant = fromEpochMilliseconds (unwrap (DateTime.Instant.unInstant instant))
 
@@ -464,11 +455,10 @@ fromDateTimeInstant instant = fromEpochMilliseconds (unwrap (DateTime.Instant.un
 -- |     Just dtInstant -> Console.log (show dtInstant)
 -- |     Nothing -> Console.log "Out of range"
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | (Instant (Milliseconds 1705320000000.0))
 -- | ```
-
 toDateTimeInstant :: Instant -> Maybe DateTime.Instant.Instant
 toDateTimeInstant instant = DateTime.Instant.instant (Milliseconds (epochMilliseconds instant))
 
@@ -483,11 +473,10 @@ foreign import _toZonedDateTimeISO :: Fn2 String Instant ZonedDateTime
 -- |   zoned <- pure (Instant.toZonedDateTimeISO "America/New_York" instant)
 -- |   Console.log (ZonedDateTime.toString zoned)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15T07:00:00-05:00[America/New_York]
 -- | ```
-
 toZonedDateTimeISO :: String -> Instant -> ZonedDateTime
 toZonedDateTimeISO = Function.Uncurried.runFn2 _toZonedDateTimeISO
 
@@ -528,7 +517,7 @@ instance ConvertOption ToToStringOptions "timeZone" String String where
 
 foreign import _toString :: forall r. Fn2 { | r } Instant String
 
--- | Same as [`toStringWithOptions`](#tostring) with default options.
+-- | Same as [`toStringWithOptions`](#v:toStringWithOptions) with default options.
 -- |
 -- | ```purescript
 -- | exampleToString :: Effect Unit
@@ -536,11 +525,10 @@ foreign import _toString :: forall r. Fn2 { | r } Instant String
 -- |   instant <- Instant.fromString "2024-01-15T12:00:00.789Z"
 -- |   Console.log (Instant.toString instant)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15T12:00:00.789Z
 -- | ```
-
 toString :: Instant -> String
 toString instant = Function.Uncurried.runFn2 _toString defaultToStringOptions instant
 
@@ -558,11 +546,10 @@ toString instant = Function.Uncurried.runFn2 _toString defaultToStringOptions in
 -- |         instant
 -- |     )
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | 2024-01-15T12:00:00+00:00
 -- | ```
-
 toStringWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults

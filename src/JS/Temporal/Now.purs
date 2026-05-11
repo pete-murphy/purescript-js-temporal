@@ -38,11 +38,10 @@ import JS.Temporal.ZonedDateTime (ZonedDateTime)
 -- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium", timeZone: "Africa/Monrovia" }
 -- |   Console.log ("Current instant (Africa/Monrovia): " <> JS.Intl.DateTimeFormat.format formatter now)
 -- | ```
--- |
+-- | ---
 -- | ```text
--- | Current instant (Africa/Monrovia): May 11, 2026 at 4:38:38 PM
+-- | Current instant (Africa/Monrovia): May 11, 2026 at 6:20:43 PM
 -- | ```
-
 foreign import instant :: Effect Instant
 
 -- | The system's current time zone identifier (e.g. `"America/New_York"`).
@@ -53,11 +52,10 @@ foreign import instant :: Effect Instant
 -- |   tz <- Now.timeZoneId
 -- |   Console.log ("System time zone: " <> tz)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | System time zone: America/New_York
 -- | ```
-
 foreign import timeZoneId :: Effect String
 
 foreign import _zonedDateTimeISO :: Effect ZonedDateTime
@@ -71,19 +69,11 @@ foreign import _zonedDateTimeISO :: Effect ZonedDateTime
 -- |   now <- Now.zonedDateTimeISO
 -- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
 -- |   Console.log ("Now (zoned): " <> JS.Intl.DateTimeFormat.format formatter now)
--- |
--- | exampleZonedDateTimeISOWithTimeZone :: Effect Unit
--- | exampleZonedDateTimeISOWithTimeZone = do
--- |   locale <- JS.Intl.Locale.new_ "en-US"
--- |   nowUtc <- Now.zonedDateTimeISOWithTimeZone "UTC"
--- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium", timeZone: "UTC" }
--- |   Console.log ("Now (UTC): " <> JS.Intl.DateTimeFormat.format formatter nowUtc)
 -- | ```
--- |
+-- | ---
 -- | ```text
--- | Now (zoned): May 11, 2026 at 12:38:38 PM
+-- | Now (zoned): May 11, 2026 at 2:20:43 PM
 -- | ```
-
 zonedDateTimeISO :: Effect ZonedDateTime
 zonedDateTimeISO = _zonedDateTimeISO
 
@@ -99,11 +89,10 @@ foreign import _zonedDateTimeISOWithTimeZone :: EffectFn1 String ZonedDateTime
 -- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium", timeZone: "UTC" }
 -- |   Console.log ("Now (UTC): " <> JS.Intl.DateTimeFormat.format formatter nowUtc)
 -- | ```
--- |
+-- | ---
 -- | ```text
--- | Now (UTC): May 11, 2026 at 4:38:38 PM
+-- | Now (UTC): May 11, 2026 at 6:20:43 PM
 -- | ```
-
 zonedDateTimeISOWithTimeZone :: String -> Effect ZonedDateTime
 zonedDateTimeISOWithTimeZone = Effect.Uncurried.runEffectFn1 _zonedDateTimeISOWithTimeZone
 
@@ -118,19 +107,11 @@ foreign import _plainDateISO :: Effect PlainDate
 -- |   today <- Now.plainDateISO
 -- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
 -- |   Console.log ("Today (local): " <> JS.Intl.DateTimeFormat.format formatter today)
--- |
--- | examplePlainDateISOWithTimeZone :: Effect Unit
--- | examplePlainDateISOWithTimeZone = do
--- |   locale <- JS.Intl.Locale.new_ "en-US"
--- |   todayTijuana <- Now.plainDateISOWithTimeZone "America/Tijuana"
--- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
--- |   Console.log ("Today (America/Tijuana): " <> JS.Intl.DateTimeFormat.format formatter todayTijuana)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Today (local): May 11, 2026
 -- | ```
-
 plainDateISO :: Effect PlainDate
 plainDateISO = _plainDateISO
 
@@ -146,11 +127,10 @@ foreign import _plainDateISOWithTimeZone :: EffectFn1 String PlainDate
 -- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
 -- |   Console.log ("Today (America/Tijuana): " <> JS.Intl.DateTimeFormat.format formatter todayTijuana)
 -- | ```
--- |
+-- | ---
 -- | ```text
 -- | Today (America/Tijuana): May 11, 2026
 -- | ```
-
 plainDateISOWithTimeZone :: String -> Effect PlainDate
 plainDateISOWithTimeZone = Effect.Uncurried.runEffectFn1 _plainDateISOWithTimeZone
 
@@ -165,19 +145,11 @@ foreign import _plainDateTimeISO :: Effect PlainDateTime
 -- |   now <- Now.plainDateTimeISO
 -- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
 -- |   Console.log ("Now (local): " <> JS.Intl.DateTimeFormat.format formatter now)
--- |
--- | examplePlainDateTimeISOWithTimeZone :: Effect Unit
--- | examplePlainDateTimeISOWithTimeZone = do
--- |   locale <- JS.Intl.Locale.new_ "en-US"
--- |   nowUtc <- Now.plainDateTimeISOWithTimeZone "UTC"
--- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
--- |   Console.log ("Now (UTC): " <> JS.Intl.DateTimeFormat.format formatter nowUtc)
 -- | ```
--- |
+-- | ---
 -- | ```text
--- | Now (local): May 11, 2026 at 12:38:38 PM
+-- | Now (local): May 11, 2026 at 2:20:43 PM
 -- | ```
-
 plainDateTimeISO :: Effect PlainDateTime
 plainDateTimeISO = _plainDateTimeISO
 
@@ -193,11 +165,10 @@ foreign import _plainDateTimeISOWithTimeZone :: EffectFn1 String PlainDateTime
 -- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
 -- |   Console.log ("Now (UTC): " <> JS.Intl.DateTimeFormat.format formatter nowUtc)
 -- | ```
--- |
+-- | ---
 -- | ```text
--- | Now (UTC): May 11, 2026 at 4:38:38 PM
+-- | Now (UTC): May 11, 2026 at 6:20:43 PM
 -- | ```
-
 plainDateTimeISOWithTimeZone :: String -> Effect PlainDateTime
 plainDateTimeISOWithTimeZone = Effect.Uncurried.runEffectFn1 _plainDateTimeISOWithTimeZone
 
@@ -212,19 +183,11 @@ foreign import _plainTimeISO :: Effect PlainTime
 -- |   time <- Now.plainTimeISO
 -- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
 -- |   Console.log ("Current time (local): " <> JS.Intl.DateTimeFormat.format formatter time)
--- |
--- | examplePlainTimeISOWithTimeZone :: Effect Unit
--- | examplePlainTimeISOWithTimeZone = do
--- |   locale <- JS.Intl.Locale.new_ "en-US"
--- |   timeUtc <- Now.plainTimeISOWithTimeZone "UTC"
--- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
--- |   Console.log ("Current time (UTC): " <> JS.Intl.DateTimeFormat.format formatter timeUtc)
 -- | ```
--- |
+-- | ---
 -- | ```text
--- | Current time (local): 12:38:38 PM
+-- | Current time (local): 2:20:43 PM
 -- | ```
-
 plainTimeISO :: Effect PlainTime
 plainTimeISO = _plainTimeISO
 
@@ -240,10 +203,9 @@ foreign import _plainTimeISOWithTimeZone :: EffectFn1 String PlainTime
 -- |   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
 -- |   Console.log ("Current time (UTC): " <> JS.Intl.DateTimeFormat.format formatter timeUtc)
 -- | ```
--- |
+-- | ---
 -- | ```text
--- | Current time (UTC): 4:38:38 PM
+-- | Current time (UTC): 6:20:43 PM
 -- | ```
-
 plainTimeISOWithTimeZone :: String -> Effect PlainTime
 plainTimeISOWithTimeZone = Effect.Uncurried.runEffectFn1 _plainTimeISOWithTimeZone

@@ -2,7 +2,7 @@ module JS.Temporal.ZonedDateTime.Internal
   ( ZonedDateTime
   , equals
   , compare
-  , toString_
+  , toString
   ) where
 
 import Prelude hiding (compare)
@@ -18,7 +18,7 @@ foreign import data ZonedDateTime :: Type
 foreign import _equals :: Fn2 ZonedDateTime ZonedDateTime Boolean
 foreign import _compare :: Fn2 ZonedDateTime ZonedDateTime Int
 -- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
-foreign import toString_ :: ZonedDateTime -> String
+foreign import toString :: ZonedDateTime -> String
 
 equals :: ZonedDateTime -> ZonedDateTime -> Boolean
 equals a b = Function.Uncurried.runFn2 _equals a b
@@ -33,7 +33,7 @@ instance Ord ZonedDateTime where
   compare = compare
 
 instance Show ZonedDateTime where
-  show = toString_
+  show = toString
 
 instance DateTimeLike ZonedDateTime where
   unsafeToDateTimeForeign = Unsafe.Coerce.unsafeCoerce

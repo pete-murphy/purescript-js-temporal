@@ -6,22 +6,22 @@ module JS.Temporal.PlainMonthDay
   ( module JS.Temporal.PlainMonthDay.Internal
   -- * Construction
   , PlainMonthDayComponents
+  , fromWithOptions
   , from
-  , from_
+  , fromStringWithOptions
   , fromString
-  , fromString_
   -- * Properties
   , monthCode
   , day
   , calendarId
   -- * Manipulation
+  , withWithOptions
   , with
-  , with_
   -- * Conversions
   , toPlainDate
   -- * Serialization
+  , toStringWithOptions
   , toString
-  , toString_
   -- * Options
   , ToOverflowOptions
   , ToToStringOptions
@@ -70,13 +70,13 @@ instance ConvertOption ToOverflowOptions "overflow" Overflow String where
 instance ConvertOption ToOverflowOptions "overflow" String String where
   convertOption _ _ = identity
 
-foreign import _fromRecord :: forall ro rc. EffectFn2 { | ro } { | rc } PlainMonthDay
+foreign import _fromRecordWithOptions :: forall ro rc. EffectFn2 { | ro } { | rc } PlainMonthDay
 
--- | Creates a PlainMonthDay from component fields. Options: overflow.
+-- | Creates a PlainMonthDay fromWithOptions component fields. Options: overflow.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | holiday <- PlainMonthDay.from_ { month: 7, day: 4 }
+-- | holiday <- PlainMonthDay.from { month: 7, day: 4 }
 -- | holidayIn2024 <- PlainMonthDay.toPlainDate { year: 2024 } holiday
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter holidayIn2024)
@@ -86,7 +86,7 @@ foreign import _fromRecord :: forall ro rc. EffectFn2 { | ro } { | rc } PlainMon
 -- | July 4, 2024
 -- | ```
 
-from
+fromWithOptions
   :: forall optsProvided provided rest
    . Union provided rest PlainMonthDayComponents
   => ConvertOptionsWithDefaults
@@ -97,9 +97,9 @@ from
   => { | optsProvided }
   -> { | provided }
   -> Effect PlainMonthDay
-from providedOptions components =
+fromWithOptions providedOptions components =
   Effect.Uncurried.runEffectFn2
-    _fromRecord
+    _fromRecordWithOptions
     ( ConvertableOptions.convertOptionsWithDefaults
         ToOverflowOptions
         defaultOverflowOptions
@@ -107,13 +107,13 @@ from providedOptions components =
     )
     components
 
-foreign import _fromRecordNoOpts :: forall r. EffectFn1 { | r } PlainMonthDay
+foreign import _fromRecord :: forall r. EffectFn1 { | r } PlainMonthDay
 
--- | Same as [`from`](#from) with default options.
+-- | Same as [`fromWithOptions`](#fromWithOptions) withWithOptions default options.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | holiday <- PlainMonthDay.from_ { month: 7, day: 4 }
+-- | holiday <- PlainMonthDay.from { month: 7, day: 4 }
 -- | holidayIn2024 <- PlainMonthDay.toPlainDate { year: 2024 } holiday
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter holidayIn2024)
@@ -123,21 +123,21 @@ foreign import _fromRecordNoOpts :: forall r. EffectFn1 { | r } PlainMonthDay
 -- | July 4, 2024
 -- | ```
 
-from_
+from
   :: forall provided rest
    . Union provided rest PlainMonthDayComponents
   => { | provided }
   -> Effect PlainMonthDay
-from_ = Effect.Uncurried.runEffectFn1 _fromRecordNoOpts
+from = Effect.Uncurried.runEffectFn1 _fromRecord
 
-foreign import _fromString :: forall r. EffectFn2 { | r } String PlainMonthDay
+foreign import _fromStringWithOptions :: forall r. EffectFn2 { | r } String PlainMonthDay
 
--- | Creates a PlainMonthDay from an RFC 9557 / ISO 8601 month-day string
+-- | Creates a PlainMonthDay fromWithOptions an RFC 9557 / ISO 8601 month-day string
 -- | (e.g. `"12-15"` or `"--01-15"`). Options: overflow.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | birthday <- PlainMonthDay.fromString { overflow: Overflow.Constrain } "12-15"
+-- | birthday <- PlainMonthDay.fromStringWithOptions { overflow: Overflow.Constrain } "12-15"
 -- | birthdayIn2024 <- PlainMonthDay.toPlainDate { year: 2024 } birthday
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
 -- | Console.log ("Birthday: " <> JS.Intl.DateTimeFormat.format formatter birthdayIn2024)
@@ -147,7 +147,7 @@ foreign import _fromString :: forall r. EffectFn2 { | r } String PlainMonthDay
 -- | Birthday: December 15, 2024
 -- | ```
 
-fromString
+fromStringWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
        ToOverflowOptions
@@ -157,9 +157,9 @@ fromString
   => { | provided }
   -> String
   -> Effect PlainMonthDay
-fromString providedOptions str =
+fromStringWithOptions providedOptions str =
   Effect.Uncurried.runEffectFn2
-    _fromString
+    _fromStringWithOptions
     ( ConvertableOptions.convertOptionsWithDefaults
         ToOverflowOptions
         defaultOverflowOptions
@@ -167,12 +167,12 @@ fromString providedOptions str =
     )
     str
 
-foreign import _fromStringNoOpts :: EffectFn1 String PlainMonthDay
+foreign import _fromString :: EffectFn1 String PlainMonthDay
 
--- | Same as [`fromString`](#fromstring) with default options.
+-- | Same as [`fromStringWithOptions`](#fromstring) withWithOptions default options.
 
-fromString_ :: String -> Effect PlainMonthDay
-fromString_ = Effect.Uncurried.runEffectFn1 _fromStringNoOpts
+fromString :: String -> Effect PlainMonthDay
+fromString = Effect.Uncurried.runEffectFn1 _fromString
 
 -- Properties
 
@@ -190,14 +190,14 @@ type WithFields =
   , day :: Int
   )
 
-foreign import _with :: forall ro rf. EffectFn3 { | ro } { | rf } PlainMonthDay PlainMonthDay
+foreign import _withWithOptions :: forall ro rf. EffectFn3 { | ro } { | rf } PlainMonthDay PlainMonthDay
 
--- | Returns a new PlainMonthDay with specified fields replaced. Options: overflow.
+-- | Returns a new PlainMonthDay withWithOptions specified fields replaced. Options: overflow.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | original <- PlainMonthDay.fromString_ "01-15"
--- | changed <- PlainMonthDay.with { overflow: Overflow.Constrain } { day: 31 } original
+-- | original <- PlainMonthDay.fromString "01-15"
+-- | changed <- PlainMonthDay.withWithOptions { overflow: Overflow.Constrain } { day: 31 } original
 -- | changedIn2024 <- PlainMonthDay.toPlainDate { year: 2024 } changed
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter changedIn2024)
@@ -207,7 +207,7 @@ foreign import _with :: forall ro rf. EffectFn3 { | ro } { | rf } PlainMonthDay 
 -- | January 31, 2024
 -- | ```
 
-with
+withWithOptions
   :: forall optsProvided fields rest
    . Union fields rest WithFields
   => ConvertOptionsWithDefaults
@@ -219,9 +219,9 @@ with
   -> { | fields }
   -> PlainMonthDay
   -> Effect PlainMonthDay
-with options fields plainMonthDay =
+withWithOptions options fields plainMonthDay =
   Effect.Uncurried.runEffectFn3
-    _with
+    _withWithOptions
     ( ConvertableOptions.convertOptionsWithDefaults
         ToOverflowOptions
         defaultOverflowOptions
@@ -230,17 +230,17 @@ with options fields plainMonthDay =
     fields
     plainMonthDay
 
-foreign import _withNoOpts :: forall r. EffectFn2 { | r } PlainMonthDay PlainMonthDay
+foreign import _with :: forall r. EffectFn2 { | r } PlainMonthDay PlainMonthDay
 
--- | Same as [`with`](#with) with default options.
+-- | Same as [`withWithOptions`](#withWithOptions) withWithOptions default options.
 
-with_
+with
   :: forall fields rest
    . Union fields rest WithFields
   => { | fields }
   -> PlainMonthDay
   -> Effect PlainMonthDay
-with_ = Effect.Uncurried.runEffectFn2 _withNoOpts
+with = Effect.Uncurried.runEffectFn2 _with
 
 -- Conversions
 
@@ -250,7 +250,7 @@ foreign import _toPlainDate :: EffectFn2 { year :: Int } PlainMonthDay PlainDate
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | birthday <- PlainMonthDay.fromString_ "12-15"
+-- | birthday <- PlainMonthDay.fromString "12-15"
 -- | birthdayIn2030 <- PlainMonthDay.toPlainDate { year: 2030 } birthday
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
 -- | Console.log ("Birthday in 2030: " <> JS.Intl.DateTimeFormat.format formatter birthdayIn2030)
@@ -265,7 +265,7 @@ toPlainDate = Effect.Uncurried.runEffectFn2 _toPlainDate
 
 -- Comparison
 
--- Serialization (toString_ from Internal)
+-- Serialization (toString fromWithOptions Internal)
 
 type ToStringOptions = (calendarName :: String)
 
@@ -282,23 +282,23 @@ instance ConvertOption ToToStringOptions "calendarName" String String where
 
 foreign import _toString :: forall r. Fn2 { | r } PlainMonthDay String
 
--- | Same as [`toString`](#tostring) with default options.
+-- | Same as [`toStringWithOptions`](#tostring) withWithOptions default options.
 
-toString_ :: PlainMonthDay -> String
-toString_ plainMonthDay = Function.Uncurried.runFn2 _toString defaultToStringOptions plainMonthDay
+toString :: PlainMonthDay -> String
+toString plainMonthDay = Function.Uncurried.runFn2 _toString defaultToStringOptions plainMonthDay
 
 -- | Serializes to ISO 8601 month-day format. Options: calendarName.
 -- |
 -- | ```purescript
--- | mday <- PlainMonthDay.fromString_ "03-14"
--- | Console.log (PlainMonthDay.toString {} mday)
+-- | mday <- PlainMonthDay.fromString "03-14"
+-- | Console.log (PlainMonthDay.toStringWithOptions {} mday)
 -- | ```
 -- |
 -- | ```text
 -- | 03-14
 -- | ```
 
-toString
+toStringWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
        ToToStringOptions
@@ -308,7 +308,7 @@ toString
   => { | provided }
   -> PlainMonthDay
   -> String
-toString providedOptions plainMonthDay =
+toStringWithOptions providedOptions plainMonthDay =
   Function.Uncurried.runFn2
     _toString
     ( ConvertableOptions.convertOptionsWithDefaults

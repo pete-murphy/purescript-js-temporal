@@ -6,4 +6,4 @@ export function _compare(a, b) {
   return Temporal.Instant.compare(a, b);
 }
 
-export const toString_ = (i) => i.toString();
+export const toString = (i) => i.toString();

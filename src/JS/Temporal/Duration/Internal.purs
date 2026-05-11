@@ -1,7 +1,7 @@
 -- | Opaque wrapper for `Temporal.Duration`. Re-exported from `JS.Temporal.Duration`.
 module JS.Temporal.Duration.Internal
   ( Duration
-  , toString_
+  , toString
   ) where
 
 import Prelude
@@ -23,7 +23,7 @@ foreign import milliseconds :: Duration -> Int
 foreign import microseconds :: Duration -> Int
 foreign import nanoseconds :: Duration -> Int
 -- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
-foreign import toString_ :: Duration -> String
+foreign import toString :: Duration -> String
 
 instance Eq Duration where
   eq a b =
@@ -39,7 +39,7 @@ instance Eq Duration where
       && nanoseconds a == nanoseconds b
 
 instance Show Duration where
-  show = toString_
+  show = toString
 
 instance DurationLike Duration where
   unsafeToDurationForeign = Unsafe.Coerce.unsafeCoerce

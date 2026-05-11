@@ -18,7 +18,7 @@ getWeeklyDaysInMonth yearMonth dayNumberOfTheWeek = do
   firstOfMonth <- PlainYearMonth.toPlainDate { day: 1 } yearMonth
   let daysToFirst = (7 + dayNumberOfTheWeek - PlainDate.dayOfWeek firstOfMonth) `mod` 7
   daysDuration <- Duration.from { days: daysToFirst }
-  firstWeekday <- PlainDate.add_ daysDuration firstOfMonth
+  firstWeekday <- PlainDate.add daysDuration firstOfMonth
   go firstWeekday []
   where
   go nextWeekday result = do
@@ -26,17 +26,17 @@ getWeeklyDaysInMonth yearMonth dayNumberOfTheWeek = do
       pure (Array.reverse result)
     else do
       weekDuration <- Duration.from { days: 7 }
-      next <- PlainDate.add_ weekDuration nextWeekday
+      next <- PlainDate.add weekDuration nextWeekday
       go next ([ nextWeekday ] <> result)
 
 main :: Effect Unit
 main = do
-  feb2020 <- PlainYearMonth.fromString_ "2020-02"
+  feb2020 <- PlainYearMonth.fromString "2020-02"
   mondays <- getWeeklyDaysInMonth feb2020 1
   saturdays <- getWeeklyDaysInMonth feb2020 6
 
-  let mondayStrs = map PlainDate.toString_ mondays
-  let saturdayStrs = map PlainDate.toString_ saturdays
+  let mondayStrs = map PlainDate.toString mondays
+  let saturdayStrs = map PlainDate.toString saturdays
 
   Console.log ("Mondays in Feb 2020: " <> intercalate " " mondayStrs)
   Console.log ("Saturdays in Feb 2020: " <> intercalate " " saturdayStrs)

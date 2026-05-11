@@ -1,16 +1,16 @@
-export function _fromRecord(options, components) {
+export function _fromRecordWithOptions(options, components) {
   return Temporal.PlainDate.from(components, options);
 }
 
-export function _fromRecordNoOpts(components) {
+export function _fromRecord(components) {
   return Temporal.PlainDate.from(components);
 }
 
-export function _fromString(options, str) {
+export function _fromStringWithOptions(options, str) {
   return Temporal.PlainDate.from(str, options);
 }
 
-export function _fromStringNoOpts(str) {
+export function _fromString(str) {
   return Temporal.PlainDate.from(str);
 }
 
@@ -31,27 +31,27 @@ export const calendarId = (pd) => pd.calendarId;
 export const _era = (pd) => pd.era ?? null;
 export const _eraYear = (pd) => pd.eraYear ?? null;
 
-export function _add(options, duration, pd) {
+export function _addWithOptions(options, duration, pd) {
   return pd.add(duration, options);
 }
 
-export function _addNoOpts(duration, pd) {
+export function _add(duration, pd) {
   return pd.add(duration);
 }
 
-export function _subtract(options, duration, pd) {
+export function _subtractWithOptions(options, duration, pd) {
   return pd.subtract(duration, options);
 }
 
-export function _subtractNoOpts(duration, pd) {
+export function _subtract(duration, pd) {
   return pd.subtract(duration);
 }
 
-export function _with(options, fields, pd) {
+export function _withWithOptions(options, fields, pd) {
   return pd.with(fields, options);
 }
 
-export function _withNoOpts(fields, pd) {
+export function _with(fields, pd) {
   return pd.with(fields);
 }
 
@@ -59,19 +59,19 @@ export function _withCalendar(calendar, pd) {
   return pd.withCalendar(calendar);
 }
 
-export function _until(options, other, pd) {
+export function _untilWithOptions(options, other, pd) {
   return pd.until(other, options);
 }
 
-export function _untilNoOpts(other, pd) {
+export function _until(other, pd) {
   return pd.until(other);
 }
 
-export function _since(options, other, pd) {
+export function _sinceWithOptions(options, other, pd) {
   return pd.since(other, options);
 }
 
-export function _sinceNoOpts(other, pd) {
+export function _since(other, pd) {
   return pd.since(other);
 }
 
@@ -87,11 +87,11 @@ export function _toPlainDateTime(plainTime, pd) {
   return pd.toPlainDateTime(plainTime);
 }
 
-export function _toZonedDateTime(timeZone, plainTime, pd) {
+export function _toZonedDateTimeWithPlainTime(timeZone, plainTime, pd) {
   return pd.toZonedDateTime({ timeZone, plainTime });
 }
 
-export function _toZonedDateTimeNoOpts(timeZone, pd) {
+export function _toZonedDateTime(timeZone, pd) {
   return pd.toZonedDateTime(timeZone);
 }
 

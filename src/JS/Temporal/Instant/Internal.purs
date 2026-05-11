@@ -3,7 +3,7 @@ module JS.Temporal.Instant.Internal
   ( Instant
   , equals
   , compare
-  , toString_
+  , toString
   ) where
 
 import Prelude hiding (compare)
@@ -20,7 +20,7 @@ foreign import data Instant :: Type
 foreign import _equals :: Fn2 Instant Instant Boolean
 foreign import _compare :: Fn2 Instant Instant Int
 -- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
-foreign import toString_ :: Instant -> String
+foreign import toString :: Instant -> String
 
 equals :: Instant -> Instant -> Boolean
 equals a b = Function.Uncurried.runFn2 _equals a b
@@ -35,7 +35,7 @@ instance Ord Instant where
   compare = compare
 
 instance Show Instant where
-  show = toString_
+  show = toString
 
 instance DateTimeLike Instant where
   unsafeToDateTimeForeign = Unsafe.Coerce.unsafeCoerce

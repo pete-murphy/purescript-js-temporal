@@ -1,16 +1,16 @@
-export function _fromRecord(options, components) {
+export function _fromRecordWithOptions(options, components) {
   return Temporal.PlainYearMonth.from(components, options);
 }
 
-export function _fromRecordNoOpts(components) {
+export function _fromRecord(components) {
   return Temporal.PlainYearMonth.from(components);
 }
 
-export function _fromString(options, str) {
+export function _fromStringWithOptions(options, str) {
   return Temporal.PlainYearMonth.from(str, options);
 }
 
-export function _fromStringNoOpts(str) {
+export function _fromString(str) {
   return Temporal.PlainYearMonth.from(str);
 }
 
@@ -25,27 +25,27 @@ export const calendarId = (pym) => pym.calendarId;
 export const _era = (pym) => pym.era ?? null;
 export const _eraYear = (pym) => pym.eraYear ?? null;
 
-export function _add(options, duration, pym) {
+export function _addWithOptions(options, duration, pym) {
   return pym.add(duration, options);
 }
 
-export function _addNoOpts(duration, pym) {
+export function _add(duration, pym) {
   return pym.add(duration);
 }
 
-export function _subtract(options, duration, pym) {
+export function _subtractWithOptions(options, duration, pym) {
   return pym.subtract(duration, options);
 }
 
-export function _subtractNoOpts(duration, pym) {
+export function _subtract(duration, pym) {
   return pym.subtract(duration);
 }
 
-export function _with(options, fields, pym) {
+export function _withWithOptions(options, fields, pym) {
   return pym.with(fields, options);
 }
 
-export function _withNoOpts(fields, pym) {
+export function _with(fields, pym) {
   return pym.with(fields);
 }
 
@@ -53,19 +53,19 @@ export function _toPlainDate(fields, pym) {
   return pym.toPlainDate(fields);
 }
 
-export function _until(options, other, pym) {
+export function _untilWithOptions(options, other, pym) {
   return pym.until(other, options);
 }
 
-export function _untilNoOpts(other, pym) {
+export function _until(other, pym) {
   return pym.until(other);
 }
 
-export function _since(options, other, pym) {
+export function _sinceWithOptions(options, other, pym) {
   return pym.since(other, options);
 }
 
-export function _sinceNoOpts(other, pym) {
+export function _since(other, pym) {
   return pym.since(other);
 }
 

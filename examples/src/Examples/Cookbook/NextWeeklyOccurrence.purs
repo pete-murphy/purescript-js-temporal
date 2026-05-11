@@ -24,7 +24,7 @@ nextWeeklyOccurrence now weekday eventTime eventTimeZone = do
   let plainDate = ZonedDateTime.toPlainDate nowInEventTimeZone
   let daysToAdd = (weekday + 7 - ZonedDateTime.dayOfWeek nowInEventTimeZone) `mod` 7
   daysDuration <- Duration.from { days: daysToAdd }
-  nextDate <- PlainDate.add_ daysDuration plainDate
+  nextDate <- PlainDate.add daysDuration plainDate
 
   let plainDateTime = PlainDate.toPlainDateTime eventTime nextDate
   nextOccurrence <- PlainDateTime.toZonedDateTime eventTimeZone plainDateTime
@@ -32,7 +32,7 @@ nextWeeklyOccurrence now weekday eventTime eventTimeZone = do
   let ordering = ZonedDateTimeCompare.compare now nextOccurrence
   if ordering == GT then do
     weeksDuration <- Duration.from { weeks: 1 }
-    next <- ZonedDateTime.add_ weeksDuration nextOccurrence
+    next <- ZonedDateTime.add weeksDuration nextOccurrence
     ZonedDateTime.withTimeZone (ZonedDateTime.timeZoneId now) next
   else
     ZonedDateTime.withTimeZone (ZonedDateTime.timeZoneId now) nextOccurrence

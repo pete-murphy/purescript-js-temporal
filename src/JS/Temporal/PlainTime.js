@@ -1,16 +1,16 @@
-export function _fromRecord(options, components) {
+export function _fromRecordWithOptions(options, components) {
   return Temporal.PlainTime.from(components, options);
 }
 
-export function _fromRecordNoOpts(components) {
+export function _fromRecord(components) {
   return Temporal.PlainTime.from(components);
 }
 
-export function _fromString(options, str) {
+export function _fromStringWithOptions(options, str) {
   return Temporal.PlainTime.from(str, options);
 }
 
-export function _fromStringNoOpts(str) {
+export function _fromString(str) {
   return Temporal.PlainTime.from(str);
 }
 
@@ -29,27 +29,27 @@ export function _subtract(duration, t) {
   return t.subtract(duration);
 }
 
-export function _with(options, fields, t) {
+export function _withWithOptions(options, fields, t) {
   return t.with(fields, options);
 }
 
-export function _withNoOpts(fields, t) {
+export function _with(fields, t) {
   return t.with(fields);
 }
 
-export function _until(options, other, t) {
+export function _untilWithOptions(options, other, t) {
   return t.until(other, options);
 }
 
-export function _untilNoOpts(other, t) {
+export function _until(other, t) {
   return t.until(other);
 }
 
-export function _since(options, other, t) {
+export function _sinceWithOptions(options, other, t) {
   return t.since(other, options);
 }
 
-export function _sinceNoOpts(other, t) {
+export function _since(other, t) {
   return t.since(other);
 }
 

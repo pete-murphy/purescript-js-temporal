@@ -6,10 +6,10 @@ module JS.Temporal.PlainYearMonth
   ( module JS.Temporal.PlainYearMonth.Internal
   -- * Construction
   , PlainYearMonthComponents
+  , fromWithOptions
   , from
-  , from_
+  , fromStringWithOptions
   , fromString
-  , fromString_
   -- * Properties
   , year
   , month
@@ -22,23 +22,23 @@ module JS.Temporal.PlainYearMonth
   , era
   , eraYear
   -- * Arithmetic
+  , addWithOptions
   , add
-  , add_
+  , subtractWithOptions
   , subtract
-  , subtract_
   -- * Manipulation
+  , withWithOptions
   , with
-  , with_
   -- * Conversions
   , toPlainDate
   -- * Difference
+  , untilWithOptions
   , until
-  , until_
+  , sinceWithOptions
   , since
-  , since_
   -- * Serialization
+  , toStringWithOptions
   , toString
-  , toString_
   -- * Options
   , ToOverflowOptions
   , ToDifferenceOptions
@@ -94,13 +94,13 @@ instance ConvertOption ToOverflowOptions "overflow" Overflow String where
 instance ConvertOption ToOverflowOptions "overflow" String String where
   convertOption _ _ = identity
 
-foreign import _fromRecord :: forall ro rc. EffectFn2 { | ro } { | rc } PlainYearMonth
+foreign import _fromRecordWithOptions :: forall ro rc. EffectFn2 { | ro } { | rc } PlainYearMonth
 
--- | Creates a PlainYearMonth from component fields. Options: overflow.
+-- | Creates a PlainYearMonth fromWithOptions component fields. Options: overflow.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | yearMonth <- PlainYearMonth.from { overflow: Overflow.Constrain } { year: 2024, month: 6 }
+-- | yearMonth <- PlainYearMonth.fromWithOptions { overflow: Overflow.Constrain } { year: 2024, month: 6 }
 -- | firstDay <- PlainYearMonth.toPlainDate { day: 1 } yearMonth
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter firstDay)
@@ -110,7 +110,7 @@ foreign import _fromRecord :: forall ro rc. EffectFn2 { | ro } { | rc } PlainYea
 -- | June 1, 2024
 -- | ```
 
-from
+fromWithOptions
   :: forall optsProvided provided rest
    . Union provided rest PlainYearMonthComponents
   => ConvertOptionsWithDefaults
@@ -121,9 +121,9 @@ from
   => { | optsProvided }
   -> { | provided }
   -> Effect PlainYearMonth
-from providedOptions components =
+fromWithOptions providedOptions components =
   Effect.Uncurried.runEffectFn2
-    _fromRecord
+    _fromRecordWithOptions
     ( ConvertableOptions.convertOptionsWithDefaults
         ToOverflowOptions
         defaultOverflowOptions
@@ -131,13 +131,13 @@ from providedOptions components =
     )
     components
 
-foreign import _fromRecordNoOpts :: forall r. EffectFn1 { | r } PlainYearMonth
+foreign import _fromRecord :: forall r. EffectFn1 { | r } PlainYearMonth
 
--- | Same as [`from`](#from) with default options.
+-- | Same as [`fromWithOptions`](#fromWithOptions) withWithOptions default options.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | yearMonth <- PlainYearMonth.from_ { year: 2024, month: 6 }
+-- | yearMonth <- PlainYearMonth.from { year: 2024, month: 6 }
 -- | firstDay <- PlainYearMonth.toPlainDate { day: 1 } yearMonth
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter firstDay)
@@ -147,21 +147,21 @@ foreign import _fromRecordNoOpts :: forall r. EffectFn1 { | r } PlainYearMonth
 -- | June 1, 2024
 -- | ```
 
-from_
+from
   :: forall provided rest
    . Union provided rest PlainYearMonthComponents
   => { | provided }
   -> Effect PlainYearMonth
-from_ = Effect.Uncurried.runEffectFn1 _fromRecordNoOpts
+from = Effect.Uncurried.runEffectFn1 _fromRecord
 
-foreign import _fromString :: forall r. EffectFn2 { | r } String PlainYearMonth
+foreign import _fromStringWithOptions :: forall r. EffectFn2 { | r } String PlainYearMonth
 
--- | Creates a PlainYearMonth from an RFC 9557 / ISO 8601 year-month string (e.g. `"2024-01"`).
+-- | Creates a PlainYearMonth fromWithOptions an RFC 9557 / ISO 8601 year-month string (e.g. `"2024-01"`).
 -- | Options: overflow.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | yearMonth <- PlainYearMonth.fromString { overflow: Overflow.Constrain } "2024-06"
+-- | yearMonth <- PlainYearMonth.fromStringWithOptions { overflow: Overflow.Constrain } "2024-06"
 -- | firstDay <- PlainYearMonth.toPlainDate { day: 1 } yearMonth
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter firstDay)
@@ -171,7 +171,7 @@ foreign import _fromString :: forall r. EffectFn2 { | r } String PlainYearMonth
 -- | June 1, 2024
 -- | ```
 
-fromString
+fromStringWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
        ToOverflowOptions
@@ -181,8 +181,8 @@ fromString
   => { | provided }
   -> String
   -> Effect PlainYearMonth
-fromString providedOptions str =
-  Effect.Uncurried.runEffectFn2 _fromString
+fromStringWithOptions providedOptions str =
+  Effect.Uncurried.runEffectFn2 _fromStringWithOptions
     ( ConvertableOptions.convertOptionsWithDefaults
         ToOverflowOptions
         defaultOverflowOptions
@@ -190,12 +190,12 @@ fromString providedOptions str =
     )
     str
 
-foreign import _fromStringNoOpts :: EffectFn1 String PlainYearMonth
+foreign import _fromString :: EffectFn1 String PlainYearMonth
 
--- | Same as [`fromString`](#fromstring) with default options.
+-- | Same as [`fromStringWithOptions`](#fromstring) withWithOptions default options.
 
-fromString_ :: String -> Effect PlainYearMonth
-fromString_ = Effect.Uncurried.runEffectFn1 _fromStringNoOpts
+fromString :: String -> Effect PlainYearMonth
+fromString = Effect.Uncurried.runEffectFn1 _fromString
 
 -- Properties
 
@@ -230,15 +230,15 @@ eraYear = toMaybe <<< _eraYear
 
 -- Arithmetic
 
-foreign import _add :: forall r. EffectFn3 { | r } Duration PlainYearMonth PlainYearMonth
+foreign import _addWithOptions :: forall r. EffectFn3 { | r } Duration PlainYearMonth PlainYearMonth
 
 -- | Adds a duration. Options: overflow.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | yearMonth <- PlainYearMonth.fromString_ "2024-06"
--- | threeMonths <- Duration.from { months: 3 }
--- | later <- PlainYearMonth.add { overflow: Overflow.Constrain } threeMonths yearMonth
+-- | yearMonth <- PlainYearMonth.fromString "2024-06"
+-- | threeMonths <- Duration.fromWithOptions { months: 3 }
+-- | later <- PlainYearMonth.addWithOptions { overflow: Overflow.Constrain } threeMonths yearMonth
 -- | firstDay <- PlainYearMonth.toPlainDate { day: 1 } later
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter firstDay)
@@ -248,7 +248,7 @@ foreign import _add :: forall r. EffectFn3 { | r } Duration PlainYearMonth Plain
 -- | September 1, 2024
 -- | ```
 
-add
+addWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
        ToOverflowOptions
@@ -259,9 +259,9 @@ add
   -> Duration
   -> PlainYearMonth
   -> Effect PlainYearMonth
-add providedOptions duration plainYearMonth =
+addWithOptions providedOptions duration plainYearMonth =
   Effect.Uncurried.runEffectFn3
-    _add
+    _addWithOptions
     ( ConvertableOptions.convertOptionsWithDefaults
         ToOverflowOptions
         defaultOverflowOptions
@@ -270,22 +270,22 @@ add providedOptions duration plainYearMonth =
     duration
     plainYearMonth
 
-foreign import _addNoOpts :: EffectFn2 Duration PlainYearMonth PlainYearMonth
+foreign import _add :: EffectFn2 Duration PlainYearMonth PlainYearMonth
 
--- | Same as [`add`](#add) with default options.
+-- | Same as [`addWithOptions`](#addWithOptions) withWithOptions default options.
 
-add_ :: Duration -> PlainYearMonth -> Effect PlainYearMonth
-add_ = Effect.Uncurried.runEffectFn2 _addNoOpts
+add :: Duration -> PlainYearMonth -> Effect PlainYearMonth
+add = Effect.Uncurried.runEffectFn2 _add
 
-foreign import _subtract :: forall r. EffectFn3 { | r } Duration PlainYearMonth PlainYearMonth
+foreign import _subtractWithOptions :: forall r. EffectFn3 { | r } Duration PlainYearMonth PlainYearMonth
 
 -- | Subtracts a duration. Options: overflow.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | yearMonth <- PlainYearMonth.fromString_ "2024-06"
--- | twoMonths <- Duration.from { months: 2 }
--- | earlier <- PlainYearMonth.subtract { overflow: Overflow.Constrain } twoMonths yearMonth
+-- | yearMonth <- PlainYearMonth.fromString "2024-06"
+-- | twoMonths <- Duration.fromWithOptions { months: 2 }
+-- | earlier <- PlainYearMonth.subtractWithOptions { overflow: Overflow.Constrain } twoMonths yearMonth
 -- | firstDay <- PlainYearMonth.toPlainDate { day: 1 } earlier
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter firstDay)
@@ -295,7 +295,7 @@ foreign import _subtract :: forall r. EffectFn3 { | r } Duration PlainYearMonth 
 -- | April 1, 2024
 -- | ```
 
-subtract
+subtractWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
        ToOverflowOptions
@@ -306,9 +306,9 @@ subtract
   -> Duration
   -> PlainYearMonth
   -> Effect PlainYearMonth
-subtract providedOptions duration plainYearMonth =
+subtractWithOptions providedOptions duration plainYearMonth =
   Effect.Uncurried.runEffectFn3
-    _subtract
+    _subtractWithOptions
     ( ConvertableOptions.convertOptionsWithDefaults
         ToOverflowOptions
         defaultOverflowOptions
@@ -317,12 +317,12 @@ subtract providedOptions duration plainYearMonth =
     duration
     plainYearMonth
 
-foreign import _subtractNoOpts :: EffectFn2 Duration PlainYearMonth PlainYearMonth
+foreign import _subtract :: EffectFn2 Duration PlainYearMonth PlainYearMonth
 
--- | Same as [`subtract`](#subtract) with default options.
+-- | Same as [`subtractWithOptions`](#subtractWithOptions) withWithOptions default options.
 
-subtract_ :: Duration -> PlainYearMonth -> Effect PlainYearMonth
-subtract_ = Effect.Uncurried.runEffectFn2 _subtractNoOpts
+subtract :: Duration -> PlainYearMonth -> Effect PlainYearMonth
+subtract = Effect.Uncurried.runEffectFn2 _subtract
 
 -- Manipulation
 
@@ -332,14 +332,14 @@ type WithFields =
   , monthCode :: String
   )
 
-foreign import _with :: forall ro rf. EffectFn3 { | ro } { | rf } PlainYearMonth PlainYearMonth
+foreign import _withWithOptions :: forall ro rf. EffectFn3 { | ro } { | rf } PlainYearMonth PlainYearMonth
 
--- | Returns a new PlainYearMonth with specified fields replaced. Options: overflow.
+-- | Returns a new PlainYearMonth withWithOptions specified fields replaced. Options: overflow.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | yearMonth <- PlainYearMonth.fromString_ "2024-06"
--- | changed <- PlainYearMonth.with { overflow: Overflow.Constrain } { month: 12 } yearMonth
+-- | yearMonth <- PlainYearMonth.fromString "2024-06"
+-- | changed <- PlainYearMonth.withWithOptions { overflow: Overflow.Constrain } { month: 12 } yearMonth
 -- | firstDay <- PlainYearMonth.toPlainDate { day: 1 } changed
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter firstDay)
@@ -349,7 +349,7 @@ foreign import _with :: forall ro rf. EffectFn3 { | ro } { | rf } PlainYearMonth
 -- | December 1, 2024
 -- | ```
 
-with
+withWithOptions
   :: forall optsProvided fields rest
    . Union fields rest WithFields
   => ConvertOptionsWithDefaults
@@ -361,9 +361,9 @@ with
   -> { | fields }
   -> PlainYearMonth
   -> Effect PlainYearMonth
-with options fields plainYearMonth =
+withWithOptions options fields plainYearMonth =
   Effect.Uncurried.runEffectFn3
-    _with
+    _withWithOptions
     ( ConvertableOptions.convertOptionsWithDefaults
         ToOverflowOptions
         defaultOverflowOptions
@@ -372,17 +372,17 @@ with options fields plainYearMonth =
     fields
     plainYearMonth
 
-foreign import _withNoOpts :: forall r. EffectFn2 { | r } PlainYearMonth PlainYearMonth
+foreign import _with :: forall r. EffectFn2 { | r } PlainYearMonth PlainYearMonth
 
--- | Same as [`with`](#with) with default options.
+-- | Same as [`withWithOptions`](#withWithOptions) withWithOptions default options.
 
-with_
+with
   :: forall fields rest
    . Union fields rest WithFields
   => { | fields }
   -> PlainYearMonth
   -> Effect PlainYearMonth
-with_ = Effect.Uncurried.runEffectFn2 _withNoOpts
+with = Effect.Uncurried.runEffectFn2 _with
 
 -- Conversions
 
@@ -392,7 +392,7 @@ foreign import _toPlainDate :: EffectFn2 { day :: Int } PlainYearMonth PlainDate
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | yearMonth <- PlainYearMonth.fromString_ "2024-01"
+-- | yearMonth <- PlainYearMonth.fromString "2024-01"
 -- | firstDay <- PlainYearMonth.toPlainDate { day: 1 } yearMonth
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter firstDay)
@@ -440,15 +440,15 @@ instance ConvertOption ToDifferenceOptions "roundingMode" RoundingMode String wh
 instance ConvertOption ToDifferenceOptions "roundingMode" String String where
   convertOption _ _ = identity
 
-foreign import _until :: forall r. EffectFn3 { | r } PlainYearMonth PlainYearMonth Duration
+foreign import _untilWithOptions :: forall r. EffectFn3 { | r } PlainYearMonth PlainYearMonth Duration
 
--- | Duration from `subject` (last arg) until `other` (second arg). Arg order: `until options other subject`.
+-- | Duration fromWithOptions `subject` (last arg) untilWithOptions `other` (second arg). Arg order: `untilWithOptions options other subject`.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | start <- PlainYearMonth.fromString_ "2024-01"
--- | end <- PlainYearMonth.fromString_ "2025-06"
--- | duration <- PlainYearMonth.until { largestUnit: TemporalUnit.Year } end start
+-- | start <- PlainYearMonth.fromString "2024-01"
+-- | end <- PlainYearMonth.fromString "2025-06"
+-- | duration <- PlainYearMonth.untilWithOptions { largestUnit: TemporalUnit.Year } end start
 -- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- | Console.log (JS.Intl.DurationFormat.format formatter duration)
 -- | ```
@@ -457,7 +457,7 @@ foreign import _until :: forall r. EffectFn3 { | r } PlainYearMonth PlainYearMon
 -- | 1 year, 5 months
 -- | ```
 
-until
+untilWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
        ToDifferenceOptions
@@ -468,9 +468,9 @@ until
   -> PlainYearMonth
   -> PlainYearMonth
   -> Effect Duration
-until providedOptions other plainYearMonth =
+untilWithOptions providedOptions other plainYearMonth =
   Effect.Uncurried.runEffectFn3
-    _until
+    _untilWithOptions
     ( ConvertableOptions.convertOptionsWithDefaults
         ToDifferenceOptions
         defaultDifferenceOptions
@@ -479,22 +479,22 @@ until providedOptions other plainYearMonth =
     other
     plainYearMonth
 
-foreign import _untilNoOpts :: EffectFn2 PlainYearMonth PlainYearMonth Duration
+foreign import _until :: EffectFn2 PlainYearMonth PlainYearMonth Duration
 
--- | Same as [`until`](#until) with default options.
+-- | Same as [`untilWithOptions`](#untilWithOptions) withWithOptions default options.
 
-until_ :: PlainYearMonth -> PlainYearMonth -> Effect Duration
-until_ = Effect.Uncurried.runEffectFn2 _untilNoOpts
+until :: PlainYearMonth -> PlainYearMonth -> Effect Duration
+until = Effect.Uncurried.runEffectFn2 _until
 
-foreign import _since :: forall r. EffectFn3 { | r } PlainYearMonth PlainYearMonth Duration
+foreign import _sinceWithOptions :: forall r. EffectFn3 { | r } PlainYearMonth PlainYearMonth Duration
 
--- | Duration from `other` to `subject` (inverse of until). Arg order: `since options other subject`.
+-- | Duration fromWithOptions `other` to `subject` (inverse of untilWithOptions). Arg order: `sinceWithOptions options other subject`.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | earlier <- PlainYearMonth.fromString_ "2022-06"
--- | later <- PlainYearMonth.fromString_ "2024-06"
--- | duration <- PlainYearMonth.since { largestUnit: TemporalUnit.Year } earlier later
+-- | earlier <- PlainYearMonth.fromString "2022-06"
+-- | later <- PlainYearMonth.fromString "2024-06"
+-- | duration <- PlainYearMonth.sinceWithOptions { largestUnit: TemporalUnit.Year } earlier later
 -- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- | Console.log (JS.Intl.DurationFormat.format formatter duration)
 -- | ```
@@ -503,7 +503,7 @@ foreign import _since :: forall r. EffectFn3 { | r } PlainYearMonth PlainYearMon
 -- | 2 years
 -- | ```
 
-since
+sinceWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
        ToDifferenceOptions
@@ -514,9 +514,9 @@ since
   -> PlainYearMonth
   -> PlainYearMonth
   -> Effect Duration
-since providedOptions other plainYearMonth =
+sinceWithOptions providedOptions other plainYearMonth =
   Effect.Uncurried.runEffectFn3
-    _since
+    _sinceWithOptions
     ( ConvertableOptions.convertOptionsWithDefaults
         ToDifferenceOptions
         defaultDifferenceOptions
@@ -525,16 +525,16 @@ since providedOptions other plainYearMonth =
     other
     plainYearMonth
 
-foreign import _sinceNoOpts :: EffectFn2 PlainYearMonth PlainYearMonth Duration
+foreign import _since :: EffectFn2 PlainYearMonth PlainYearMonth Duration
 
--- | Same as [`since`](#since) with default options.
+-- | Same as [`sinceWithOptions`](#sinceWithOptions) withWithOptions default options.
 
-since_ :: PlainYearMonth -> PlainYearMonth -> Effect Duration
-since_ = Effect.Uncurried.runEffectFn2 _sinceNoOpts
+since :: PlainYearMonth -> PlainYearMonth -> Effect Duration
+since = Effect.Uncurried.runEffectFn2 _since
 
 -- Comparison
 
--- Serialization (toString_ from Internal)
+-- Serialization (toString fromWithOptions Internal)
 
 type ToStringOptions = (calendarName :: String)
 
@@ -551,23 +551,23 @@ instance ConvertOption ToToStringOptions "calendarName" String String where
 
 foreign import _toString :: forall r. Fn2 { | r } PlainYearMonth String
 
--- | Same as [`toString`](#tostring) with default options.
+-- | Same as [`toStringWithOptions`](#tostring) withWithOptions default options.
 
-toString_ :: PlainYearMonth -> String
-toString_ plainYearMonth = Function.Uncurried.runFn2 _toString defaultToStringOptions plainYearMonth
+toString :: PlainYearMonth -> String
+toString plainYearMonth = Function.Uncurried.runFn2 _toString defaultToStringOptions plainYearMonth
 
 -- | Serializes to ISO 8601 year-month format. Options: calendarName.
 -- |
 -- | ```purescript
--- | yearMonth <- PlainYearMonth.fromString_ "2024-06"
--- | Console.log (PlainYearMonth.toString {} yearMonth)
+-- | yearMonth <- PlainYearMonth.fromString "2024-06"
+-- | Console.log (PlainYearMonth.toStringWithOptions {} yearMonth)
 -- | ```
 -- |
 -- | ```text
 -- | 2024-06
 -- | ```
 
-toString
+toStringWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
        ToToStringOptions
@@ -577,7 +577,7 @@ toString
   => { | provided }
   -> PlainYearMonth
   -> String
-toString providedOptions plainYearMonth =
+toStringWithOptions providedOptions plainYearMonth =
   Function.Uncurried.runFn2
     _toString
     ( ConvertableOptions.convertOptionsWithDefaults

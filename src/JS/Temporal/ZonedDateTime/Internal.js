@@ -6,4 +6,4 @@ export function _compare(a, b) {
   return Temporal.ZonedDateTime.compare(a, b);
 }
 
-export const toString_ = (zdt) => zdt.toString();
+export const toString = (zdt) => zdt.toString();

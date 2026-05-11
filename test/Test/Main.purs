@@ -62,19 +62,19 @@ main = do
 -- PlainDate
 test_PlainDate :: Effect Unit
 test_PlainDate = do
-  Console.log "PlainDate.from_"
-  plainDate <- PlainDate.from_ { year: 2026, month: 2, day: 21 }
+  Console.log "PlainDate.from"
+  plainDate <- PlainDate.from { year: 2026, month: 2, day: 21 }
   Test.assertEqual
-    { actual: PlainDate.toString_ plainDate
+    { actual: PlainDate.toString plainDate
     , expected: "2026-02-21"
     }
   Test.assertEqual
-    { actual: PlainDate.toString { calendarName: CalendarName.Never } plainDate
+    { actual: PlainDate.toStringWithOptions { calendarName: CalendarName.Never } plainDate
     , expected: "2026-02-21"
     }
 
-  Console.log "PlainDate.fromString_"
-  fromDate <- PlainDate.fromString_ "2024-01-15"
+  Console.log "PlainDate.fromString"
+  fromDate <- PlainDate.fromString "2024-01-15"
   Test.assertEqual
     { actual: PlainDate.year fromDate
     , expected: 2024
@@ -89,12 +89,12 @@ test_PlainDate = do
     }
 
   Console.log "PlainDate.fromString with overflow"
-  constrainDate <- PlainDate.fromString { overflow: Overflow.Constrain } "2024-01-15"
+  constrainDate <- PlainDate.fromStringWithOptions { overflow: Overflow.Constrain } "2024-01-15"
   Test.assertEqual
     { actual: PlainDate.day constrainDate
     , expected: 15
     }
-  rejectDate <- PlainDate.fromString { overflow: Overflow.Reject } "2024-01-15"
+  rejectDate <- PlainDate.fromStringWithOptions { overflow: Overflow.Reject } "2024-01-15"
   Test.assertEqual
     { actual: PlainDate.day rejectDate
     , expected: 15
@@ -124,43 +124,43 @@ test_PlainDate = do
 
   Console.log "PlainDate.add / subtract"
   duration <- Duration.from { days: 7 }
-  added <- PlainDate.add_ duration plainDate
+  added <- PlainDate.add duration plainDate
   Test.assertEqual
-    { actual: PlainDate.toString_ added
+    { actual: PlainDate.toString added
     , expected: "2026-02-28"
     }
-  subtracted <- PlainDate.subtract_ duration plainDate
+  subtracted <- PlainDate.subtract duration plainDate
   Test.assertEqual
-    { actual: PlainDate.toString_ subtracted
+    { actual: PlainDate.toString subtracted
     , expected: "2026-02-14"
     }
-  addedWithOpts <- PlainDate.add { overflow: Overflow.Constrain } duration plainDate
+  addedWithOpts <- PlainDate.addWithOptions { overflow: Overflow.Constrain } duration plainDate
   Test.assertEqual
-    { actual: PlainDate.toString_ addedWithOpts
+    { actual: PlainDate.toString addedWithOpts
     , expected: "2026-02-28"
     }
 
-  Console.log "PlainDate.until_ / since_"
-  otherDate <- PlainDate.from_ { year: 2026, month: 3, day: 1 }
-  untilDuration <- PlainDate.until_ otherDate plainDate
+  Console.log "PlainDate.until / since"
+  otherDate <- PlainDate.from { year: 2026, month: 3, day: 1 }
+  untilDuration <- PlainDate.until otherDate plainDate
   Test.assertEqual
     { actual: Duration.days untilDuration
     , expected: 8
     }
-  sinceDuration <- PlainDate.since_ otherDate plainDate
+  sinceDuration <- PlainDate.since otherDate plainDate
   Test.assertEqual
     { actual: Duration.days sinceDuration
     , expected: (-8)
     }
-  untilWithOpts <- PlainDate.until { largestUnit: TemporalUnit.Day } otherDate plainDate
+  untilWithOpts <- PlainDate.untilWithOptions { largestUnit: TemporalUnit.Day } otherDate plainDate
   Test.assertEqual
     { actual: Duration.days untilWithOpts
     , expected: 8
     }
 
-  Console.log "PlainDate.with_ / with"
-  withDate <- PlainDate.with_ { day: 1 } plainDate
-  withDateOpts <- PlainDate.with { overflow: Overflow.Constrain } { day: 1 } plainDate
+  Console.log "PlainDate.with / with"
+  withDate <- PlainDate.with { day: 1 } plainDate
+  withDateOpts <- PlainDate.withWithOptions { overflow: Overflow.Constrain } { day: 1 } plainDate
   Test.assertEqual
     { actual: PlainDate.day withDate
     , expected: 1
@@ -173,42 +173,42 @@ test_PlainDate = do
   Console.log "PlainDate.withCalendar / toPlainYearMonth / toPlainMonthDay"
   gregoryDate <- PlainDate.withCalendar "gregory" plainDate
   Test.assertEqual
-    { actual: PlainDate.toString { calendarName: CalendarName.Always } gregoryDate
+    { actual: PlainDate.toStringWithOptions { calendarName: CalendarName.Always } gregoryDate
     , expected: "2026-02-21[u-ca=gregory]"
     }
   Test.assertEqual
-    { actual: PlainYearMonth.toString_ (PlainDate.toPlainYearMonth plainDate)
+    { actual: PlainYearMonth.toString (PlainDate.toPlainYearMonth plainDate)
     , expected: "2026-02"
     }
   Test.assertEqual
-    { actual: PlainMonthDay.toString_ (PlainDate.toPlainMonthDay plainDate)
+    { actual: PlainMonthDay.toString (PlainDate.toPlainMonthDay plainDate)
     , expected: "02-21"
     }
 
   Console.log "PlainDate.toPlainDateTime"
-  plainTime <- PlainTime.from_ { hour: 12, minute: 30, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 }
+  plainTime <- PlainTime.from { hour: 12, minute: 30, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 }
   dateTime <- pure (PlainDate.toPlainDateTime plainTime plainDate)
   Test.assertEqual
-    { actual: PlainDateTime.toString_ dateTime
+    { actual: PlainDateTime.toString dateTime
     , expected: "2026-02-21T12:30:00"
     }
 
   Console.log "PlainDate.toZonedDateTime"
-  zoned <- PlainDate.toZonedDateTime_ "America/New_York" plainDate
+  zoned <- PlainDate.toZonedDateTime "America/New_York" plainDate
   Test.assertEqual
     { actual: ZonedDateTime.timeZoneId zoned
     , expected: "America/New_York"
     }
   Test.assertEqual
-    { actual: PlainDate.toString_ (ZonedDateTime.toPlainDate zoned)
+    { actual: PlainDate.toString (ZonedDateTime.toPlainDate zoned)
     , expected: "2026-02-21"
     }
 
 -- PlainTime
 test_PlainTime :: Effect Unit
 test_PlainTime = do
-  Console.log "PlainTime.from_"
-  plainTime <- PlainTime.from_ { hour: 14, minute: 30, second: 45, millisecond: 123, microsecond: 456, nanosecond: 789 }
+  Console.log "PlainTime.from"
+  plainTime <- PlainTime.from { hour: 14, minute: 30, second: 45, millisecond: 123, microsecond: 456, nanosecond: 789 }
   Test.assertEqual
     { actual: PlainTime.hour plainTime
     , expected: 14
@@ -226,8 +226,8 @@ test_PlainTime = do
     , expected: 123
     }
 
-  Console.log "PlainTime.fromString_"
-  fromTime <- PlainTime.fromString_ "09:15:30.500"
+  Console.log "PlainTime.fromString"
+  fromTime <- PlainTime.fromString "09:15:30.500"
   Test.assertEqual
     { actual: PlainTime.hour fromTime
     , expected: 9
@@ -246,7 +246,7 @@ test_PlainTime = do
     }
 
   Console.log "PlainTime.fromString with overflow"
-  constrainTime <- PlainTime.fromString { overflow: Overflow.Constrain } "09:15:30.500"
+  constrainTime <- PlainTime.fromStringWithOptions { overflow: Overflow.Constrain } "09:15:30.500"
   Test.assertEqual
     { actual: PlainTime.hour constrainTime
     , expected: 9
@@ -254,11 +254,11 @@ test_PlainTime = do
 
   Console.log "PlainTime.toString"
   Test.assertEqual
-    { actual: PlainTime.toString { fractionalSecondDigits: 3 } plainTime
+    { actual: PlainTime.toStringWithOptions { fractionalSecondDigits: 3 } plainTime
     , expected: "14:30:45.123"
     }
   Test.assertEqual
-    { actual: PlainTime.toString { smallestUnit: TemporalUnit.Millisecond } plainTime
+    { actual: PlainTime.toStringWithOptions { smallestUnit: TemporalUnit.Millisecond } plainTime
     , expected: "14:30:45.123"
     }
 
@@ -275,10 +275,10 @@ test_PlainTime = do
     , expected: 12
     }
 
-  Console.log "PlainTime.until_ / since_"
-  otherTime <- PlainTime.from_ { hour: 16, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 }
-  untilDuration <- PlainTime.until_ otherTime plainTime
-  untilWithOpts <- PlainTime.until { smallestUnit: TemporalUnit.Minute } otherTime plainTime
+  Console.log "PlainTime.until / since"
+  otherTime <- PlainTime.from { hour: 16, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 }
+  untilDuration <- PlainTime.until otherTime plainTime
+  untilWithOpts <- PlainTime.untilWithOptions { smallestUnit: TemporalUnit.Minute } otherTime plainTime
   Test.assertEqual
     { actual: Duration.hours untilDuration
     , expected: 1
@@ -307,15 +307,15 @@ test_PlainTime = do
 -- PlainDateTime
 test_PlainDateTime :: Effect Unit
 test_PlainDateTime = do
-  Console.log "PlainDateTime.from_"
-  plainDateTime <- PlainDateTime.from_ { year: 2026, month: 2, day: 21, hour: 14, minute: 30, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 }
+  Console.log "PlainDateTime.from"
+  plainDateTime <- PlainDateTime.from { year: 2026, month: 2, day: 21, hour: 14, minute: 30, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 }
   Test.assertEqual
-    { actual: PlainDateTime.toString_ plainDateTime
+    { actual: PlainDateTime.toString plainDateTime
     , expected: "2026-02-21T14:30:00"
     }
 
-  Console.log "PlainDateTime.fromString_"
-  fromDateTime <- PlainDateTime.fromString_ "2024-12-25T23:59:59.999"
+  Console.log "PlainDateTime.fromString"
+  fromDateTime <- PlainDateTime.fromString "2024-12-25T23:59:59.999"
   Test.assertEqual
     { actual: PlainDateTime.year fromDateTime
     , expected: 2024
@@ -346,7 +346,7 @@ test_PlainDateTime = do
     }
 
   Console.log "PlainDateTime.fromString with overflow"
-  constrainDateTime <- PlainDateTime.fromString { overflow: Overflow.Constrain } "2024-12-25T23:59:59.999"
+  constrainDateTime <- PlainDateTime.fromStringWithOptions { overflow: Overflow.Constrain } "2024-12-25T23:59:59.999"
   Test.assertEqual
     { actual: PlainDateTime.day constrainDateTime
     , expected: 25
@@ -354,14 +354,14 @@ test_PlainDateTime = do
 
   Console.log "PlainDateTime.toString with options"
   Test.assertEqual
-    { actual: PlainDateTime.toString { fractionalSecondDigits: 3 } plainDateTime
+    { actual: PlainDateTime.toStringWithOptions { fractionalSecondDigits: 3 } plainDateTime
     , expected: "2026-02-21T14:30:00.000"
     }
 
   Console.log "PlainDateTime.add / subtract"
   duration <- Duration.from { days: 1, hours: 1 }
-  added <- PlainDateTime.add_ duration plainDateTime
-  addedWithOpts <- PlainDateTime.add { overflow: Overflow.Constrain } duration plainDateTime
+  added <- PlainDateTime.add duration plainDateTime
+  addedWithOpts <- PlainDateTime.addWithOptions { overflow: Overflow.Constrain } duration plainDateTime
   Test.assertEqual
     { actual: PlainDateTime.day added
     , expected: 22
@@ -377,19 +377,19 @@ test_PlainDateTime = do
 
   Console.log "PlainDateTime.toPlainDate / toPlainTime"
   Test.assertEqual
-    { actual: PlainDate.toString_ (PlainDateTime.toPlainDate plainDateTime)
+    { actual: PlainDate.toString (PlainDateTime.toPlainDate plainDateTime)
     , expected: "2026-02-21"
     }
   Test.assertEqual
-    { actual: PlainTime.toString_ (PlainDateTime.toPlainTime plainDateTime)
+    { actual: PlainTime.toString (PlainDateTime.toPlainTime plainDateTime)
     , expected: "14:30:00"
     }
 
   Console.log "PlainDateTime.withPlainTime / withCalendar"
-  closingTime <- PlainTime.fromString_ "17:45:00"
+  closingTime <- PlainTime.fromString "17:45:00"
   withClosingTime <- PlainDateTime.withPlainTime closingTime plainDateTime
   Test.assertEqual
-    { actual: PlainDateTime.toString_ withClosingTime
+    { actual: PlainDateTime.toString withClosingTime
     , expected: "2026-02-21T17:45:00"
     }
   japaneseCalendar <- PlainDateTime.withCalendar "japanese" plainDateTime
@@ -398,9 +398,9 @@ test_PlainDateTime = do
     , expected: "japanese"
     }
 
-  Console.log "PlainDateTime.until_ / since_"
-  otherDateTime <- PlainDateTime.fromString_ "2026-02-22T14:30:00"
-  untilDt <- PlainDateTime.until_ otherDateTime plainDateTime
+  Console.log "PlainDateTime.until / since"
+  otherDateTime <- PlainDateTime.fromString "2026-02-22T14:30:00"
+  untilDt <- PlainDateTime.until otherDateTime plainDateTime
   Test.assertEqual
     { actual: Duration.days untilDt
     , expected: 1
@@ -421,8 +421,8 @@ test_PlainDateTime = do
 -- PlainYearMonth
 test_PlainYearMonth :: Effect Unit
 test_PlainYearMonth = do
-  Console.log "PlainYearMonth.from_"
-  plainYearMonth <- PlainYearMonth.from_ { year: 2026, month: 2 }
+  Console.log "PlainYearMonth.from"
+  plainYearMonth <- PlainYearMonth.from { year: 2026, month: 2 }
   Test.assertEqual
     { actual: PlainYearMonth.year plainYearMonth
     , expected: 2026
@@ -432,16 +432,16 @@ test_PlainYearMonth = do
     , expected: 2
     }
   Test.assertEqual
-    { actual: PlainYearMonth.toString_ plainYearMonth
+    { actual: PlainYearMonth.toString plainYearMonth
     , expected: "2026-02"
     }
   Test.assertEqual
-    { actual: PlainYearMonth.toString { calendarName: CalendarName.Auto } plainYearMonth
+    { actual: PlainYearMonth.toStringWithOptions { calendarName: CalendarName.Auto } plainYearMonth
     , expected: "2026-02"
     }
 
-  Console.log "PlainYearMonth.fromString_"
-  fromYearMonth <- PlainYearMonth.fromString_ "2024-12"
+  Console.log "PlainYearMonth.fromString"
+  fromYearMonth <- PlainYearMonth.fromString "2024-12"
   Test.assertEqual
     { actual: PlainYearMonth.year fromYearMonth
     , expected: 2024
@@ -452,7 +452,7 @@ test_PlainYearMonth = do
     }
 
   Console.log "PlainYearMonth.fromString with overflow"
-  constrainYearMonth <- PlainYearMonth.fromString { overflow: Overflow.Constrain } "2024-12"
+  constrainYearMonth <- PlainYearMonth.fromStringWithOptions { overflow: Overflow.Constrain } "2024-12"
   Test.assertEqual
     { actual: PlainYearMonth.month constrainYearMonth
     , expected: 12
@@ -470,33 +470,33 @@ test_PlainYearMonth = do
 
   Console.log "PlainYearMonth.add / subtract"
   duration <- Duration.from { months: 3 }
-  added <- PlainYearMonth.add_ duration plainYearMonth
+  added <- PlainYearMonth.add duration plainYearMonth
   Test.assertEqual
     { actual: PlainYearMonth.month added
     , expected: 5
     }
-  addedWithOpts <- PlainYearMonth.add { overflow: Overflow.Constrain } duration plainYearMonth
+  addedWithOpts <- PlainYearMonth.addWithOptions { overflow: Overflow.Constrain } duration plainYearMonth
   Test.assertEqual
     { actual: PlainYearMonth.month addedWithOpts
     , expected: 5
     }
   oneMonth <- Duration.from { months: 1 }
-  subtracted <- PlainYearMonth.subtract_ oneMonth plainYearMonth
+  subtracted <- PlainYearMonth.subtract oneMonth plainYearMonth
   Test.assertEqual
     { actual: PlainYearMonth.month subtracted
     , expected: 1
     }
 
   Console.log "PlainYearMonth.with"
-  updatedYearMonth <- PlainYearMonth.with { overflow: Overflow.Constrain } { month: 12 } plainYearMonth
+  updatedYearMonth <- PlainYearMonth.withWithOptions { overflow: Overflow.Constrain } { month: 12 } plainYearMonth
   Test.assertEqual
-    { actual: PlainYearMonth.toString_ updatedYearMonth
+    { actual: PlainYearMonth.toString updatedYearMonth
     , expected: "2026-12"
     }
 
-  Console.log "PlainYearMonth.until_ / since_"
-  otherYearMonth <- PlainYearMonth.fromString_ "2026-05"
-  untilYm <- PlainYearMonth.until_ otherYearMonth plainYearMonth
+  Console.log "PlainYearMonth.until / since"
+  otherYearMonth <- PlainYearMonth.fromString "2026-05"
+  untilYm <- PlainYearMonth.until otherYearMonth plainYearMonth
   Test.assertEqual
     { actual: Duration.months untilYm
     , expected: 3
@@ -505,15 +505,15 @@ test_PlainYearMonth = do
   Console.log "PlainYearMonth.toPlainDate"
   toDate <- PlainYearMonth.toPlainDate { day: 15 } plainYearMonth
   Test.assertEqual
-    { actual: PlainDate.toString_ toDate
+    { actual: PlainDate.toString toDate
     , expected: "2026-02-15"
     }
 
 -- PlainMonthDay
 test_PlainMonthDay :: Effect Unit
 test_PlainMonthDay = do
-  Console.log "PlainMonthDay.from_"
-  plainMonthDay <- PlainMonthDay.from_ { month: 12, day: 25 }
+  Console.log "PlainMonthDay.from"
+  plainMonthDay <- PlainMonthDay.from { month: 12, day: 25 }
   Test.assertEqual
     { actual: PlainMonthDay.monthCode plainMonthDay
     , expected: "M12"
@@ -523,16 +523,16 @@ test_PlainMonthDay = do
     , expected: 25
     }
   Test.assertEqual
-    { actual: PlainMonthDay.toString_ plainMonthDay
+    { actual: PlainMonthDay.toString plainMonthDay
     , expected: "12-25"
     }
   Test.assertEqual
-    { actual: PlainMonthDay.toString { calendarName: CalendarName.Never } plainMonthDay
+    { actual: PlainMonthDay.toStringWithOptions { calendarName: CalendarName.Never } plainMonthDay
     , expected: "12-25"
     }
 
-  Console.log "PlainMonthDay.fromString_"
-  fromMonthDay <- PlainMonthDay.fromString_ "02-29"
+  Console.log "PlainMonthDay.fromString"
+  fromMonthDay <- PlainMonthDay.fromString "02-29"
   Test.assertEqual
     { actual: PlainMonthDay.monthCode fromMonthDay
     , expected: "M02"
@@ -543,7 +543,7 @@ test_PlainMonthDay = do
     }
 
   Console.log "PlainMonthDay.fromString with overflow"
-  constrainMonthDay <- PlainMonthDay.fromString { overflow: Overflow.Constrain } "02-29"
+  constrainMonthDay <- PlainMonthDay.fromStringWithOptions { overflow: Overflow.Constrain } "02-29"
   Test.assertEqual
     { actual: PlainMonthDay.day constrainMonthDay
     , expected: 29
@@ -552,19 +552,19 @@ test_PlainMonthDay = do
   Console.log "PlainMonthDay.toPlainDate"
   toDate <- PlainMonthDay.toPlainDate { year: 2024 } plainMonthDay
   Test.assertEqual
-    { actual: PlainDate.toString_ toDate
+    { actual: PlainDate.toString toDate
     , expected: "2024-12-25"
     }
 
-  Console.log "PlainMonthDay.with_"
-  withMonthDay <- PlainMonthDay.with_ { day: 31 } plainMonthDay
+  Console.log "PlainMonthDay.with"
+  withMonthDay <- PlainMonthDay.with { day: 31 } plainMonthDay
   Test.assertEqual
     { actual: PlainMonthDay.day withMonthDay
     , expected: 31
     }
-  withMonthDayConstrain <- PlainMonthDay.with { overflow: Overflow.Constrain } { monthCode: "M11" } plainMonthDay
+  withMonthDayConstrain <- PlainMonthDay.withWithOptions { overflow: Overflow.Constrain } { monthCode: "M11" } plainMonthDay
   Test.assertEqual
-    { actual: PlainMonthDay.toString_ withMonthDayConstrain
+    { actual: PlainMonthDay.toString withMonthDayConstrain
     , expected: "11-25"
     }
 
@@ -695,7 +695,7 @@ test_Instant = do
   Console.log "Instant.fromString"
   instant <- Instant.fromString "2026-02-21T12:00:00Z"
   Test.assertEqual
-    { actual: Instant.toString_ instant
+    { actual: Instant.toString instant
     , expected: "2026-02-21T12:00:00Z"
     }
 
@@ -718,19 +718,19 @@ test_Instant = do
   duration <- Duration.from { hours: 1 }
   added <- Instant.add duration instant
   Test.assertEqual
-    { actual: Instant.toString_ added
+    { actual: Instant.toString added
     , expected: "2026-02-21T13:00:00Z"
     }
   subtracted <- Instant.subtract duration instant
   Test.assertEqual
-    { actual: Instant.toString_ subtracted
+    { actual: Instant.toString subtracted
     , expected: "2026-02-21T11:00:00Z"
     }
 
-  Console.log "Instant.until_ / since_"
+  Console.log "Instant.until / since"
   otherInstant <- Instant.fromString "2026-02-21T14:00:00Z"
-  untilDuration <- Instant.until_ otherInstant instant
-  untilWithOpts <- Instant.until { largestUnit: TemporalUnit.Hour } otherInstant instant
+  untilDuration <- Instant.until otherInstant instant
+  untilWithOpts <- Instant.untilWithOptions { largestUnit: TemporalUnit.Hour } otherInstant instant
   Test.assertEqual
     { actual: Duration.seconds untilDuration
     , expected: 7200
@@ -750,24 +750,24 @@ test_Instant = do
   Console.log "Instant.round"
   rounded <- Instant.round { smallestUnit: TemporalUnit.Minute } instant
   Test.assertEqual
-    { actual: Instant.toString_ rounded
+    { actual: Instant.toString rounded
     , expected: "2026-02-21T12:00:00Z"
     }
   roundedWithMode <- Instant.round { smallestUnit: TemporalUnit.Second, roundingMode: RoundingMode.Ceil } instant
-  Test.assert (Instant.toString_ roundedWithMode /= "")
+  Test.assert (Instant.toString roundedWithMode /= "")
 
 -- ZonedDateTime
 test_ZonedDateTime :: Effect Unit
 test_ZonedDateTime = do
-  Console.log "ZonedDateTime.fromString_"
-  zonedDateTime <- ZonedDateTime.fromString_ "2026-02-21T12:00:00-08:00[America/Los_Angeles]"
+  Console.log "ZonedDateTime.fromString"
+  zonedDateTime <- ZonedDateTime.fromString "2026-02-21T12:00:00-08:00[America/Los_Angeles]"
   Test.assertEqual
     { actual: ZonedDateTime.year zonedDateTime
     , expected: 2026
     }
 
   Console.log "ZonedDateTime.fromString with overflow"
-  constrainZoned <- ZonedDateTime.fromString { overflow: Overflow.Constrain } "2026-02-21T12:00:00-08:00[America/Los_Angeles]"
+  constrainZoned <- ZonedDateTime.fromStringWithOptions { overflow: Overflow.Constrain } "2026-02-21T12:00:00-08:00[America/Los_Angeles]"
   Test.assertEqual
     { actual: ZonedDateTime.day constrainZoned
     , expected: 21
@@ -794,11 +794,11 @@ test_ZonedDateTime = do
     { actual: ZonedDateTime.offset zonedDateTime
     , expected: "-08:00"
     }
-  Test.assert (PlainDateTime.toString_ (ZonedDateTime.toPlainDateTime zonedDateTime) /= "")
+  Test.assert (PlainDateTime.toString (ZonedDateTime.toPlainDateTime zonedDateTime) /= "")
 
-  Console.log "ZonedDateTime.until_ / since_"
-  otherZoned <- ZonedDateTime.fromString_ "2026-02-22T12:00:00-08:00[America/Los_Angeles]"
-  untilZoned <- ZonedDateTime.until_ otherZoned zonedDateTime
+  Console.log "ZonedDateTime.until / since"
+  otherZoned <- ZonedDateTime.fromString "2026-02-22T12:00:00-08:00[America/Los_Angeles]"
+  untilZoned <- ZonedDateTime.until otherZoned zonedDateTime
   Test.assertEqual
     { actual: Duration.hours untilZoned
     , expected: 24
@@ -806,12 +806,12 @@ test_ZonedDateTime = do
 
   Console.log "ZonedDateTime.add / subtract"
   duration <- Duration.from { days: 1 }
-  added <- ZonedDateTime.add_ duration zonedDateTime
+  added <- ZonedDateTime.add duration zonedDateTime
   Test.assertEqual
     { actual: ZonedDateTime.day added
     , expected: 22
     }
-  addedWithOpts <- ZonedDateTime.add { overflow: Overflow.Constrain } duration zonedDateTime
+  addedWithOpts <- ZonedDateTime.addWithOptions { overflow: Overflow.Constrain } duration zonedDateTime
   Test.assertEqual
     { actual: ZonedDateTime.day addedWithOpts
     , expected: 22
@@ -827,12 +827,12 @@ test_ZonedDateTime = do
   Console.log "ZonedDateTime.toInstant / toPlainDateTime"
   instant <- pure (ZonedDateTime.toInstant zonedDateTime)
   Test.assertEqual
-    { actual: Instant.toString_ instant
+    { actual: Instant.toString instant
     , expected: "2026-02-21T20:00:00Z"
     }
   plainDateTime <- pure (ZonedDateTime.toPlainDateTime zonedDateTime)
   Test.assertEqual
-    { actual: PlainDateTime.toString_ plainDateTime
+    { actual: PlainDateTime.toString plainDateTime
     , expected: "2026-02-21T12:00:00"
     }
 
@@ -859,18 +859,18 @@ test_ZonedDateTime = do
     }
 
   Console.log "ZonedDateTime.withPlainDate / toPlainYearMonth / toPlainMonthDay"
-  replacementDate <- PlainDate.fromString_ "2026-03-01"
+  replacementDate <- PlainDate.fromString "2026-03-01"
   replacedDate <- ZonedDateTime.withPlainDate replacementDate zonedDateTime
   Test.assertEqual
-    { actual: PlainDate.toString_ (ZonedDateTime.toPlainDate replacedDate)
+    { actual: PlainDate.toString (ZonedDateTime.toPlainDate replacedDate)
     , expected: "2026-03-01"
     }
   Test.assertEqual
-    { actual: PlainYearMonth.toString_ (ZonedDateTime.toPlainYearMonth zonedDateTime)
+    { actual: PlainYearMonth.toString (ZonedDateTime.toPlainYearMonth zonedDateTime)
     , expected: "2026-02"
     }
   Test.assertEqual
-    { actual: PlainMonthDay.toString_ (ZonedDateTime.toPlainMonthDay zonedDateTime)
+    { actual: PlainMonthDay.toString (ZonedDateTime.toPlainMonthDay zonedDateTime)
     , expected: "02-21"
     }
 
@@ -879,7 +879,7 @@ test_Now :: Effect Unit
 test_Now = do
   Console.log "Now.instant"
   nowInstant <- Now.instant
-  Test.assert (Instant.toString_ nowInstant /= "")
+  Test.assert (Instant.toString nowInstant /= "")
 
   Console.log "Now.plainDateISO"
   plainDate <- Now.plainDateISO
@@ -1155,7 +1155,7 @@ test_DurationArithmeticInterop = do
                 + Int.toNumber components.seconds * Int.toNumber millisecondsPerSecond
                 + Int.toNumber components.milliseconds
           plain <- PlainDateTime.fromDateTime dateTime
-          resultTemporal <- PlainDateTime.add_ temporalDuration plain
+          resultTemporal <- PlainDateTime.add temporalDuration plain
           let resultTemporalAsDateTime = PlainDateTime.toDateTime resultTemporal
           case Data.DateTime.adjust (Milliseconds totalMs) dateTime of
             Nothing -> pure (Loop { remaining: remaining - 1, state: newState2 })
@@ -1241,19 +1241,19 @@ test_IntlDateTimeFormat = do
 
   Console.log "  DateTimeFormat.format PlainDate"
   dateFormatter <- DateTimeFormat.new [ locale ] { dateStyle: "long" }
-  plainDate <- PlainDate.from_ { year: 2026, month: 2, day: 21 }
+  plainDate <- PlainDate.from { year: 2026, month: 2, day: 21 }
   let formattedDate = DateTimeFormat.format dateFormatter plainDate
   Test.assert' ("Expected non-empty formatted PlainDate, got: \"" <> formattedDate <> "\"") (formattedDate /= "")
 
   Console.log "  DateTimeFormat.format PlainTime"
   timeFormatter <- DateTimeFormat.new [ locale ] { timeStyle: "medium" }
-  plainTime <- PlainTime.from_ { hour: 14, minute: 30, second: 45, millisecond: 0, microsecond: 0, nanosecond: 0 }
+  plainTime <- PlainTime.from { hour: 14, minute: 30, second: 45, millisecond: 0, microsecond: 0, nanosecond: 0 }
   let formattedTime = DateTimeFormat.format timeFormatter plainTime
   Test.assert' ("Expected non-empty formatted PlainTime, got: \"" <> formattedTime <> "\"") (formattedTime /= "")
 
   Console.log "  DateTimeFormat.format PlainDateTime"
   dateTimeFormatter <- DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
-  plainDateTime <- PlainDateTime.from_ { year: 2026, month: 2, day: 21, hour: 14, minute: 30, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 }
+  plainDateTime <- PlainDateTime.from { year: 2026, month: 2, day: 21, hour: 14, minute: 30, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 }
   let formattedDateTime = DateTimeFormat.format dateTimeFormatter plainDateTime
   Test.assert' ("Expected non-empty formatted PlainDateTime, got: \"" <> formattedDateTime <> "\"") (formattedDateTime /= "")
 
@@ -1265,6 +1265,6 @@ test_IntlDateTimeFormat = do
 
   Console.log "  DateTimeFormat.format ZonedDateTime"
   zonedFormatter <- DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
-  zonedDateTime <- ZonedDateTime.fromString_ "2026-02-21T12:00:00-08:00[America/Los_Angeles]"
+  zonedDateTime <- ZonedDateTime.fromString "2026-02-21T12:00:00-08:00[America/Los_Angeles]"
   let formattedZoned = DateTimeFormat.format zonedFormatter zonedDateTime
   Test.assert' ("Expected non-empty formatted ZonedDateTime, got: \"" <> formattedZoned <> "\"") (formattedZoned /= "")

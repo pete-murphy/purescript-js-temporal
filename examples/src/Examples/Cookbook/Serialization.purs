@@ -12,12 +12,12 @@ import JS.Temporal.ZonedDateTime as ZonedDateTime
 main :: Effect Unit
 main = do
   instant <- Instant.fromString "2020-01-03T10:41:51Z"
-  let result = Instant.toString_ instant
+  let result = Instant.toString instant
   Console.log ("UTC string: " <> result)
 
-  let result2 = Instant.toString { timeZone: "America/Yellowknife" } instant
+  let result2 = Instant.toStringWithOptions { timeZone: "America/Yellowknife" } instant
   Console.log ("America/Yellowknife: " <> result2)
 
   let zoned = Instant.toZonedDateTimeISO "Asia/Seoul" instant
-  let result3 = ZonedDateTime.toString_ zoned
+  let result3 = ZonedDateTime.toString zoned
   Console.log ("With time zone name: " <> result3)

@@ -1,16 +1,16 @@
-export function _fromRecord(options, components) {
+export function _fromRecordWithOptions(options, components) {
   return Temporal.PlainDateTime.from(components, options);
 }
 
-export function _fromRecordNoOpts(components) {
+export function _fromRecord(components) {
   return Temporal.PlainDateTime.from(components);
 }
 
-export function _fromString(options, str) {
+export function _fromStringWithOptions(options, str) {
   return Temporal.PlainDateTime.from(str, options);
 }
 
-export function _fromStringNoOpts(str) {
+export function _fromString(str) {
   return Temporal.PlainDateTime.from(str);
 }
 
@@ -37,27 +37,27 @@ export const millisecond = (pdt) => pdt.millisecond;
 export const microsecond = (pdt) => pdt.microsecond;
 export const nanosecond = (pdt) => pdt.nanosecond;
 
-export function _add(options, duration, pdt) {
+export function _addWithOptions(options, duration, pdt) {
   return pdt.add(duration, options);
 }
 
-export function _addNoOpts(duration, pdt) {
+export function _add(duration, pdt) {
   return pdt.add(duration);
 }
 
-export function _subtract(options, duration, pdt) {
+export function _subtractWithOptions(options, duration, pdt) {
   return pdt.subtract(duration, options);
 }
 
-export function _subtractNoOpts(duration, pdt) {
+export function _subtract(duration, pdt) {
   return pdt.subtract(duration);
 }
 
-export function _with(options, fields, pdt) {
+export function _withWithOptions(options, fields, pdt) {
   return pdt.with(fields, options);
 }
 
-export function _withNoOpts(fields, pdt) {
+export function _with(fields, pdt) {
   return pdt.with(fields);
 }
 
@@ -69,19 +69,19 @@ export function _withCalendar(calendar, pdt) {
   return pdt.withCalendar(calendar);
 }
 
-export function _until(options, other, pdt) {
+export function _untilWithOptions(options, other, pdt) {
   return pdt.until(other, options);
 }
 
-export function _untilNoOpts(other, pdt) {
+export function _until(other, pdt) {
   return pdt.until(other);
 }
 
-export function _since(options, other, pdt) {
+export function _sinceWithOptions(options, other, pdt) {
   return pdt.since(other, options);
 }
 
-export function _sinceNoOpts(other, pdt) {
+export function _since(other, pdt) {
   return pdt.since(other);
 }
 

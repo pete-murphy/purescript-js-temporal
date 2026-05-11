@@ -12,6 +12,6 @@ import JS.Temporal.PlainTime as PlainTime
 
 main :: Effect Unit
 main = do
-  time <- PlainTime.fromString_ "12:38:28.138818731"
+  time <- PlainTime.fromString "12:38:28.138818731"
   wholeHour <- PlainTime.round { smallestUnit: TemporalUnit.Hour, roundingMode: RoundingMode.Floor } time
-  Console.log ("Rounded down to hour: " <> PlainTime.toString_ wholeHour)
+  Console.log ("Rounded down to hour: " <> PlainTime.toString wholeHour)

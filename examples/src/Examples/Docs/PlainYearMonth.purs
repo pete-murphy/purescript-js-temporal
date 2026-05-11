@@ -13,11 +13,11 @@ import JS.Temporal.Options.Overflow as Overflow
 import JS.Temporal.Options.TemporalUnit as TemporalUnit
 import JS.Temporal.PlainYearMonth as PlainYearMonth
 
--- [EXAMPLE JS.Temporal.PlainYearMonth.from_]
-exampleFrom_ :: Effect Unit
-exampleFrom_ = do
+-- [EXAMPLE JS.Temporal.PlainYearMonth.from]
+exampleFrom :: Effect Unit
+exampleFrom = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  yearMonth <- PlainYearMonth.from_ { year: 2024, month: 6 }
+  yearMonth <- PlainYearMonth.from { year: 2024, month: 6 }
   firstDay <- PlainYearMonth.toPlainDate { day: 1 } yearMonth
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
   Console.log (JS.Intl.DateTimeFormat.format formatter firstDay)
@@ -28,7 +28,7 @@ exampleFrom_ = do
 exampleFromString :: Effect Unit
 exampleFromString = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  yearMonth <- PlainYearMonth.fromString { overflow: Overflow.Constrain } "2024-06"
+  yearMonth <- PlainYearMonth.fromStringWithOptions { overflow: Overflow.Constrain } "2024-06"
   firstDay <- PlainYearMonth.toPlainDate { day: 1 } yearMonth
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
   Console.log (JS.Intl.DateTimeFormat.format formatter firstDay)
@@ -39,9 +39,9 @@ exampleFromString = do
 exampleAdd :: Effect Unit
 exampleAdd = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  yearMonth <- PlainYearMonth.fromString_ "2024-06"
+  yearMonth <- PlainYearMonth.fromString "2024-06"
   threeMonths <- Duration.from { months: 3 }
-  later <- PlainYearMonth.add { overflow: Overflow.Constrain } threeMonths yearMonth
+  later <- PlainYearMonth.addWithOptions { overflow: Overflow.Constrain } threeMonths yearMonth
   firstDay <- PlainYearMonth.toPlainDate { day: 1 } later
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
   Console.log (JS.Intl.DateTimeFormat.format formatter firstDay)
@@ -52,9 +52,9 @@ exampleAdd = do
 exampleSubtract :: Effect Unit
 exampleSubtract = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  yearMonth <- PlainYearMonth.fromString_ "2024-06"
+  yearMonth <- PlainYearMonth.fromString "2024-06"
   twoMonths <- Duration.from { months: 2 }
-  earlier <- PlainYearMonth.subtract { overflow: Overflow.Constrain } twoMonths yearMonth
+  earlier <- PlainYearMonth.subtractWithOptions { overflow: Overflow.Constrain } twoMonths yearMonth
   firstDay <- PlainYearMonth.toPlainDate { day: 1 } earlier
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
   Console.log (JS.Intl.DateTimeFormat.format formatter firstDay)
@@ -65,8 +65,8 @@ exampleSubtract = do
 exampleWith :: Effect Unit
 exampleWith = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  yearMonth <- PlainYearMonth.fromString_ "2024-06"
-  changed <- PlainYearMonth.with { overflow: Overflow.Constrain } { month: 12 } yearMonth
+  yearMonth <- PlainYearMonth.fromString "2024-06"
+  changed <- PlainYearMonth.withWithOptions { overflow: Overflow.Constrain } { month: 12 } yearMonth
   firstDay <- PlainYearMonth.toPlainDate { day: 1 } changed
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
   Console.log (JS.Intl.DateTimeFormat.format formatter firstDay)
@@ -77,9 +77,9 @@ exampleWith = do
 exampleUntil :: Effect Unit
 exampleUntil = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  start <- PlainYearMonth.fromString_ "2024-01"
-  end <- PlainYearMonth.fromString_ "2025-06"
-  duration <- PlainYearMonth.until { largestUnit: TemporalUnit.Year } end start
+  start <- PlainYearMonth.fromString "2024-01"
+  end <- PlainYearMonth.fromString "2025-06"
+  duration <- PlainYearMonth.untilWithOptions { largestUnit: TemporalUnit.Year } end start
   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
   Console.log (JS.Intl.DurationFormat.format formatter duration)
 
@@ -89,9 +89,9 @@ exampleUntil = do
 exampleSince :: Effect Unit
 exampleSince = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  earlier <- PlainYearMonth.fromString_ "2022-06"
-  later <- PlainYearMonth.fromString_ "2024-06"
-  duration <- PlainYearMonth.since { largestUnit: TemporalUnit.Year } earlier later
+  earlier <- PlainYearMonth.fromString "2022-06"
+  later <- PlainYearMonth.fromString "2024-06"
+  duration <- PlainYearMonth.sinceWithOptions { largestUnit: TemporalUnit.Year } earlier later
   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
   Console.log (JS.Intl.DurationFormat.format formatter duration)
 
@@ -100,8 +100,8 @@ exampleSince = do
 -- [EXAMPLE JS.Temporal.PlainYearMonth.toString]
 exampleToString :: Effect Unit
 exampleToString = do
-  yearMonth <- PlainYearMonth.fromString_ "2024-06"
-  Console.log (PlainYearMonth.toString {} yearMonth)
+  yearMonth <- PlainYearMonth.fromString "2024-06"
+  Console.log (PlainYearMonth.toStringWithOptions {} yearMonth)
 
 -- [/EXAMPLE]
 
@@ -109,7 +109,7 @@ exampleToString = do
 exampleToPlainDate :: Effect Unit
 exampleToPlainDate = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  yearMonth <- PlainYearMonth.fromString_ "2024-01"
+  yearMonth <- PlainYearMonth.fromString "2024-01"
   firstDay <- PlainYearMonth.toPlainDate { day: 1 } yearMonth
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
   Console.log (JS.Intl.DateTimeFormat.format formatter firstDay)

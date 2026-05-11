@@ -10,11 +10,11 @@ import JS.Intl.Locale as JS.Intl.Locale
 import JS.Temporal.Options.Overflow as Overflow
 import JS.Temporal.PlainMonthDay as PlainMonthDay
 
--- [EXAMPLE JS.Temporal.PlainMonthDay.from_]
-exampleFrom_ :: Effect Unit
-exampleFrom_ = do
+-- [EXAMPLE JS.Temporal.PlainMonthDay.from]
+exampleFrom :: Effect Unit
+exampleFrom = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  holiday <- PlainMonthDay.from_ { month: 7, day: 4 }
+  holiday <- PlainMonthDay.from { month: 7, day: 4 }
   holidayIn2024 <- PlainMonthDay.toPlainDate { year: 2024 } holiday
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
   Console.log (JS.Intl.DateTimeFormat.format formatter holidayIn2024)
@@ -25,7 +25,7 @@ exampleFrom_ = do
 exampleFromString :: Effect Unit
 exampleFromString = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  birthday <- PlainMonthDay.fromString { overflow: Overflow.Constrain } "12-15"
+  birthday <- PlainMonthDay.fromStringWithOptions { overflow: Overflow.Constrain } "12-15"
   birthdayIn2024 <- PlainMonthDay.toPlainDate { year: 2024 } birthday
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
   Console.log ("Birthday: " <> JS.Intl.DateTimeFormat.format formatter birthdayIn2024)
@@ -36,8 +36,8 @@ exampleFromString = do
 exampleWith :: Effect Unit
 exampleWith = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  original <- PlainMonthDay.fromString_ "01-15"
-  changed <- PlainMonthDay.with { overflow: Overflow.Constrain } { day: 31 } original
+  original <- PlainMonthDay.fromString "01-15"
+  changed <- PlainMonthDay.withWithOptions { overflow: Overflow.Constrain } { day: 31 } original
   changedIn2024 <- PlainMonthDay.toPlainDate { year: 2024 } changed
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
   Console.log (JS.Intl.DateTimeFormat.format formatter changedIn2024)
@@ -47,8 +47,8 @@ exampleWith = do
 -- [EXAMPLE JS.Temporal.PlainMonthDay.toString]
 exampleToString :: Effect Unit
 exampleToString = do
-  mday <- PlainMonthDay.fromString_ "03-14"
-  Console.log (PlainMonthDay.toString {} mday)
+  mday <- PlainMonthDay.fromString "03-14"
+  Console.log (PlainMonthDay.toStringWithOptions {} mday)
 
 -- [/EXAMPLE]
 
@@ -56,7 +56,7 @@ exampleToString = do
 exampleToPlainDate :: Effect Unit
 exampleToPlainDate = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  birthday <- PlainMonthDay.fromString_ "12-15"
+  birthday <- PlainMonthDay.fromString "12-15"
   birthdayIn2030 <- PlainMonthDay.toPlainDate { year: 2030 } birthday
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
   Console.log ("Birthday in 2030: " <> JS.Intl.DateTimeFormat.format formatter birthdayIn2030)

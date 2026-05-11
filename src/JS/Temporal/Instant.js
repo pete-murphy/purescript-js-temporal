@@ -25,19 +25,19 @@ export function _subtract(duration, i) {
   return i.subtract(duration);
 }
 
-export function _until(options, other, i) {
+export function _untilWithOptions(options, other, i) {
   return i.until(other, options);
 }
 
-export function _untilNoOpts(other, i) {
+export function _until(other, i) {
   return i.until(other);
 }
 
-export function _since(options, other, i) {
+export function _sinceWithOptions(options, other, i) {
   return i.since(other, options);
 }
 
-export function _sinceNoOpts(other, i) {
+export function _since(other, i) {
   return i.since(other);
 }
 

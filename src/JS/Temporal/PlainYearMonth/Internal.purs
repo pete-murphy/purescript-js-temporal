@@ -2,7 +2,7 @@ module JS.Temporal.PlainYearMonth.Internal
   ( PlainYearMonth
   , equals
   , compare
-  , toString_
+  , toString
   ) where
 
 import Prelude hiding (compare)
@@ -18,7 +18,7 @@ foreign import data PlainYearMonth :: Type
 foreign import _equals :: Fn2 PlainYearMonth PlainYearMonth Boolean
 foreign import _compare :: Fn2 PlainYearMonth PlainYearMonth Int
 -- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
-foreign import toString_ :: PlainYearMonth -> String
+foreign import toString :: PlainYearMonth -> String
 
 equals :: PlainYearMonth -> PlainYearMonth -> Boolean
 equals a b = Function.Uncurried.runFn2 _equals a b
@@ -33,7 +33,7 @@ instance Ord PlainYearMonth where
   compare = compare
 
 instance Show PlainYearMonth where
-  show = toString_
+  show = toString
 
 instance DateTimeLike PlainYearMonth where
   unsafeToDateTimeForeign = Unsafe.Coerce.unsafeCoerce

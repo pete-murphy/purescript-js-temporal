@@ -11,16 +11,16 @@ import JS.Temporal.PlainDate as PlainDate
 
 main :: Effect Unit
 main = do
-  date <- PlainDate.fromString_ "2018-09-16"
-  firstOfCurrentMonth <- PlainDate.with_ { day: 1 } date
+  date <- PlainDate.fromString "2018-09-16"
+  firstOfCurrentMonth <- PlainDate.with { day: 1 } date
   oneMonth <- Duration.from { months: 1 }
-  firstOfNextMonth <- PlainDate.add_ oneMonth firstOfCurrentMonth
+  firstOfNextMonth <- PlainDate.add oneMonth firstOfCurrentMonth
 
-  sinceCurrent <- PlainDate.since_ date firstOfCurrentMonth
-  untilNext <- PlainDate.until_ firstOfNextMonth date
+  sinceCurrent <- PlainDate.since date firstOfCurrentMonth
+  untilNext <- PlainDate.until firstOfNextMonth date
 
   ordering <- Duration.compare sinceCurrent untilNext
   let isCloserToNextMonth = ordering == GT || ordering == EQ
   let nearestMonth = if isCloserToNextMonth then firstOfNextMonth else firstOfCurrentMonth
 
-  Console.log ("Nearest month start: " <> PlainDate.toString_ nearestMonth)
+  Console.log ("Nearest month start: " <> PlainDate.toString nearestMonth)

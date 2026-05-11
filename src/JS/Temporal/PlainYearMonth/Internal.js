@@ -6,4 +6,4 @@ export function _compare(a, b) {
   return Temporal.PlainYearMonth.compare(a, b);
 }
 
-export const toString_ = (pym) => pym.toString();
+export const toString = (pym) => pym.toString();

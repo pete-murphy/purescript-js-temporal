@@ -9,4 +9,4 @@ export const milliseconds = (d) => d.milliseconds;
 export const microseconds = (d) => d.microseconds;
 export const nanoseconds = (d) => d.nanoseconds;
 
-export const toString_ = (d) => d.toString();
+export const toString = (d) => d.toString();

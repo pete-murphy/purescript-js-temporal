@@ -2,7 +2,7 @@ module JS.Temporal.PlainDateTime.Internal
   ( PlainDateTime
   , equals
   , compare
-  , toString_
+  , toString
   ) where
 
 import Prelude hiding (compare)
@@ -18,7 +18,7 @@ foreign import data PlainDateTime :: Type
 foreign import _equals :: Fn2 PlainDateTime PlainDateTime Boolean
 foreign import _compare :: Fn2 PlainDateTime PlainDateTime Int
 -- | Default ISO 8601 serialization (no options). Prefer over `toString {}`.
-foreign import toString_ :: PlainDateTime -> String
+foreign import toString :: PlainDateTime -> String
 
 equals :: PlainDateTime -> PlainDateTime -> Boolean
 equals a b = Function.Uncurried.runFn2 _equals a b
@@ -33,7 +33,7 @@ instance Ord PlainDateTime where
   compare = compare
 
 instance Show PlainDateTime where
-  show = toString_
+  show = toString
 
 instance DateTimeLike PlainDateTime where
   unsafeToDateTimeForeign = Unsafe.Coerce.unsafeCoerce

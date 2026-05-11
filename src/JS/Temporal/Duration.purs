@@ -316,7 +316,7 @@ foreign import _round :: forall r. EffectFn2 { | r } Duration Duration
 -- | ```purescript
 -- | roundedSource <- Duration.from { hours: 1, minutes: 30, seconds: 45 }
 -- | rounded <- Duration.round { smallestUnit: TemporalUnit.Minute } roundedSource
--- | Console.log (Duration.toString_ rounded)
+-- | Console.log (Duration.toString rounded)
 -- | ```
 -- |
 -- | ```text
@@ -405,7 +405,7 @@ total providedOptions duration =
     )
     duration
 
--- Serialization (toString_ from Internal)
+-- Serialization (toString from Internal)
 
 foreign import _toString :: forall r. Fn2 { | r } Duration String
 

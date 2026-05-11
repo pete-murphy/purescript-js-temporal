@@ -1,15 +1,15 @@
 -- | A wall-clock time (hour, minute, second, etc.) without date or time zone.
--- | Use for recurring times (e.g. "3:30 PM") or when combining with PlainDate.
+-- | Use for recurring times (e.g. "3:30 PM") or when combining withWithOptions PlainDate.
 -- |
 -- | See <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal/PlainTime>
 module JS.Temporal.PlainTime
   ( module JS.Temporal.PlainTime.Internal
   -- * Construction
   , PlainTimeComponents
+  , fromWithOptions
   , from
-  , from_
+  , fromStringWithOptions
   , fromString
-  , fromString_
   -- * Properties
   , hour
   , minute
@@ -21,21 +21,21 @@ module JS.Temporal.PlainTime
   , add
   , subtract
   -- * Manipulation
+  , withWithOptions
   , with
-  , with_
   -- * Difference
+  , untilWithOptions
   , until
-  , until_
+  , sinceWithOptions
   , since
-  , since_
   -- * Round
   , round
   -- * Conversions
   , fromTime
   , toTime
   -- * Serialization
+  , toStringWithOptions
   , toString
-  , toString_
   -- * Options
   , ToOverflowOptions
   , ToDifferenceOptions
@@ -94,13 +94,53 @@ instance ConvertOption ToOverflowOptions "overflow" Overflow String where
 instance ConvertOption ToOverflowOptions "overflow" String String where
   convertOption _ _ = identity
 
-foreign import _fromRecord :: forall ro rc. EffectFn2 { | ro } { | rc } PlainTime
+foreign import _fromRecordWithOptions :: forall ro rc. EffectFn2 { | ro } { | rc } PlainTime
 
--- | Creates a PlainTime from component fields. Options: overflow.
+-- | Creates a PlainTime fromWithOptions component fields. Options: overflow.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | time <- PlainTime.from { overflow: Overflow.Constrain }
+-- | time <- PlainTime.fromWithOptions { overflow: Overflow.Constrain }
+-- |   { hour: 9
+-- |   , minute: 30
+-- |   , second: 0
+-- |   }
+-- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
+-- | Console.log (JS.Intl.DateTimeFormat.format formatter time)
+-- | ```
+-- |
+-- | ```text
+-- | 9:30:00 AM
+-- | ```
+
+fromWithOptions
+  :: forall optsProvided provided rest
+   . Union provided rest PlainTimeComponents
+  => ConvertOptionsWithDefaults
+       ToOverflowOptions
+       { | OverflowOptions }
+       { | optsProvided }
+       { | OverflowOptions }
+  => { | optsProvided }
+  -> { | provided }
+  -> Effect PlainTime
+fromWithOptions providedOptions components =
+  Effect.Uncurried.runEffectFn2
+    _fromRecordWithOptions
+    ( ConvertableOptions.convertOptionsWithDefaults
+        ToOverflowOptions
+        defaultOverflowOptions
+        providedOptions
+    )
+    components
+
+foreign import _fromRecord :: forall r. EffectFn1 { | r } PlainTime
+
+-- | Same as [`fromWithOptions`](#fromWithOptions) withWithOptions default options.
+-- |
+-- | ```purescript
+-- | locale <- JS.Intl.Locale.new_ "en-US"
+-- | time <- PlainTime.from
 -- |   { hour: 9
 -- |   , minute: 30
 -- |   , second: 0
@@ -114,59 +154,19 @@ foreign import _fromRecord :: forall ro rc. EffectFn2 { | ro } { | rc } PlainTim
 -- | ```
 
 from
-  :: forall optsProvided provided rest
-   . Union provided rest PlainTimeComponents
-  => ConvertOptionsWithDefaults
-       ToOverflowOptions
-       { | OverflowOptions }
-       { | optsProvided }
-       { | OverflowOptions }
-  => { | optsProvided }
-  -> { | provided }
-  -> Effect PlainTime
-from providedOptions components =
-  Effect.Uncurried.runEffectFn2
-    _fromRecord
-    ( ConvertableOptions.convertOptionsWithDefaults
-        ToOverflowOptions
-        defaultOverflowOptions
-        providedOptions
-    )
-    components
-
-foreign import _fromRecordNoOpts :: forall r. EffectFn1 { | r } PlainTime
-
--- | Same as [`from`](#from) with default options.
--- |
--- | ```purescript
--- | locale <- JS.Intl.Locale.new_ "en-US"
--- | time <- PlainTime.from_
--- |   { hour: 9
--- |   , minute: 30
--- |   , second: 0
--- |   }
--- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
--- | Console.log (JS.Intl.DateTimeFormat.format formatter time)
--- | ```
--- |
--- | ```text
--- | 9:30:00 AM
--- | ```
-
-from_
   :: forall provided rest
    . Union provided rest PlainTimeComponents
   => { | provided }
   -> Effect PlainTime
-from_ = Effect.Uncurried.runEffectFn1 _fromRecordNoOpts
+from = Effect.Uncurried.runEffectFn1 _fromRecord
 
-foreign import _fromString :: forall r. EffectFn2 { | r } String PlainTime
+foreign import _fromStringWithOptions :: forall r. EffectFn2 { | r } String PlainTime
 
 -- | Parses a time string (e.g. `"15:30:00"`). Options: overflow. Throws on invalid input.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | time <- PlainTime.fromString { overflow: Overflow.Constrain } "15:30:00"
+-- | time <- PlainTime.fromStringWithOptions { overflow: Overflow.Constrain } "15:30:00"
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter time)
 -- | ```
@@ -175,7 +175,7 @@ foreign import _fromString :: forall r. EffectFn2 { | r } String PlainTime
 -- | 3:30:00 PM
 -- | ```
 
-fromString
+fromStringWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
        ToOverflowOptions
@@ -185,9 +185,9 @@ fromString
   => { | provided }
   -> String
   -> Effect PlainTime
-fromString providedOptions str =
+fromStringWithOptions providedOptions str =
   Effect.Uncurried.runEffectFn2
-    _fromString
+    _fromStringWithOptions
     ( ConvertableOptions.convertOptionsWithDefaults
         ToOverflowOptions
         defaultOverflowOptions
@@ -195,12 +195,12 @@ fromString providedOptions str =
     )
     str
 
-foreign import _fromStringNoOpts :: EffectFn1 String PlainTime
+foreign import _fromString :: EffectFn1 String PlainTime
 
--- | Same as [`fromString`](#fromstring) with default options.
+-- | Same as [`fromStringWithOptions`](#fromstring) withWithOptions default options.
 
-fromString_ :: String -> Effect PlainTime
-fromString_ = Effect.Uncurried.runEffectFn1 _fromStringNoOpts
+fromString :: String -> Effect PlainTime
+fromString = Effect.Uncurried.runEffectFn1 _fromString
 
 -- Properties
 
@@ -225,8 +225,8 @@ foreign import _add :: EffectFn2 Duration PlainTime PlainTime
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | time <- PlainTime.fromString_ "14:30:00"
--- | twoHours <- Duration.from { hours: 2 }
+-- | time <- PlainTime.fromString "14:30:00"
+-- | twoHours <- Duration.fromWithOptions { hours: 2 }
 -- | later <- PlainTime.add twoHours time
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter later)
@@ -245,8 +245,8 @@ foreign import _subtract :: EffectFn2 Duration PlainTime PlainTime
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | time <- PlainTime.fromString_ "14:30:00"
--- | twoHours <- Duration.from { hours: 2 }
+-- | time <- PlainTime.fromString "14:30:00"
+-- | twoHours <- Duration.fromWithOptions { hours: 2 }
 -- | earlier <- PlainTime.subtract twoHours time
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter earlier)
@@ -270,14 +270,14 @@ type WithFields =
   , nanosecond :: Int
   )
 
-foreign import _with :: forall ro rf. EffectFn3 { | ro } { | rf } PlainTime PlainTime
+foreign import _withWithOptions :: forall ro rf. EffectFn3 { | ro } { | rf } PlainTime PlainTime
 
--- | Returns a new PlainTime with specified fields replaced. Options: overflow.
+-- | Returns a new PlainTime withWithOptions specified fields replaced. Options: overflow.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | time <- PlainTime.fromString_ "15:30:45"
--- | noon <- PlainTime.with { overflow: Overflow.Constrain } { hour: 12, minute: 0, second: 0 } time
+-- | time <- PlainTime.fromString "15:30:45"
+-- | noon <- PlainTime.withWithOptions { overflow: Overflow.Constrain } { hour: 12, minute: 0, second: 0 } time
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter noon)
 -- | ```
@@ -286,7 +286,7 @@ foreign import _with :: forall ro rf. EffectFn3 { | ro } { | rf } PlainTime Plai
 -- | 12:00:00 PM
 -- | ```
 
-with
+withWithOptions
   :: forall optsProvided fields rest
    . Union fields rest WithFields
   => ConvertOptionsWithDefaults
@@ -298,9 +298,9 @@ with
   -> { | fields }
   -> PlainTime
   -> Effect PlainTime
-with options fields plainTime =
+withWithOptions options fields plainTime =
   Effect.Uncurried.runEffectFn3
-    _with
+    _withWithOptions
     ( ConvertableOptions.convertOptionsWithDefaults
         ToOverflowOptions
         defaultOverflowOptions
@@ -309,17 +309,17 @@ with options fields plainTime =
     fields
     plainTime
 
-foreign import _withNoOpts :: forall r. EffectFn2 { | r } PlainTime PlainTime
+foreign import _with :: forall r. EffectFn2 { | r } PlainTime PlainTime
 
--- | Same as [`with`](#with) with default options.
+-- | Same as [`withWithOptions`](#withWithOptions) withWithOptions default options.
 
-with_
+with
   :: forall fields rest
    . Union fields rest WithFields
   => { | fields }
   -> PlainTime
   -> Effect PlainTime
-with_ = Effect.Uncurried.runEffectFn2 _withNoOpts
+with = Effect.Uncurried.runEffectFn2 _with
 
 -- Difference
 
@@ -356,15 +356,15 @@ instance ConvertOption ToDifferenceOptions "roundingMode" RoundingMode String wh
 instance ConvertOption ToDifferenceOptions "roundingMode" String String where
   convertOption _ _ = identity
 
-foreign import _until :: forall r. EffectFn3 { | r } PlainTime PlainTime Duration
+foreign import _untilWithOptions :: forall r. EffectFn3 { | r } PlainTime PlainTime Duration
 
--- | Duration from `subject` (last arg) until `other` (second arg). Arg order: `until options other subject`.
+-- | Duration fromWithOptions `subject` (last arg) untilWithOptions `other` (second arg). Arg order: `untilWithOptions options other subject`.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | start <- PlainTime.fromString_ "09:00:00"
--- | end <- PlainTime.fromString_ "17:30:00"
--- | duration <- PlainTime.until { largestUnit: TemporalUnit.Hour } end start
+-- | start <- PlainTime.fromString "09:00:00"
+-- | end <- PlainTime.fromString "17:30:00"
+-- | duration <- PlainTime.untilWithOptions { largestUnit: TemporalUnit.Hour } end start
 -- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- | Console.log (JS.Intl.DurationFormat.format formatter duration)
 -- | ```
@@ -373,7 +373,7 @@ foreign import _until :: forall r. EffectFn3 { | r } PlainTime PlainTime Duratio
 -- | 8 hours, 30 minutes
 -- | ```
 
-until
+untilWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
        ToDifferenceOptions
@@ -384,9 +384,9 @@ until
   -> PlainTime
   -> PlainTime
   -> Effect Duration
-until providedOptions other plainTime =
+untilWithOptions providedOptions other plainTime =
   Effect.Uncurried.runEffectFn3
-    _until
+    _untilWithOptions
     ( ConvertableOptions.convertOptionsWithDefaults
         ToDifferenceOptions
         defaultDifferenceOptions
@@ -395,22 +395,22 @@ until providedOptions other plainTime =
     other
     plainTime
 
-foreign import _untilNoOpts :: EffectFn2 PlainTime PlainTime Duration
+foreign import _until :: EffectFn2 PlainTime PlainTime Duration
 
--- | Same as [`until`](#until) with default options.
+-- | Same as [`untilWithOptions`](#untilWithOptions) withWithOptions default options.
 
-until_ :: PlainTime -> PlainTime -> Effect Duration
-until_ = Effect.Uncurried.runEffectFn2 _untilNoOpts
+until :: PlainTime -> PlainTime -> Effect Duration
+until = Effect.Uncurried.runEffectFn2 _until
 
-foreign import _since :: forall r. EffectFn3 { | r } PlainTime PlainTime Duration
+foreign import _sinceWithOptions :: forall r. EffectFn3 { | r } PlainTime PlainTime Duration
 
--- | Duration from `other` to `subject` (inverse of until). Arg order: `since options other subject`.
+-- | Duration fromWithOptions `other` to `subject` (inverse of untilWithOptions). Arg order: `sinceWithOptions options other subject`.
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | earlier <- PlainTime.fromString_ "08:00:00"
--- | later <- PlainTime.fromString_ "12:30:00"
--- | duration <- PlainTime.since { largestUnit: TemporalUnit.Hour } earlier later
+-- | earlier <- PlainTime.fromString "08:00:00"
+-- | later <- PlainTime.fromString "12:30:00"
+-- | duration <- PlainTime.sinceWithOptions { largestUnit: TemporalUnit.Hour } earlier later
 -- | formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
 -- | Console.log (JS.Intl.DurationFormat.format formatter duration)
 -- | ```
@@ -419,7 +419,7 @@ foreign import _since :: forall r. EffectFn3 { | r } PlainTime PlainTime Duratio
 -- | 4 hours, 30 minutes
 -- | ```
 
-since
+sinceWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
        ToDifferenceOptions
@@ -430,9 +430,9 @@ since
   -> PlainTime
   -> PlainTime
   -> Effect Duration
-since providedOptions other plainTime =
+sinceWithOptions providedOptions other plainTime =
   Effect.Uncurried.runEffectFn3
-    _since
+    _sinceWithOptions
     ( ConvertableOptions.convertOptionsWithDefaults
         ToDifferenceOptions
         defaultDifferenceOptions
@@ -441,12 +441,12 @@ since providedOptions other plainTime =
     other
     plainTime
 
-foreign import _sinceNoOpts :: EffectFn2 PlainTime PlainTime Duration
+foreign import _since :: EffectFn2 PlainTime PlainTime Duration
 
--- | Same as [`since`](#since) with default options.
+-- | Same as [`sinceWithOptions`](#sinceWithOptions) withWithOptions default options.
 
-since_ :: PlainTime -> PlainTime -> Effect Duration
-since_ = Effect.Uncurried.runEffectFn2 _sinceNoOpts
+since :: PlainTime -> PlainTime -> Effect Duration
+since = Effect.Uncurried.runEffectFn2 _since
 
 -- Conversions
 
@@ -454,7 +454,7 @@ since_ = Effect.Uncurried.runEffectFn2 _sinceNoOpts
 -- | nanosecond components are set to zero.
 fromTime :: Time -> Effect PlainTime
 fromTime time =
-  from_
+  from
     { hour: fromEnum (Time.hour time)
     , minute: fromEnum (Time.minute time)
     , second: fromEnum (Time.second time)
@@ -507,7 +507,7 @@ foreign import _round :: forall r. EffectFn2 { | r } PlainTime PlainTime
 -- |
 -- | ```purescript
 -- | locale <- JS.Intl.Locale.new_ "en-US"
--- | time <- PlainTime.fromString_ "09:30:45.123"
+-- | time <- PlainTime.fromString "09:30:45.123"
 -- | rounded <- PlainTime.round { smallestUnit: TemporalUnit.Minute } time
 -- | formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
 -- | Console.log (JS.Intl.DateTimeFormat.format formatter rounded)
@@ -539,7 +539,7 @@ round providedOptions plainTime =
 
 -- Comparison
 
--- Serialization (toString_ from Internal)
+-- Serialization (toString fromWithOptions Internal)
 
 type ToStringOptions =
   ( fractionalSecondDigits :: Foreign
@@ -572,22 +572,22 @@ instance ConvertOption ToToStringOptions "roundingMode" String String where
 
 foreign import _toString :: forall r. Fn2 { | r } PlainTime String
 
--- | Same as [`toString`](#tostring) with default options.
-toString_ :: PlainTime -> String
-toString_ plainTime = Function.Uncurried.runFn2 _toString defaultToStringOptions plainTime
+-- | Same as [`toStringWithOptions`](#tostring) withWithOptions default options.
+toString :: PlainTime -> String
+toString plainTime = Function.Uncurried.runFn2 _toString defaultToStringOptions plainTime
 
 -- | Serializes to ISO 8601 time format. Options: fractionalSecondDigits, smallestUnit, roundingMode.
 -- |
 -- | ```purescript
--- | time <- PlainTime.fromString_ "14:30:45.123"
--- | Console.log (PlainTime.toString { smallestUnit: TemporalUnit.Millisecond } time)
+-- | time <- PlainTime.fromString "14:30:45.123"
+-- | Console.log (PlainTime.toStringWithOptions { smallestUnit: TemporalUnit.Millisecond } time)
 -- | ```
 -- |
 -- | ```text
 -- | 14:30:45.123
 -- | ```
 
-toString
+toStringWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
        ToToStringOptions
@@ -597,7 +597,7 @@ toString
   => { | provided }
   -> PlainTime
   -> String
-toString providedOptions plainTime =
+toStringWithOptions providedOptions plainTime =
   Function.Uncurried.runFn2
     _toString
     ( ConvertableOptions.convertOptionsWithDefaults

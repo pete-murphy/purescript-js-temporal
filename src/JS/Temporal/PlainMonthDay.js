@@ -1,16 +1,16 @@
-export function _fromRecord(options, components) {
+export function _fromRecordWithOptions(options, components) {
   return Temporal.PlainMonthDay.from(components, options);
 }
 
-export function _fromRecordNoOpts(components) {
+export function _fromRecord(components) {
   return Temporal.PlainMonthDay.from(components);
 }
 
-export function _fromString(options, str) {
+export function _fromStringWithOptions(options, str) {
   return Temporal.PlainMonthDay.from(str, options);
 }
 
-export function _fromStringNoOpts(str) {
+export function _fromString(str) {
   return Temporal.PlainMonthDay.from(str);
 }
 
@@ -18,11 +18,11 @@ export const monthCode = (pmd) => pmd.monthCode;
 export const day = (pmd) => pmd.day;
 export const calendarId = (pmd) => pmd.calendarId;
 
-export function _with(options, fields, pmd) {
+export function _withWithOptions(options, fields, pmd) {
   return pmd.with(fields, options);
 }
 
-export function _withNoOpts(fields, pmd) {
+export function _with(fields, pmd) {
   return pmd.with(fields);
 }
 

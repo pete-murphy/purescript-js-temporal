@@ -64,7 +64,7 @@ main = do
   runExample "JS.Temporal.Now.zonedDateTimeISO" Now.exampleZonedDateTimeISO
   runExample "JS.Temporal.Now.zonedDateTimeISOWithTimeZone" Now.exampleZonedDateTimeISOWithTimeZone
   runExample "JS.Temporal.Now.timeZoneId" Now.exampleTimeZoneId
-  runExample "JS.Temporal.PlainDate.from_" PlainDate.exampleFrom_
+  runExample "JS.Temporal.PlainDate.from" PlainDate.exampleFrom
   runExample "JS.Temporal.PlainDate.fromString" PlainDate.exampleFromString
   runExample "JS.Temporal.PlainDate.add" PlainDate.exampleAdd
   runExample "JS.Temporal.PlainDate.until" PlainDate.exampleUntil
@@ -77,7 +77,7 @@ main = do
   runExample "JS.Temporal.PlainDate.toPlainMonthDay" PlainDate.exampleToPlainMonthDay
   runExample "JS.Temporal.PlainDate.toPlainDateTime" PlainDate.exampleToPlainDateTime
   runExample "JS.Temporal.PlainDate.toZonedDateTime" PlainDate.exampleToZonedDateTime
-  runExample "JS.Temporal.PlainDateTime.from_" PlainDateTime.exampleFrom_
+  runExample "JS.Temporal.PlainDateTime.from" PlainDateTime.exampleFrom
   runExample "JS.Temporal.PlainDateTime.fromString" PlainDateTime.exampleFromString
   runExample "JS.Temporal.PlainDateTime.add" PlainDateTime.exampleAdd
   runExample "JS.Temporal.PlainDateTime.subtract" PlainDateTime.exampleSubtract
@@ -91,12 +91,12 @@ main = do
   runExample "JS.Temporal.PlainDateTime.toZonedDateTime" PlainDateTime.exampleToZonedDateTime
   runExample "JS.Temporal.PlainDateTime.until" PlainDateTime.exampleUntil
   runExample "JS.Temporal.PlainDateTime.since" PlainDateTime.exampleSince
-  runExample "JS.Temporal.PlainMonthDay.from_" PlainMonthDay.exampleFrom_
+  runExample "JS.Temporal.PlainMonthDay.from" PlainMonthDay.exampleFrom
   runExample "JS.Temporal.PlainMonthDay.fromString" PlainMonthDay.exampleFromString
   runExample "JS.Temporal.PlainMonthDay.with" PlainMonthDay.exampleWith
   runExample "JS.Temporal.PlainMonthDay.toString" PlainMonthDay.exampleToString
   runExample "JS.Temporal.PlainMonthDay.toPlainDate" PlainMonthDay.exampleToPlainDate
-  runExample "JS.Temporal.PlainTime.from_" PlainTime.exampleFrom_
+  runExample "JS.Temporal.PlainTime.from" PlainTime.exampleFrom
   runExample "JS.Temporal.PlainTime.fromString" PlainTime.exampleFromString
   runExample "JS.Temporal.PlainTime.add" PlainTime.exampleAdd
   runExample "JS.Temporal.PlainTime.subtract" PlainTime.exampleSubtract
@@ -105,7 +105,7 @@ main = do
   runExample "JS.Temporal.PlainTime.since" PlainTime.exampleSince
   runExample "JS.Temporal.PlainTime.round" PlainTime.exampleRound
   runExample "JS.Temporal.PlainTime.toString" PlainTime.exampleToString
-  runExample "JS.Temporal.PlainYearMonth.from_" PlainYearMonth.exampleFrom_
+  runExample "JS.Temporal.PlainYearMonth.from" PlainYearMonth.exampleFrom
   runExample "JS.Temporal.PlainYearMonth.fromString" PlainYearMonth.exampleFromString
   runExample "JS.Temporal.PlainYearMonth.add" PlainYearMonth.exampleAdd
   runExample "JS.Temporal.PlainYearMonth.subtract" PlainYearMonth.exampleSubtract
@@ -114,8 +114,8 @@ main = do
   runExample "JS.Temporal.PlainYearMonth.since" PlainYearMonth.exampleSince
   runExample "JS.Temporal.PlainYearMonth.toString" PlainYearMonth.exampleToString
   runExample "JS.Temporal.PlainYearMonth.toPlainDate" PlainYearMonth.exampleToPlainDate
-  runExample "JS.Temporal.ZonedDateTime.fromString_" ZonedDateTime.exampleFromString_
-  runExample "JS.Temporal.ZonedDateTime.fromString" ZonedDateTime.exampleFromString
+  runExample "JS.Temporal.ZonedDateTime.fromStringWithOptions" ZonedDateTime.exampleFromStringWithOptions
+  runExample "JS.Temporal.ZonedDateTime.fromStringWithOptions" ZonedDateTime.exampleFromStringWithOptions
   runExample "JS.Temporal.ZonedDateTime.add" ZonedDateTime.exampleAdd
   runExample "JS.Temporal.ZonedDateTime.subtract" ZonedDateTime.exampleSubtract
   runExample "JS.Temporal.ZonedDateTime.with" ZonedDateTime.exampleWith

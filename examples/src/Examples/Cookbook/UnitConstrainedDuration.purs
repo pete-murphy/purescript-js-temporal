@@ -15,8 +15,8 @@ main = do
   earlier <- Instant.fromString "2020-01-09T00:00Z"
   later <- Instant.fromString "2020-01-09T04:00Z"
 
-  result <- Instant.since { largestUnit: TemporalUnit.Hour } later earlier
+  result <- Instant.sinceWithOptions { largestUnit: TemporalUnit.Hour } later earlier
   Console.log ("4 hours as PT4H: " <> Duration.toString result)
 
-  result2 <- Instant.until { largestUnit: TemporalUnit.Minute } later earlier
+  result2 <- Instant.untilWithOptions { largestUnit: TemporalUnit.Minute } later earlier
   Console.log ("4 hours as PT240M: " <> Duration.toString result2)

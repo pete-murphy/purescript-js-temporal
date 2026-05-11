@@ -6,4 +6,4 @@ export function _compare(a, b) {
   return Temporal.PlainTime.compare(a, b);
 }
 
-export const toString_ = (t) => t.toString();
+export const toString = (t) => t.toString();

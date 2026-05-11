@@ -18,11 +18,11 @@ import JS.Temporal.Options.TemporalUnit as TemporalUnit
 import JS.Temporal.PlainDateTime as PlainDateTime
 import JS.Temporal.PlainTime as PlainTime
 
--- [EXAMPLE JS.Temporal.PlainDateTime.from_]
-exampleFrom_ :: Effect Unit
-exampleFrom_ = do
+-- [EXAMPLE JS.Temporal.PlainDateTime.from]
+exampleFrom :: Effect Unit
+exampleFrom = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  dateTime <- PlainDateTime.from_
+  dateTime <- PlainDateTime.from
     { year: 2024
     , month: 1
     , day: 15
@@ -39,7 +39,7 @@ exampleFrom_ = do
 exampleFromString :: Effect Unit
 exampleFromString = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  dateTime <- PlainDateTime.fromString { overflow: Overflow.Constrain } "2024-01-15T09:30:00"
+  dateTime <- PlainDateTime.fromStringWithOptions { overflow: Overflow.Constrain } "2024-01-15T09:30:00"
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
   Console.log (JS.Intl.DateTimeFormat.format formatter dateTime)
 
@@ -49,9 +49,9 @@ exampleFromString = do
 exampleAdd :: Effect Unit
 exampleAdd = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  start <- PlainDateTime.fromString_ "2024-01-15T09:00:00"
+  start <- PlainDateTime.fromString "2024-01-15T09:00:00"
   twoHours <- Duration.from { hours: 2 }
-  end <- PlainDateTime.add { overflow: Overflow.Constrain } twoHours start
+  end <- PlainDateTime.addWithOptions { overflow: Overflow.Constrain } twoHours start
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
   Console.log (JS.Intl.DateTimeFormat.format formatter end)
 
@@ -61,9 +61,9 @@ exampleAdd = do
 exampleSubtract :: Effect Unit
 exampleSubtract = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  start <- PlainDateTime.fromString_ "2024-01-15T11:00:00"
+  start <- PlainDateTime.fromString "2024-01-15T11:00:00"
   twoHours <- Duration.from { hours: 2 }
-  earlier <- PlainDateTime.subtract { overflow: Overflow.Constrain } twoHours start
+  earlier <- PlainDateTime.subtractWithOptions { overflow: Overflow.Constrain } twoHours start
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
   Console.log (JS.Intl.DateTimeFormat.format formatter earlier)
 
@@ -73,8 +73,8 @@ exampleSubtract = do
 exampleWith :: Effect Unit
 exampleWith = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  dateTime <- PlainDateTime.fromString_ "2024-01-15T09:30:45"
-  noon <- PlainDateTime.with { overflow: Overflow.Constrain } { hour: 12, minute: 0, second: 0 } dateTime
+  dateTime <- PlainDateTime.fromString "2024-01-15T09:30:45"
+  noon <- PlainDateTime.withWithOptions { overflow: Overflow.Constrain } { hour: 12, minute: 0, second: 0 } dateTime
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
   Console.log (JS.Intl.DateTimeFormat.format formatter noon)
 
@@ -84,8 +84,8 @@ exampleWith = do
 exampleWithPlainTime :: Effect Unit
 exampleWithPlainTime = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  dateTime <- PlainDateTime.fromString_ "2024-01-15T09:30:00"
-  closingTime <- PlainTime.fromString_ "17:00:00"
+  dateTime <- PlainDateTime.fromString "2024-01-15T09:30:00"
+  closingTime <- PlainTime.fromString "17:00:00"
   updated <- PlainDateTime.withPlainTime closingTime dateTime
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
   Console.log (JS.Intl.DateTimeFormat.format formatter updated)
@@ -95,7 +95,7 @@ exampleWithPlainTime = do
 -- [EXAMPLE JS.Temporal.PlainDateTime.withCalendar]
 exampleWithCalendar :: Effect Unit
 exampleWithCalendar = do
-  dateTime <- PlainDateTime.fromString_ "2019-05-01T09:30:00"
+  dateTime <- PlainDateTime.fromString "2019-05-01T09:30:00"
   japanese <- PlainDateTime.withCalendar "japanese" dateTime
   Console.log (PlainDateTime.calendarId japanese)
 
@@ -105,7 +105,7 @@ exampleWithCalendar = do
 exampleRound :: Effect Unit
 exampleRound = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  dateTime <- PlainDateTime.fromString_ "2024-01-15T09:30:45.123"
+  dateTime <- PlainDateTime.fromString "2024-01-15T09:30:45.123"
   rounded <- PlainDateTime.round { smallestUnit: TemporalUnit.Minute } dateTime
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
   Console.log (JS.Intl.DateTimeFormat.format formatter rounded)
@@ -115,8 +115,8 @@ exampleRound = do
 -- [EXAMPLE JS.Temporal.PlainDateTime.toString]
 exampleToString :: Effect Unit
 exampleToString = do
-  dateTime <- PlainDateTime.fromString_ "2024-01-15T09:30:00"
-  Console.log (PlainDateTime.toString { smallestUnit: TemporalUnit.Minute } dateTime)
+  dateTime <- PlainDateTime.fromString "2024-01-15T09:30:00"
+  Console.log (PlainDateTime.toStringWithOptions { smallestUnit: TemporalUnit.Minute } dateTime)
 
 -- [/EXAMPLE]
 
@@ -124,7 +124,7 @@ exampleToString = do
 exampleToPlainDate :: Effect Unit
 exampleToPlainDate = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  dateTime <- PlainDateTime.fromString_ "2024-01-15T09:30:00"
+  dateTime <- PlainDateTime.fromString "2024-01-15T09:30:00"
   date <- pure (PlainDateTime.toPlainDate dateTime)
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
   Console.log (JS.Intl.DateTimeFormat.format formatter date)
@@ -135,7 +135,7 @@ exampleToPlainDate = do
 exampleToPlainTime :: Effect Unit
 exampleToPlainTime = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  dateTime <- PlainDateTime.fromString_ "2024-01-15T09:30:00"
+  dateTime <- PlainDateTime.fromString "2024-01-15T09:30:00"
   time <- pure (PlainDateTime.toPlainTime dateTime)
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { timeStyle: "medium" }
   Console.log (JS.Intl.DateTimeFormat.format formatter time)
@@ -146,7 +146,7 @@ exampleToPlainTime = do
 exampleToZonedDateTime :: Effect Unit
 exampleToZonedDateTime = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  plain <- PlainDateTime.fromString_ "2024-01-15T09:30:00"
+  plain <- PlainDateTime.fromString "2024-01-15T09:30:00"
   zoned <- PlainDateTime.toZonedDateTime "America/New_York" plain
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium" }
   Console.log (JS.Intl.DateTimeFormat.format formatter zoned)
@@ -160,18 +160,18 @@ exampleUntil = do
   now <- Now.plainDateTimeISO
     >>= PlainDateTime.round { smallestUnit: TemporalUnit.Second }
   nextBilling <- do
-    aprilFirst <- PlainDateTime.from_
+    aprilFirst <- PlainDateTime.from
       { year: PlainDateTime.year now
       , month: 4
       , day: 1
       }
     if aprilFirst < now then do
       oneYear <- Duration.from { years: 1 }
-      PlainDateTime.add_ oneYear aprilFirst
+      PlainDateTime.add oneYear aprilFirst
     else
       pure aprilFirst
 
-  duration <- PlainDateTime.until
+  duration <- PlainDateTime.untilWithOptions
     { smallestUnit: TemporalUnit.Day }
     nextBilling
     now
@@ -184,9 +184,9 @@ exampleUntil = do
 exampleSince :: Effect Unit
 exampleSince = do
   locale <- JS.Intl.Locale.new_ "en-US"
-  start <- PlainDateTime.fromString_ "2024-01-01T00:00:00"
-  end <- PlainDateTime.fromString_ "2024-03-15T12:00:00"
-  elapsed <- PlainDateTime.since { largestUnit: TemporalUnit.Day } start end
+  start <- PlainDateTime.fromString "2024-01-01T00:00:00"
+  end <- PlainDateTime.fromString "2024-03-15T12:00:00"
+  elapsed <- PlainDateTime.sinceWithOptions { largestUnit: TemporalUnit.Day } start end
   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: JS.Intl.Options.DurationFormatStyle.Long }
   Console.log ("Elapsed: " <> JS.Intl.DurationFormat.format formatter elapsed)
 -- [/EXAMPLE]

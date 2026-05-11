@@ -1,16 +1,16 @@
-export function _fromRecord(options, components) {
+export function _fromRecordWithOptions(options, components) {
   return Temporal.ZonedDateTime.from(components, options);
 }
 
-export function _fromRecordNoOpts(components) {
+export function _fromRecord(components) {
   return Temporal.ZonedDateTime.from(components);
 }
 
-export function _fromString(options, str) {
+export function _fromStringWithOptions(options, str) {
   return Temporal.ZonedDateTime.from(str, options);
 }
 
-export function _fromStringNoOpts(str) {
+export function _fromString(str) {
   return Temporal.ZonedDateTime.from(str);
 }
 
@@ -67,27 +67,27 @@ export function _toPlainMonthDay(zdt) {
   return zdt.toPlainDate().toPlainMonthDay();
 }
 
-export function _add(options, duration, zdt) {
+export function _addWithOptions(options, duration, zdt) {
   return zdt.add(duration, options);
 }
 
-export function _addNoOpts(duration, zdt) {
+export function _add(duration, zdt) {
   return zdt.add(duration);
 }
 
-export function _subtract(options, duration, zdt) {
+export function _subtractWithOptions(options, duration, zdt) {
   return zdt.subtract(duration, options);
 }
 
-export function _subtractNoOpts(duration, zdt) {
+export function _subtract(duration, zdt) {
   return zdt.subtract(duration);
 }
 
-export function _with(options, fields, zdt) {
+export function _withWithOptions(options, fields, zdt) {
   return zdt.with(fields, options);
 }
 
-export function _withNoOpts(fields, zdt) {
+export function _with(fields, zdt) {
   return zdt.with(fields);
 }
 
@@ -119,19 +119,19 @@ export function _withPlainDate(plainDate, zdt) {
   });
 }
 
-export function _until(options, other, zdt) {
+export function _untilWithOptions(options, other, zdt) {
   return zdt.until(other, options);
 }
 
-export function _untilNoOpts(other, zdt) {
+export function _until(other, zdt) {
   return zdt.until(other);
 }
 
-export function _since(options, other, zdt) {
+export function _sinceWithOptions(options, other, zdt) {
   return zdt.since(other, options);
 }
 
-export function _sinceNoOpts(other, zdt) {
+export function _since(other, zdt) {
   return zdt.since(other);
 }
 

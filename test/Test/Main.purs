@@ -582,7 +582,7 @@ test_Duration = do
     , expected: 12
     }
   Test.assertEqual
-    { actual: Duration.toString_ duration
+    { actual: Duration.toString duration
     , expected: "P7DT12H"
     }
 
@@ -667,7 +667,7 @@ test_Duration = do
     }
   durationToSerialize <- Duration.from { hours: 2, minutes: 30, seconds: 15, milliseconds: 400 }
   Test.assertEqual
-    { actual: Duration.toString { smallestUnit: TemporalUnit.Second } durationToSerialize
+    { actual: Duration.toStringWithOptions { smallestUnit: TemporalUnit.Second } durationToSerialize
     , expected: "PT2H30M15S"
     }
 
@@ -881,26 +881,26 @@ test_Now = do
   nowInstant <- Now.instant
   Test.assert (Instant.toString_ nowInstant /= "")
 
-  Console.log "Now.plainDateISO_"
-  plainDate <- Now.plainDateISO_
+  Console.log "Now.plainDateISO"
+  plainDate <- Now.plainDateISO
   Test.assertEqual
     { actual: PlainDate.year plainDate >= 1970 && PlainDate.year plainDate < 2100
     , expected: true
     }
 
-  Console.log "Now.plainTimeISO_"
-  plainTime <- Now.plainTimeISO_
+  Console.log "Now.plainTimeISO"
+  plainTime <- Now.plainTimeISO
   Test.assert (PlainTime.hour plainTime >= 0 && PlainTime.hour plainTime < 24)
 
   Console.log "Now.plainDateISO"
-  utcDate <- Now.plainDateISO "UTC"
+  utcDate <- Now.plainDateISOWithTimeZone "UTC"
   Test.assertEqual
     { actual: PlainDate.year utcDate >= 1970 && PlainDate.year utcDate < 2100
     , expected: true
     }
 
-  Console.log "Now.zonedDateTimeISO_"
-  zoned <- Now.zonedDateTimeISO_
+  Console.log "Now.zonedDateTimeISO"
+  zoned <- Now.zonedDateTimeISO
   Test.assert (ZonedDateTime.year zoned >= 1970 && ZonedDateTime.year zoned < 2100)
 
 -- TemporalUnit

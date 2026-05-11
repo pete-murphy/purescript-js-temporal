@@ -15,81 +15,89 @@ import JS.Temporal.Options.RoundingMode as RoundingMode
 import JS.Temporal.Options.TemporalUnit as TemporalUnit
 import JS.Temporal.ZonedDateTime as ZonedDateTime
 
+-- [EXAMPLE JS.Temporal.Instant.fromEpochNanoseconds_]
 exampleFromEpochNanoseconds_ :: Effect Unit
 exampleFromEpochNanoseconds_ = do
-  -- [EXAMPLE JS.Temporal.Instant.fromEpochNanoseconds_]
   locale <- JS.Intl.Locale.new_ "en-US"
   instant <- Instant.fromEpochNanoseconds (BigInt.fromInt 0)
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium", timeZone: "UTC" }
   Console.log (JS.Intl.DateTimeFormat.format formatter instant)
-  -- [/EXAMPLE]
 
+-- [/EXAMPLE]
+
+-- [EXAMPLE JS.Temporal.Instant.fromString]
 exampleFromString :: Effect Unit
 exampleFromString = do
-  -- [EXAMPLE JS.Temporal.Instant.fromString]
   locale <- JS.Intl.Locale.new_ "en-US"
   instant <- Instant.fromString "2024-01-15T12:00:00Z"
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long", timeStyle: "medium", timeZone: "UTC" }
   Console.log (JS.Intl.DateTimeFormat.format formatter instant)
-  -- [/EXAMPLE]
 
+-- [/EXAMPLE]
+
+-- [EXAMPLE JS.Temporal.Instant.fromEpochMilliseconds]
 exampleFromEpochMilliseconds :: Effect Unit
 exampleFromEpochMilliseconds = do
-  -- [EXAMPLE JS.Temporal.Instant.fromEpochMilliseconds]
   instant <- Instant.fromEpochMilliseconds 1000.0
   Console.log (Instant.toString_ instant)
-  -- [/EXAMPLE]
 
+-- [/EXAMPLE]
+
+-- [EXAMPLE JS.Temporal.Instant.fromEpochNanoseconds]
 exampleFromEpochNanoseconds :: Effect Unit
 exampleFromEpochNanoseconds = do
-  -- [EXAMPLE JS.Temporal.Instant.fromEpochNanoseconds]
   instant <- Instant.fromEpochNanoseconds (BigInt.fromInt 1000000000)
   Console.log (Instant.toString_ instant)
-  -- [/EXAMPLE]
 
+-- [/EXAMPLE]
+
+-- [EXAMPLE JS.Temporal.Instant.add]
 exampleAdd :: Effect Unit
 exampleAdd = do
-  -- [EXAMPLE JS.Temporal.Instant.add]
   instant <- Instant.fromString "2024-01-15T12:00:00Z"
   oneHour <- Duration.from { hours: 1 }
   later <- Instant.add oneHour instant
   Console.log (Instant.toString_ later)
-  -- [/EXAMPLE]
 
+-- [/EXAMPLE]
+
+-- [EXAMPLE JS.Temporal.Instant.subtract]
 exampleSubtract :: Effect Unit
 exampleSubtract = do
-  -- [EXAMPLE JS.Temporal.Instant.subtract]
   instant <- Instant.fromString "2024-01-15T12:00:00Z"
   oneHour <- Duration.from { hours: 1 }
   earlier <- Instant.subtract oneHour instant
   Console.log (Instant.toString_ earlier)
-  -- [/EXAMPLE]
 
+-- [/EXAMPLE]
+
+-- [EXAMPLE JS.Temporal.Instant.until]
 exampleUntil :: Effect Unit
 exampleUntil = do
-  -- [EXAMPLE JS.Temporal.Instant.until]
   locale <- JS.Intl.Locale.new_ "en-US"
   earlier <- Instant.fromString "2020-01-09T00:00Z"
   later <- Instant.fromString "2020-01-09T04:00Z"
   result <- Instant.until { largestUnit: TemporalUnit.Hour } later earlier
   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
   Console.log ("4 hours: " <> JS.Intl.DurationFormat.format formatter result)
-  -- [/EXAMPLE]
 
+-- [/EXAMPLE]
+
+-- [EXAMPLE JS.Temporal.Instant.since]
 exampleSince :: Effect Unit
 exampleSince = do
-  -- [EXAMPLE JS.Temporal.Instant.since]
   locale <- JS.Intl.Locale.new_ "en-US"
   earlier <- Instant.fromString "2020-01-09T00:00Z"
   later <- Instant.fromString "2020-01-09T04:00Z"
   elapsed <- Instant.since { largestUnit: TemporalUnit.Hour } earlier later
   formatter <- JS.Intl.DurationFormat.new [ locale ] { style: "long" }
   Console.log ("Elapsed: " <> JS.Intl.DurationFormat.format formatter elapsed)
-  -- [/EXAMPLE]
 
+-- [/EXAMPLE]
+
+-- [EXAMPLE JS.Temporal.Instant.round]
 exampleRound :: Effect Unit
 exampleRound = do
-  -- [EXAMPLE JS.Temporal.Instant.round]
   instant <- Instant.fromString "2024-01-15T12:00:00.789Z"
   rounded <- Instant.round
     { smallestUnit: TemporalUnit.Second
@@ -97,19 +105,21 @@ exampleRound = do
     }
     instant
   Console.log (Instant.toString_ rounded)
-  -- [/EXAMPLE]
 
+-- [/EXAMPLE]
+
+-- [EXAMPLE JS.Temporal.Instant.toZonedDateTimeISO]
 exampleToZonedDateTimeISO :: Effect Unit
 exampleToZonedDateTimeISO = do
-  -- [EXAMPLE JS.Temporal.Instant.toZonedDateTimeISO]
   instant <- Instant.fromString "2024-01-15T12:00:00Z"
   zoned <- pure (Instant.toZonedDateTimeISO "America/New_York" instant)
   Console.log (ZonedDateTime.toString_ zoned)
-  -- [/EXAMPLE]
 
+-- [/EXAMPLE]
+
+-- [EXAMPLE JS.Temporal.Instant.toString]
 exampleToString :: Effect Unit
 exampleToString = do
-  -- [EXAMPLE JS.Temporal.Instant.toString]
   instant <- Instant.fromString "2024-01-15T12:00:00.789Z"
   Console.log
     ( Instant.toString
@@ -118,4 +128,5 @@ exampleToString = do
         }
         instant
     )
-  -- [/EXAMPLE]
+-- [/EXAMPLE]
+

@@ -8,14 +8,14 @@
 -- | See <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal/Now>
 module JS.Temporal.Now
   ( instant
-  , zonedDateTimeISO_
   , zonedDateTimeISO
-  , plainDateISO_
+  , zonedDateTimeISOWithTimeZone
   , plainDateISO
-  , plainDateTimeISO_
+  , plainDateISOWithTimeZone
   , plainDateTimeISO
-  , plainTimeISO_
+  , plainDateTimeISOWithTimeZone
   , plainTimeISO
+  , plainTimeISOWithTimeZone
   , timeZoneId
   ) where
 
@@ -56,7 +56,7 @@ foreign import instant :: Effect Instant
 
 foreign import timeZoneId :: Effect String
 
-foreign import _zonedDateTimeISO_ :: Effect ZonedDateTime
+foreign import _zonedDateTimeISO :: Effect ZonedDateTime
 
 -- | Current date and time in the system's local time zone.
 -- |
@@ -71,10 +71,10 @@ foreign import _zonedDateTimeISO_ :: Effect ZonedDateTime
 -- | Now (zoned): March 14, 2026 at 10:16:26 AM
 -- | ```
 
-zonedDateTimeISO_ :: Effect ZonedDateTime
-zonedDateTimeISO_ = _zonedDateTimeISO_
+zonedDateTimeISO :: Effect ZonedDateTime
+zonedDateTimeISO = _zonedDateTimeISO
 
-foreign import _zonedDateTimeISO :: EffectFn1 String ZonedDateTime
+foreign import _zonedDateTimeISOWithTimeZone :: EffectFn1 String ZonedDateTime
 
 -- | Current date and time in the given time zone.
 -- |
@@ -89,10 +89,10 @@ foreign import _zonedDateTimeISO :: EffectFn1 String ZonedDateTime
 -- | Now (UTC): March 14, 2026 at 2:16:26 PM
 -- | ```
 
-zonedDateTimeISO :: String -> Effect ZonedDateTime
-zonedDateTimeISO = Effect.Uncurried.runEffectFn1 _zonedDateTimeISO
+zonedDateTimeISOWithTimeZone :: String -> Effect ZonedDateTime
+zonedDateTimeISOWithTimeZone = Effect.Uncurried.runEffectFn1 _zonedDateTimeISOWithTimeZone
 
-foreign import _plainDateISO_ :: Effect PlainDate
+foreign import _plainDateISO :: Effect PlainDate
 
 -- | Current date in the system's local time zone.
 -- |
@@ -107,10 +107,10 @@ foreign import _plainDateISO_ :: Effect PlainDate
 -- | Today (local): March 14, 2026
 -- | ```
 
-plainDateISO_ :: Effect PlainDate
-plainDateISO_ = _plainDateISO_
+plainDateISO :: Effect PlainDate
+plainDateISO = _plainDateISO
 
-foreign import _plainDateISO :: EffectFn1 String PlainDate
+foreign import _plainDateISOWithTimeZone :: EffectFn1 String PlainDate
 
 -- | Current date in the given time zone.
 -- |
@@ -125,10 +125,10 @@ foreign import _plainDateISO :: EffectFn1 String PlainDate
 -- | Today (UTC): March 14, 2026
 -- | ```
 
-plainDateISO :: String -> Effect PlainDate
-plainDateISO = Effect.Uncurried.runEffectFn1 _plainDateISO
+plainDateISOWithTimeZone :: String -> Effect PlainDate
+plainDateISOWithTimeZone = Effect.Uncurried.runEffectFn1 _plainDateISOWithTimeZone
 
-foreign import _plainDateTimeISO_ :: Effect PlainDateTime
+foreign import _plainDateTimeISO :: Effect PlainDateTime
 
 -- | Current date and time in the system's local time zone (plain, no zone).
 -- |
@@ -143,10 +143,10 @@ foreign import _plainDateTimeISO_ :: Effect PlainDateTime
 -- | Now (local): March 14, 2026 at 10:16:26 AM
 -- | ```
 
-plainDateTimeISO_ :: Effect PlainDateTime
-plainDateTimeISO_ = _plainDateTimeISO_
+plainDateTimeISO :: Effect PlainDateTime
+plainDateTimeISO = _plainDateTimeISO
 
-foreign import _plainDateTimeISO :: EffectFn1 String PlainDateTime
+foreign import _plainDateTimeISOWithTimeZone :: EffectFn1 String PlainDateTime
 
 -- | Current date and time in the given time zone (plain, no zone).
 -- |
@@ -161,10 +161,10 @@ foreign import _plainDateTimeISO :: EffectFn1 String PlainDateTime
 -- | Now (UTC): March 14, 2026 at 2:16:26 PM
 -- | ```
 
-plainDateTimeISO :: String -> Effect PlainDateTime
-plainDateTimeISO = Effect.Uncurried.runEffectFn1 _plainDateTimeISO
+plainDateTimeISOWithTimeZone :: String -> Effect PlainDateTime
+plainDateTimeISOWithTimeZone = Effect.Uncurried.runEffectFn1 _plainDateTimeISOWithTimeZone
 
-foreign import _plainTimeISO_ :: Effect PlainTime
+foreign import _plainTimeISO :: Effect PlainTime
 
 -- | Current time in the system's local time zone.
 -- |
@@ -179,10 +179,10 @@ foreign import _plainTimeISO_ :: Effect PlainTime
 -- | Current time (local): 10:16:26 AM
 -- | ```
 
-plainTimeISO_ :: Effect PlainTime
-plainTimeISO_ = _plainTimeISO_
+plainTimeISO :: Effect PlainTime
+plainTimeISO = _plainTimeISO
 
-foreign import _plainTimeISO :: EffectFn1 String PlainTime
+foreign import _plainTimeISOWithTimeZone :: EffectFn1 String PlainTime
 
 -- | Current time in the given time zone.
 -- |
@@ -197,5 +197,5 @@ foreign import _plainTimeISO :: EffectFn1 String PlainTime
 -- | Current time (UTC): 2:16:26 PM
 -- | ```
 
-plainTimeISO :: String -> Effect PlainTime
-plainTimeISO = Effect.Uncurried.runEffectFn1 _plainTimeISO
+plainTimeISOWithTimeZone :: String -> Effect PlainTime
+plainTimeISOWithTimeZone = Effect.Uncurried.runEffectFn1 _plainTimeISOWithTimeZone

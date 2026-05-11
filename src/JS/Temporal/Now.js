@@ -2,35 +2,35 @@ export function instant() {
   return Temporal.Now.instant();
 }
 
-export function _zonedDateTimeISO_() {
+export function _zonedDateTimeISO() {
   return Temporal.Now.zonedDateTimeISO();
 }
 
-export function _zonedDateTimeISO(timeZone) {
+export function _zonedDateTimeISOWithTimeZone(timeZone) {
   return Temporal.Now.zonedDateTimeISO(timeZone);
 }
 
-export function _plainDateISO_() {
+export function _plainDateISO() {
   return Temporal.Now.plainDateISO();
 }
 
-export function _plainDateISO(timeZone) {
+export function _plainDateISOWithTimeZone(timeZone) {
   return Temporal.Now.plainDateISO(timeZone);
 }
 
-export function _plainDateTimeISO_() {
+export function _plainDateTimeISO() {
   return Temporal.Now.plainDateTimeISO();
 }
 
-export function _plainDateTimeISO(timeZone) {
+export function _plainDateTimeISOWithTimeZone(timeZone) {
   return Temporal.Now.plainDateTimeISO(timeZone);
 }
 
-export function _plainTimeISO_() {
+export function _plainTimeISO() {
   return Temporal.Now.plainTimeISO();
 }
 
-export function _plainTimeISO(timeZone) {
+export function _plainTimeISOWithTimeZone(timeZone) {
   return Temporal.Now.plainTimeISO(timeZone);
 }
 

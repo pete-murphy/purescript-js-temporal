@@ -46,7 +46,7 @@ module JS.Temporal.Duration
   , ToDurationToStringOptions
   -- * Serialization
   , toString
-  , toString_
+  , toStringWithOptions
   -- * purescript-datetime interop
   , fromMilliseconds
   , toMilliseconds
@@ -432,9 +432,9 @@ instance ConvertOption ToDurationToStringOptions "smallestUnit" TemporalUnit Str
 instance ConvertOption ToDurationToStringOptions "smallestUnit" String String where
   convertOption _ _ = identity
 
--- | Same as [`toString`](#tostring) with default options.
-toString_ :: Duration -> String
-toString_ duration = Function.Uncurried.runFn2 _toString defaultDurationToStringOptions duration
+-- | Same as [`toStringWithOptions`](#tostring) with default options.
+toString :: Duration -> String
+toString duration = Function.Uncurried.runFn2 _toString defaultDurationToStringOptions duration
 
 -- | Serializes the duration to ISO 8601 format (e.g. `"PT1H30M"`).
 -- |
@@ -447,7 +447,7 @@ toString_ duration = Function.Uncurried.runFn2 _toString defaultDurationToString
 -- | PT2H30M15S
 -- | ```
 
-toString
+toStringWithOptions
   :: forall provided
    . ConvertOptionsWithDefaults
        ToDurationToStringOptions
@@ -457,7 +457,7 @@ toString
   => { | provided }
   -> Duration
   -> String
-toString providedOptions duration =
+toStringWithOptions providedOptions duration =
   Function.Uncurried.runFn2
     _toString
     ( ConvertableOptions.convertOptionsWithDefaults

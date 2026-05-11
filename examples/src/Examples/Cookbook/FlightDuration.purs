@@ -14,7 +14,7 @@ main = do
   departure <- ZonedDateTime.fromString_ "2020-03-08T11:55:00+08:00[Asia/Hong_Kong]"
   arrival <- ZonedDateTime.fromString_ "2020-03-08T09:50:00-07:00[America/Los_Angeles]"
   flightTime <- ZonedDateTime.until_ arrival departure
-  Console.log ("Flight time: " <> Duration.toString_ flightTime)
+  Console.log ("Flight time: " <> Duration.toString flightTime)
 
   flightDuration <- Duration.from { minutes: 775 }
   arrival2 <- ZonedDateTime.add_ flightDuration departure

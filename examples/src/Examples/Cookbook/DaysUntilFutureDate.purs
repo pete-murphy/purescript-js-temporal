@@ -13,7 +13,7 @@ import JS.Temporal.PlainDate as PlainDate
 
 main :: Effect Unit
 main = do
-  today <- Now.plainDateISO_
+  today <- Now.plainDateISO
   futureDate <- PlainDate.fromString_ "2026-12-25"
   untilDuration <- PlainDate.until { largestUnit: TemporalUnit.Day } futureDate today
   Console.log ("Days until Christmas 2026: " <> show (Duration.days untilDuration))

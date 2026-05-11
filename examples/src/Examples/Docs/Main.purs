@@ -13,11 +13,11 @@ import Effect.Class.Console as Console
 import Effect.Exception as Effect.Exception
 import Examples.Docs.Duration as Duration
 import Examples.Docs.Instant as Instant
+import Examples.Docs.Now as Now
 import Examples.Docs.PlainDate as PlainDate
 import Examples.Docs.PlainDateTime as PlainDateTime
 import Examples.Docs.PlainMonthDay as PlainMonthDay
 import Examples.Docs.PlainTime as PlainTime
-import Examples.Docs.Now as Now
 import Examples.Docs.PlainYearMonth as PlainYearMonth
 import Examples.Docs.ZonedDateTime as ZonedDateTime
 
@@ -55,14 +55,14 @@ main = do
   runExample "JS.Temporal.Instant.toZonedDateTimeISO" Instant.exampleToZonedDateTimeISO
   runExample "JS.Temporal.Instant.toString" Instant.exampleToString
   runExample "JS.Temporal.Now.instant" Now.exampleInstant
-  runExample "JS.Temporal.Now.plainDateISO_" Now.examplePlainDateISO_
   runExample "JS.Temporal.Now.plainDateISO" Now.examplePlainDateISO
-  runExample "JS.Temporal.Now.plainDateTimeISO_" Now.examplePlainDateTimeISO_
+  runExample "JS.Temporal.Now.plainDateISOWithTimeZone" Now.examplePlainDateISOWithTimeZone
   runExample "JS.Temporal.Now.plainDateTimeISO" Now.examplePlainDateTimeISO
-  runExample "JS.Temporal.Now.plainTimeISO_" Now.examplePlainTimeISO_
+  runExample "JS.Temporal.Now.plainDateTimeISOWithTimeZone" Now.examplePlainDateTimeISOWithTimeZone
   runExample "JS.Temporal.Now.plainTimeISO" Now.examplePlainTimeISO
-  runExample "JS.Temporal.Now.zonedDateTimeISO_" Now.exampleZonedDateTimeISO_
+  runExample "JS.Temporal.Now.plainTimeISOWithTimeZone" Now.examplePlainTimeISOWithTimeZone
   runExample "JS.Temporal.Now.zonedDateTimeISO" Now.exampleZonedDateTimeISO
+  runExample "JS.Temporal.Now.zonedDateTimeISOWithTimeZone" Now.exampleZonedDateTimeISOWithTimeZone
   runExample "JS.Temporal.Now.timeZoneId" Now.exampleTimeZoneId
   runExample "JS.Temporal.PlainDate.from_" PlainDate.exampleFrom_
   runExample "JS.Temporal.PlainDate.fromString" PlainDate.exampleFromString

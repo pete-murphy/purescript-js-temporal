@@ -14,7 +14,7 @@ import Examples.Cookbook.BusinessHours as BusinessHours
 import Examples.Cookbook.CalendarInput as CalendarInput
 import Examples.Cookbook.CurrentDateTime as CurrentDateTime
 import Examples.Cookbook.DailyOccurrence as DailyOccurrence
-import Examples.Cookbook.DateTimeInterop as DateTimeInterop
+import Examples.Cookbook.JSDateInterop as JSDateInterop
 import Examples.Cookbook.DaysUntilFutureDate as DaysUntilFutureDate
 import Examples.Cookbook.ExtraExpandedYears as ExtraExpandedYears
 import Examples.Cookbook.FixedLocation as FixedLocation
@@ -156,8 +156,8 @@ main = do
   BridgePublicHolidays.main
   Console.log ""
 
-  Console.log "--- DateTimeInterop ---"
-  DateTimeInterop.main
+  Console.log "--- JSDateInterop ---"
+  JSDateInterop.main
   Console.log ""
 
   Console.log "--- CalendarInput ---"

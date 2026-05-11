@@ -20,7 +20,7 @@ The [`examples/`](./examples/) directory contains PureScript translations of rec
   - [Current date and time](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FCurrentDateTime.purs)
   - [Unix timestamp](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FUnixTimestamp.purs)
 - Converting between Temporal types and legacy Date
-  - [Legacy Date ↔ Temporal types](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FDateTimeInterop.purs)
+  - [Convert between legacy Date and Temporal](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FJSDateInterop.purs)
 - Construction
   - [Calendar input element](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FCalendarInput.purs)
 - Converting between types

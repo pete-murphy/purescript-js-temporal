@@ -567,9 +567,9 @@ foreign import offset :: ZonedDateTime -> String
 -- | ```
 -- | ---
 -- | ```text
--- | Offset ns: -14400000000000
+-- | Offset ns: -14400000000000.0
 -- | ```
-foreign import offsetNanoseconds :: ZonedDateTime -> Int
+foreign import offsetNanoseconds :: ZonedDateTime -> Number
 
 -- | Number of wall-clock hours in this calendar day in the associated time zone.
 -- |

@@ -679,8 +679,7 @@ millisecondsPerSecond = 1000
 
 -- | Converts a Temporal Duration to purescript-datetime `Milliseconds`. Returns
 -- | `Nothing` if the duration contains calendar units (years, months, weeks).
--- | Microseconds and nanoseconds are dropped. See
--- | [./docs/purescript-datetime-interop.md](./docs/purescript-datetime-interop.md).
+-- | Microseconds and nanoseconds are dropped.
 -- |
 -- | ```purescript
 -- | exampleToMilliseconds :: Effect Unit
@@ -733,8 +732,7 @@ decomposeMilliseconds totalMs =
   in
     { days: daysVal, hours: hoursVal, minutes: minutesVal, seconds: secondsVal, milliseconds: millisecondsVal }
 
--- | Creates a Temporal Duration from purescript-datetime `Milliseconds`. See
--- | [./docs/purescript-datetime-interop.md](./docs/purescript-datetime-interop.md).
+-- | Creates a Temporal Duration from purescript-datetime `Milliseconds`.
 -- |
 -- | ```purescript
 -- | exampleFromMilliseconds :: Effect Unit

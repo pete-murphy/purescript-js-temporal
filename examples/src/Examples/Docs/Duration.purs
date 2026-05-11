@@ -199,8 +199,7 @@ exampleToStringWithOptions = do
   duration <- Duration.from { hours: 2, minutes: 30, seconds: 15, milliseconds: 400 }
   Console.log (Duration.toStringWithOptions { smallestUnit: TemporalUnit.Second } duration)
 
--- | Creates a Temporal Duration from purescript-datetime `Milliseconds`. See
--- | [./docs/purescript-datetime-interop.md](./docs/purescript-datetime-interop.md).
+-- | Creates a Temporal Duration from purescript-datetime `Milliseconds`.
 exampleFromMilliseconds :: Effect Unit
 exampleFromMilliseconds = do
   duration <- Duration.fromMilliseconds (Milliseconds 5000.0)
@@ -208,8 +207,7 @@ exampleFromMilliseconds = do
 
 -- | Converts a Temporal Duration to purescript-datetime `Milliseconds`. Returns
 -- | `Nothing` if the duration contains calendar units (years, months, weeks).
--- | Microseconds and nanoseconds are dropped. See
--- | [./docs/purescript-datetime-interop.md](./docs/purescript-datetime-interop.md).
+-- | Microseconds and nanoseconds are dropped.
 exampleToMilliseconds :: Effect Unit
 exampleToMilliseconds = do
   duration <- Duration.from { seconds: 5 }

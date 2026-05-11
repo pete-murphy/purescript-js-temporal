@@ -40,7 +40,7 @@ import JS.Temporal.ZonedDateTime (ZonedDateTime)
 -- | ```
 -- | ---
 -- | ```text
--- | Current instant (Africa/Monrovia): May 11, 2026 at 6:20:43 PM
+-- | Current instant (Africa/Monrovia): May 11, 2026 at 6:35:28 PM
 -- | ```
 foreign import instant :: Effect Instant
 
@@ -72,7 +72,7 @@ foreign import _zonedDateTimeISO :: Effect ZonedDateTime
 -- | ```
 -- | ---
 -- | ```text
--- | Now (zoned): May 11, 2026 at 2:20:43 PM
+-- | Now (zoned): May 11, 2026 at 2:35:28 PM
 -- | ```
 zonedDateTimeISO :: Effect ZonedDateTime
 zonedDateTimeISO = _zonedDateTimeISO
@@ -91,7 +91,7 @@ foreign import _zonedDateTimeISOWithTimeZone :: EffectFn1 String ZonedDateTime
 -- | ```
 -- | ---
 -- | ```text
--- | Now (UTC): May 11, 2026 at 6:20:43 PM
+-- | Now (UTC): May 11, 2026 at 6:35:28 PM
 -- | ```
 zonedDateTimeISOWithTimeZone :: String -> Effect ZonedDateTime
 zonedDateTimeISOWithTimeZone = Effect.Uncurried.runEffectFn1 _zonedDateTimeISOWithTimeZone
@@ -148,7 +148,7 @@ foreign import _plainDateTimeISO :: Effect PlainDateTime
 -- | ```
 -- | ---
 -- | ```text
--- | Now (local): May 11, 2026 at 2:20:43 PM
+-- | Now (local): May 11, 2026 at 2:35:28 PM
 -- | ```
 plainDateTimeISO :: Effect PlainDateTime
 plainDateTimeISO = _plainDateTimeISO
@@ -167,7 +167,7 @@ foreign import _plainDateTimeISOWithTimeZone :: EffectFn1 String PlainDateTime
 -- | ```
 -- | ---
 -- | ```text
--- | Now (UTC): May 11, 2026 at 6:20:43 PM
+-- | Now (UTC): May 11, 2026 at 6:35:28 PM
 -- | ```
 plainDateTimeISOWithTimeZone :: String -> Effect PlainDateTime
 plainDateTimeISOWithTimeZone = Effect.Uncurried.runEffectFn1 _plainDateTimeISOWithTimeZone
@@ -186,7 +186,7 @@ foreign import _plainTimeISO :: Effect PlainTime
 -- | ```
 -- | ---
 -- | ```text
--- | Current time (local): 2:20:43 PM
+-- | Current time (local): 2:35:28 PM
 -- | ```
 plainTimeISO :: Effect PlainTime
 plainTimeISO = _plainTimeISO
@@ -205,7 +205,7 @@ foreign import _plainTimeISOWithTimeZone :: EffectFn1 String PlainTime
 -- | ```
 -- | ---
 -- | ```text
--- | Current time (UTC): 6:20:43 PM
+-- | Current time (UTC): 6:35:28 PM
 -- | ```
 plainTimeISOWithTimeZone :: String -> Effect PlainTime
 plainTimeISOWithTimeZone = Effect.Uncurried.runEffectFn1 _plainTimeISOWithTimeZone

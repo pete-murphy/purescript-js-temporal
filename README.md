@@ -14,18 +14,49 @@ Module documentation is [published on Pursuit](https://pursuit.purescript.org/pa
 
 ## Examples
 
-The [`examples/`](./examples/) directory is a separate Spago package containing PureScript translations of recipes from the [Temporal Cookbook](https://tc39.es/proposal-temporal/docs/cookbook.html). Run all examples:
+The [`examples/`](./examples/) directory contains PureScript translations of recipes from the [Temporal Cookbook](https://tc39.es/proposal-temporal/docs/cookbook.html). Each one can be run in the browser on [Try PureScript](https://try.purescript.org):
 
-```bash
-nix develop
-just run-examples
-```
-
-Or run a single example:
-
-```bash
-spago run -p js-temporal-examples -m Examples.Cookbook.CurrentDateTime
-```
+- Frequently Asked Questions
+  - [Current date and time](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FCurrentDateTime.purs)
+  - [Unix timestamp](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FUnixTimestamp.purs)
+- Converting between Temporal types and legacy Date
+  - [Legacy Date ↔ Temporal types](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FDateTimeInterop.purs)
+- Construction
+  - [Calendar input element](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FCalendarInput.purs)
+- Converting between types
+  - [Noon on a particular date](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FNoonOnDate.purs)
+  - [Birthday in 2030](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FBirthdayInYear.purs)
+- Serialization
+  - [Zoned instant from instant and time zone](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FSerialization.purs)
+- Sorting
+  - [Sort PlainDateTime values](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FSortPlainDateTime.purs)
+  - [Sort ISO date/time strings](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FSortInstantStrings.purs)
+- Rounding
+  - [Round a time down to whole hours](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FRoundTimeDown.purs)
+  - [Round a date to the nearest start of the month](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FRoundDateToMonth.purs)
+- Time zone conversion
+  - [Preserving local time](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FPreservingLocalTime.purs)
+  - [Preserving exact time](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FPreservingExactTime.purs)
+  - [Daily occurrence in local time](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FDailyOccurrence.purs)
+  - [UTC offset for a zoned event](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FUtcOffset.purs)
+  - [Dealing with dates and times in a fixed location](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FFixedLocation.purs)
+  - [Book a meeting across time zones](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FBookMeeting.purs)
+- Arithmetic
+  - [How many days until a future date](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FDaysUntilFutureDate.purs)
+  - [Unit-constrained duration between now and a past/future zoned event](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FUnitConstrainedDuration.purs)
+  - [Next offset transition in a time zone](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FNextOffsetTransition.purs)
+  - [Comparison of an exact time to business hours](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FBusinessHours.purs)
+  - [Flight arrival/departure/duration](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FFlightDuration.purs)
+  - [Push back a launch date](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FPushBackLaunchDate.purs)
+  - [Schedule a reminder ahead of matching a record-setting duration](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FRecordReminder.purs)
+  - [Nth weekday of the month](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FNthWeekdayOfMonth.purs) ([variant](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FGetWeeklyDaysInMonth.purs))
+  - [Manipulating the day of the month](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FManipulatingDayOfMonth.purs)
+  - [Same date in another month](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FSameDateInAnotherMonth.purs)
+  - [Next weekly occurrence](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FNextWeeklyOccurrence.purs)
+  - [Weekday of yearly occurrence](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FBridgePublicHolidays.purs)
+- Advanced use cases
+  - [Extra-expanded years](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FExtraExpandedYears.purs)
+  - [Adjustable Hijri calendar](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FHijriCalendar.purs)
 
 ## Locale-aware formatting with `js-intl`
 

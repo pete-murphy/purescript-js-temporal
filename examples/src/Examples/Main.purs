@@ -8,19 +8,26 @@ import Prelude
 import Effect (Effect)
 import Effect.Class.Console as Console
 import Examples.Cookbook.BirthdayInYear as BirthdayInYear
+import Examples.Cookbook.BookMeeting as BookMeeting
 import Examples.Cookbook.BridgePublicHolidays as BridgePublicHolidays
+import Examples.Cookbook.BusinessHours as BusinessHours
+import Examples.Cookbook.CalendarInput as CalendarInput
 import Examples.Cookbook.CurrentDateTime as CurrentDateTime
 import Examples.Cookbook.DailyOccurrence as DailyOccurrence
 import Examples.Cookbook.DateTimeInterop as DateTimeInterop
 import Examples.Cookbook.DaysUntilFutureDate as DaysUntilFutureDate
+import Examples.Cookbook.ExtraExpandedYears as ExtraExpandedYears
+import Examples.Cookbook.FixedLocation as FixedLocation
 import Examples.Cookbook.FlightDuration as FlightDuration
 import Examples.Cookbook.GetWeeklyDaysInMonth as GetWeeklyDaysInMonth
+import Examples.Cookbook.HijriCalendar as HijriCalendar
 import Examples.Cookbook.ManipulatingDayOfMonth as ManipulatingDayOfMonth
 import Examples.Cookbook.NextOffsetTransition as NextOffsetTransition
 import Examples.Cookbook.NextWeeklyOccurrence as NextWeeklyOccurrence
 import Examples.Cookbook.NoonOnDate as NoonOnDate
 import Examples.Cookbook.NthWeekdayOfMonth as NthWeekdayOfMonth
 import Examples.Cookbook.PreservingExactTime as PreservingExactTime
+import Examples.Cookbook.PreservingLocalTime as PreservingLocalTime
 import Examples.Cookbook.PushBackLaunchDate as PushBackLaunchDate
 import Examples.Cookbook.RecordReminder as RecordReminder
 import Examples.Cookbook.RoundDateToMonth as RoundDateToMonth
@@ -73,6 +80,10 @@ main = do
   RoundDateToMonth.main
   Console.log ""
 
+  Console.log "--- PreservingLocalTime ---"
+  PreservingLocalTime.main
+  Console.log ""
+
   Console.log "--- PreservingExactTime ---"
   PreservingExactTime.main
   Console.log ""
@@ -85,8 +96,12 @@ main = do
   UtcOffset.main
   Console.log ""
 
-  Console.log "--- NextOffsetTransition ---"
-  NextOffsetTransition.main
+  Console.log "--- FixedLocation ---"
+  FixedLocation.main
+  Console.log ""
+
+  Console.log "--- BookMeeting ---"
+  BookMeeting.main
   Console.log ""
 
   Console.log "--- DaysUntilFutureDate ---"
@@ -95,6 +110,14 @@ main = do
 
   Console.log "--- UnitConstrainedDuration ---"
   UnitConstrainedDuration.main
+  Console.log ""
+
+  Console.log "--- NextOffsetTransition ---"
+  NextOffsetTransition.main
+  Console.log ""
+
+  Console.log "--- BusinessHours ---"
+  BusinessHours.main
   Console.log ""
 
   Console.log "--- FlightDuration ---"
@@ -135,6 +158,18 @@ main = do
 
   Console.log "--- DateTimeInterop ---"
   DateTimeInterop.main
+  Console.log ""
+
+  Console.log "--- CalendarInput ---"
+  CalendarInput.main
+  Console.log ""
+
+  Console.log "--- ExtraExpandedYears ---"
+  ExtraExpandedYears.main
+  Console.log ""
+
+  Console.log "--- HijriCalendar ---"
+  HijriCalendar.main
   Console.log ""
 
   Console.log "=== Done ==="

@@ -15,7 +15,8 @@ run-examples:
 
 @view-docs:
     spago docs -f html
-    open generated-docs/html/index.html
+    pandoc -s --metadata title="js-temporal" -o generated-docs/html/README.html README.md
+    open generated-docs/html/README.html generated-docs/html/index.html
 
 # Check that every exported function has a corresponding doc example and vice-versa.
 check-doc-examples:

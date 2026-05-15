@@ -16,6 +16,9 @@ Module documentation is [published on Pursuit](https://pursuit.purescript.org/pa
 
 The [`examples/`](./examples/) directory contains PureScript translations of recipes from the [Temporal Cookbook](https://tc39.es/proposal-temporal/docs/cookbook.html). Each one can be run in the browser on [Try PureScript](https://try.purescript.org):
 
+> [!NOTE]
+> The package set used on Try PureScript is not up-to-date and does not include the latest major version of this libary, so the examples don't currently compile there
+
 - Frequently Asked Questions
   - [Current date and time](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FCurrentDateTime.purs)
   - [Unix timestamp](https://try.purescript.org/?github=pete-murphy%2Fpurescript-js-temporal%2Fmain%2Fexamples%2Fsrc%2FExamples%2FCookbook%2FUnixTimestamp.purs)

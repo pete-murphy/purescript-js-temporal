@@ -8,9 +8,10 @@ import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.Duration as Duration
 import JS.Temporal.PlainDate as PlainDate
+import TryPureScript (render, withConsole)
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   date <- PlainDate.fromString "2018-09-16"
   firstOfCurrentMonth <- PlainDate.with { day: 1 } date
   oneMonth <- Duration.from { months: 1 }

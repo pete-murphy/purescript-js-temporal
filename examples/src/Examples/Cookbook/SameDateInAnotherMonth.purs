@@ -7,9 +7,10 @@ import Prelude
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.PlainDate as PlainDate
+import TryPureScript (render, withConsole)
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   date <- PlainDate.fromString "2020-05-31"
 
   feb <- PlainDate.with { month: 2 } date

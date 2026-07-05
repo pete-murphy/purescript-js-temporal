@@ -9,9 +9,10 @@ import Effect.Class.Console as Console
 import JS.Temporal.Now as Now
 import JS.Temporal.PlainDate as PlainDate
 import JS.Temporal.PlainDateTime as PlainDateTime
+import TryPureScript (render, withConsole)
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   date <- Now.plainDateISO
   Console.log ("Current date (ISO 8601): " <> PlainDate.toString date)
 

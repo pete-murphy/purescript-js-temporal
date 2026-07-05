@@ -13,6 +13,7 @@ import JS.Temporal.PlainDate as PlainDate
 import JS.Temporal.PlainDateTime as PlainDateTime
 import JS.Temporal.PlainTime as PlainTime
 import JS.Temporal.ZonedDateTime as ZonedDateTime
+import TryPureScript (render, withConsole)
 
 calculateFirstFewOccurrences
   :: PlainDate.PlainDate -> PlainTime.PlainTime -> String -> Int -> Effect (Array Instant.Instant)
@@ -28,7 +29,7 @@ calculateFirstFewOccurrences startDate plainTime timeZone count = go startDate c
     go nextDate (n - 1) (acc <> [ instant ])
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   startDate <- PlainDate.fromString "2017-03-10"
   time <- PlainTime.fromString "08:00"
   occurrences <- calculateFirstFewOccurrences startDate time "America/Los_Angeles" 4

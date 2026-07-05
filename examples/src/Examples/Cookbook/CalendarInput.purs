@@ -7,12 +7,13 @@ import Prelude
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.PlainDate as PlainDate
+import TryPureScript (render, withConsole)
 
 -- | In a browser, you would read a date string from an `<input type="date">`
 -- | element. The value is always an ISO 8601 date string (e.g. "2024-07-01").
 -- | Here we simulate that by parsing such a string.
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   -- Simulating reading from <input type="date">
   let inputValue = "2024-07-01"
   date <- PlainDate.fromString inputValue

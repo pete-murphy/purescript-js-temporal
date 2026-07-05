@@ -10,9 +10,10 @@ import JS.Temporal.Duration as Duration
 import JS.Temporal.PlainDate as PlainDate
 import JS.Temporal.PlainDateTime as PlainDateTime
 import JS.Temporal.PlainTime as PlainTime
+import TryPureScript (render, withConsole)
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   date <- PlainDate.fromString "2020-04-14"
 
   monthsDuration <- Duration.from { months: 1 }

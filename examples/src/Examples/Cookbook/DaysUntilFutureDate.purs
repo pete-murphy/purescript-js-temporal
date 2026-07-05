@@ -10,9 +10,10 @@ import JS.Temporal.Duration as Duration
 import JS.Temporal.Now as Now
 import JS.Temporal.Options.TemporalUnit as TemporalUnit
 import JS.Temporal.PlainDate as PlainDate
+import TryPureScript (render, withConsole)
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   today <- Now.plainDateISO
   futureDate <- PlainDate.fromString "2026-12-25"
   untilDuration <- PlainDate.untilWithOptions { largestUnit: TemporalUnit.Day } futureDate today

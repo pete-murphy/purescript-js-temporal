@@ -11,6 +11,7 @@ import Effect.Class.Console as Console
 import JS.Temporal.Duration as Duration
 import JS.Temporal.PlainDate as PlainDate
 import JS.Temporal.PlainYearMonth as PlainYearMonth
+import TryPureScript (render, withConsole)
 
 getFirstTuesday :: PlainYearMonth.PlainYearMonth -> Effect PlainDate.PlainDate
 getFirstTuesday queriedMonth = do
@@ -21,7 +22,7 @@ getFirstTuesday queriedMonth = do
   PlainDate.add daysDuration firstOfMonth
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   myMonth <- PlainYearMonth.fromString "2020-02"
   firstTuesday <- getFirstTuesday myMonth
   Console.log ("First Tuesday of Feb 2020: " <> PlainDate.toString firstTuesday)

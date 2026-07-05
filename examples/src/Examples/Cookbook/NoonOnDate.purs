@@ -9,9 +9,10 @@ import Effect.Class.Console as Console
 import JS.Temporal.PlainDate as PlainDate
 import JS.Temporal.PlainDateTime as PlainDateTime
 import JS.Temporal.PlainTime as PlainTime
+import TryPureScript (render, withConsole)
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   date <- PlainDate.fromString "2020-05-14"
   noon <- PlainTime.fromString "12:00"
   let noonOnDate = PlainDate.toPlainDateTime noon date

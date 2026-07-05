@@ -8,9 +8,10 @@ import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.Duration as Duration
 import JS.Temporal.ZonedDateTime as ZonedDateTime
+import TryPureScript (render, withConsole)
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   departure <- ZonedDateTime.fromString "2020-03-08T11:55:00+08:00[Asia/Hong_Kong]"
   arrival <- ZonedDateTime.fromString "2020-03-08T09:50:00-07:00[America/Los_Angeles]"
   flightTime <- ZonedDateTime.until arrival departure

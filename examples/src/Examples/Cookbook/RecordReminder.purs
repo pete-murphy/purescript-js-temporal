@@ -8,6 +8,7 @@ import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.Duration as Duration
 import JS.Temporal.Instant as Instant
+import TryPureScript (render, withConsole)
 
 getInstantBeforeOldRecord
   :: Instant.Instant
@@ -19,7 +20,7 @@ getInstantBeforeOldRecord start previousRecord noticeWindow = do
   Instant.subtract noticeWindow afterRecord
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   raceStart <- Instant.fromString "2016-08-13T21:27-03:00[America/Sao_Paulo]"
   record <- Duration.from { minutes: 26, seconds: 17, milliseconds: 530 }
   noticeWindow <- Duration.from { minutes: 1 }

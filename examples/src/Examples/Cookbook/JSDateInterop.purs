@@ -10,9 +10,10 @@ import Effect.Class.Console as Console
 import JS.Temporal.Instant as Instant
 import JS.Temporal.PlainDate as PlainDate
 import JS.Temporal.ZonedDateTime as ZonedDateTime
+import TryPureScript (render, withConsole)
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   -- === Legacy Date → Temporal.Instant and/or Temporal.ZonedDateTime ===
 
   legacyDate <- JSDate.parse "2020-01-01T00:00:01.000Z"

@@ -11,6 +11,7 @@ import Data.Tuple (Tuple(..), snd)
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.Instant as Instant
+import TryPureScript (render, withConsole)
 
 sortInstantStrings :: Array String -> Boolean -> Effect (Array String)
 sortInstantStrings strings reverseOrder = do
@@ -20,7 +21,7 @@ sortInstantStrings strings reverseOrder = do
   pure if reverseOrder then reverse result else result
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   let
     strings =
       [ "2020-01-23T17:04:36.491865121-08:00"

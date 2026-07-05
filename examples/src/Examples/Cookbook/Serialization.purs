@@ -8,9 +8,10 @@ import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.Instant as Instant
 import JS.Temporal.ZonedDateTime as ZonedDateTime
+import TryPureScript (render, withConsole)
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   instant <- Instant.fromString "2020-01-03T10:41:51Z"
   let result = Instant.toString instant
   Console.log ("UTC string: " <> result)

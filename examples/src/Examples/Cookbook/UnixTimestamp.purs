@@ -9,9 +9,10 @@ import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.Instant as Instant
 import JS.Temporal.Now as Now
+import TryPureScript (render, withConsole)
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   timeStamp <- Now.instant
   let ms = Instant.epochMilliseconds timeStamp
   let seconds = Int.floor (ms / 1000.0)

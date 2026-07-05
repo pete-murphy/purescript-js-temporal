@@ -9,6 +9,7 @@ import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.Instant as Instant
 import JS.Temporal.ZonedDateTime as ZonedDateTime
+import TryPureScript (render, withConsole)
 
 getUtcOffsetDifferenceSeconds
   :: Instant.Instant -> String -> String -> Number
@@ -20,7 +21,7 @@ getUtcOffsetDifferenceSeconds instant sourceTimeZone targetTimeZone =
     (targetOffsetNs - sourceOffsetNs) / 1000000000.0
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   instant <- Instant.fromString "2020-01-09T00:00Z"
   let zoned = Instant.toZonedDateTimeISO "America/New_York" instant
   Console.log ("UTC offset (string): " <> ZonedDateTime.offset zoned)

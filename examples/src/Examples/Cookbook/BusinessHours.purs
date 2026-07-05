@@ -9,6 +9,7 @@ import Effect.Class.Console as Console
 import JS.Temporal.Instant as Instant
 import JS.Temporal.PlainTime as PlainTime
 import JS.Temporal.ZonedDateTime as ZonedDateTime
+import TryPureScript (render, withConsole)
 
 isBusinessHours :: String -> Instant.Instant -> Effect Boolean
 isBusinessHours timeZone instant = do
@@ -19,7 +20,7 @@ isBusinessHours timeZone instant = do
   pure (localTime >= open && localTime < close)
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   -- Is it currently business hours in New York?
   instant <- Instant.fromString "2020-01-09T12:00Z"
 

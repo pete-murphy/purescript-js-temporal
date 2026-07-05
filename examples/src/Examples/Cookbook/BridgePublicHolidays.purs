@@ -10,6 +10,7 @@ import Effect.Class.Console as Console
 import JS.Temporal.Duration as Duration
 import JS.Temporal.PlainDate as PlainDate
 import JS.Temporal.PlainMonthDay as PlainMonthDay
+import TryPureScript (render, withConsole)
 
 bridgePublicHolidays :: PlainMonthDay.PlainMonthDay -> Int -> Effect (Array PlainDate.PlainDate)
 bridgePublicHolidays holiday year = do
@@ -29,7 +30,7 @@ bridgePublicHolidays holiday year = do
     _ -> pure []
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   labourDay <- PlainMonthDay.fromString "05-01"
 
   noBridge <- bridgePublicHolidays labourDay 2020

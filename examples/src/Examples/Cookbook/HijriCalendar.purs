@@ -7,12 +7,13 @@ import Prelude
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.PlainDate as PlainDate
+import TryPureScript (render, withConsole)
 
 -- | The built-in Islamic calendars can be used via the `calendar` field.
 -- | Available variants include `islamic-civil`, `islamic-umalqura`,
 -- | `islamic-tbla`, and `islamic-rgsa`.
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   -- Create a Hijri date using the Umm al-Qura calendar
   date <- PlainDate.from { year: 1446, month: 7, day: 1, calendar: "islamic-umalqura" }
   Console.log ("Hijri date (Umm al-Qura): " <> PlainDate.toString date)

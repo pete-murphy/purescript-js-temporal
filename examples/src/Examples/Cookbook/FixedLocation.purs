@@ -7,11 +7,12 @@ import Prelude
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.ZonedDateTime as ZonedDateTime
+import TryPureScript (render, withConsole)
 
 -- | When working with a location that has a fixed UTC offset (no DST),
 -- | you can use the offset directly as the time zone identifier.
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   -- Kathmandu is UTC+05:45
   kathmandu <- ZonedDateTime.fromString "2020-01-09T12:00+05:45[+05:45]"
   Console.log ("Time in Kathmandu: " <> ZonedDateTime.toString kathmandu)

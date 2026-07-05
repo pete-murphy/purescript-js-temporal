@@ -11,6 +11,7 @@ import JS.Temporal.PlainDate as PlainDate
 import JS.Temporal.PlainDateTime as PlainDateTime
 import JS.Temporal.PlainTime as PlainTime
 import JS.Temporal.ZonedDateTime as ZonedDateTime
+import TryPureScript (render, withConsole)
 
 
 nextWeeklyOccurrence
@@ -37,7 +38,7 @@ nextWeeklyOccurrence now weekday eventTime eventTimeZone = do
     ZonedDateTime.withTimeZone (ZonedDateTime.timeZoneId now) nextOccurrence
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   eventTime <- PlainTime.fromString "08:45"
   rightBefore <- ZonedDateTime.fromString "2020-03-26T15:30+00:00[Europe/London]"
   next <- nextWeeklyOccurrence rightBefore 4 eventTime "America/Los_Angeles"

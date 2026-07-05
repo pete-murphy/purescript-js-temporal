@@ -8,9 +8,10 @@ import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.PlainDate as PlainDate
 import JS.Temporal.PlainMonthDay as PlainMonthDay
+import TryPureScript (render, withConsole)
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   birthday <- PlainMonthDay.fromString "12-15"
   birthdayIn2030 <- PlainMonthDay.toPlainDate { year: 2030 } birthday
   Console.log ("Birthday in 2030: " <> PlainDate.toString birthdayIn2030)

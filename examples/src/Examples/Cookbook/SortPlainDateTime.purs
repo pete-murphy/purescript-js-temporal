@@ -9,6 +9,7 @@ import Data.Foldable (intercalate)
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.PlainDateTime as PlainDateTime
+import TryPureScript (render, withConsole)
 
 getSortedLocalDateTimes
   :: Array PlainDateTime.PlainDateTime -> Boolean -> Array PlainDateTime.PlainDateTime
@@ -19,7 +20,7 @@ getSortedLocalDateTimes dateTimes rev =
     sort dateTimes
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   a <- PlainDateTime.fromString "2020-02-20T08:45:00"
   b <- PlainDateTime.fromString "2020-02-21T13:10:00"
   c <- PlainDateTime.fromString "2020-02-20T15:30:00"

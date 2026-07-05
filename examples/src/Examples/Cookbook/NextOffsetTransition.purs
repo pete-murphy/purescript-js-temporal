@@ -8,9 +8,10 @@ import Data.Maybe (maybe)
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.ZonedDateTime as ZonedDateTime
+import TryPureScript (render, withConsole)
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   nycTime <- ZonedDateTime.fromString "2019-04-16T21:01Z[America/New_York]"
   maybe
     (Console.log "No known future DST transition")

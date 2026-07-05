@@ -9,9 +9,10 @@ import Effect.Class.Console as Console
 import JS.Temporal.Duration as Duration
 import JS.Temporal.Instant as Instant
 import JS.Temporal.Options.TemporalUnit as TemporalUnit
+import TryPureScript (render, withConsole)
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   earlier <- Instant.fromString "2020-01-09T00:00Z"
   later <- Instant.fromString "2020-01-09T04:00Z"
 

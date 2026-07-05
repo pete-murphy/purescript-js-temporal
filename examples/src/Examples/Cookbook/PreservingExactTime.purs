@@ -7,9 +7,10 @@ import Prelude
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.ZonedDateTime as ZonedDateTime
+import TryPureScript (render, withConsole)
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   source <- ZonedDateTime.fromString "2020-01-09T00:00[America/Chicago]"
   result <- ZonedDateTime.withTimeZone "America/Los_Angeles" source
   Console.log ("Midnight Chicago in LA: " <> ZonedDateTime.toString result)

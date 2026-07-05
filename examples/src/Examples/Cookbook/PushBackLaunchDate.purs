@@ -8,6 +8,7 @@ import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.Duration as Duration
 import JS.Temporal.PlainDate as PlainDate
+import TryPureScript (render, withConsole)
 
 plusAndRoundToMonthStart :: PlainDate.PlainDate -> Int -> Effect PlainDate.PlainDate
 plusAndRoundToMonthStart date delayDays = do
@@ -18,7 +19,7 @@ plusAndRoundToMonthStart date delayDays = do
   PlainDate.with { day: 1 } nextMonth
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   oldLaunchDate <- PlainDate.fromString "2019-06-01"
 
   fifteenDaysDelay <- plusAndRoundToMonthStart oldLaunchDate 15

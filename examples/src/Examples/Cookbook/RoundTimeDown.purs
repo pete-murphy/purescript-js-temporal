@@ -9,9 +9,10 @@ import Effect.Class.Console as Console
 import JS.Temporal.Options.RoundingMode as RoundingMode
 import JS.Temporal.Options.TemporalUnit as TemporalUnit
 import JS.Temporal.PlainTime as PlainTime
+import TryPureScript (render, withConsole)
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   time <- PlainTime.fromString "12:38:28.138818731"
   wholeHour <- PlainTime.round { smallestUnit: TemporalUnit.Hour, roundingMode: RoundingMode.Floor } time
   Console.log ("Rounded down to hour: " <> PlainTime.toString wholeHour)

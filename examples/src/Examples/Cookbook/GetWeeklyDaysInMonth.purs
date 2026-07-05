@@ -11,6 +11,7 @@ import Effect.Class.Console as Console
 import JS.Temporal.Duration as Duration
 import JS.Temporal.PlainDate as PlainDate
 import JS.Temporal.PlainYearMonth as PlainYearMonth
+import TryPureScript (render, withConsole)
 
 getWeeklyDaysInMonth
   :: PlainYearMonth.PlainYearMonth -> Int -> Effect (Array PlainDate.PlainDate)
@@ -30,7 +31,7 @@ getWeeklyDaysInMonth yearMonth dayNumberOfTheWeek = do
       go next ([ nextWeekday ] <> result)
 
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   feb2020 <- PlainYearMonth.fromString "2020-02"
   mondays <- getWeeklyDaysInMonth feb2020 1
   saturdays <- getWeeklyDaysInMonth feb2020 6

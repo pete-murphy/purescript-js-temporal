@@ -7,11 +7,12 @@ import Prelude
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.PlainDate as PlainDate
+import TryPureScript (render, withConsole)
 
 -- | Temporal supports years outside the common 4-digit range.
 -- | Years > 9999 or < 0 use a sign prefix in ISO 8601 strings.
 main :: Effect Unit
-main = do
+main = render =<< withConsole do
   -- Year 100,000
   farFuture <- PlainDate.from { year: 100000, month: 1, day: 1 }
   Console.log ("Far future: " <> PlainDate.toString farFuture)

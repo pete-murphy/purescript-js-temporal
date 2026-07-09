@@ -8,11 +8,13 @@ import Data.Foldable (intercalate)
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.Duration as Duration
+import JS.Temporal.PlainDate (PlainDate)
 import JS.Temporal.PlainDate as PlainDate
+import JS.Temporal.PlainMonthDay (PlainMonthDay)
 import JS.Temporal.PlainMonthDay as PlainMonthDay
 import TryPureScript (render, withConsole)
 
-bridgePublicHolidays :: PlainMonthDay.PlainMonthDay -> Int -> Effect (Array PlainDate.PlainDate)
+bridgePublicHolidays :: PlainMonthDay -> Int -> Effect (Array PlainDate)
 bridgePublicHolidays holiday year = do
   date <- PlainMonthDay.toPlainDate { year } holiday
   case PlainDate.dayOfWeek date of

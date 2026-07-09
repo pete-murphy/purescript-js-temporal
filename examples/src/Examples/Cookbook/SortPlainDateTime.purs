@@ -8,11 +8,12 @@ import Data.Array (reverse, sort)
 import Data.Foldable (intercalate)
 import Effect (Effect)
 import Effect.Class.Console as Console
+import JS.Temporal.PlainDateTime (PlainDateTime)
 import JS.Temporal.PlainDateTime as PlainDateTime
 import TryPureScript (render, withConsole)
 
 getSortedLocalDateTimes
-  :: Array PlainDateTime.PlainDateTime -> Boolean -> Array PlainDateTime.PlainDateTime
+  :: Array PlainDateTime -> Boolean -> Array PlainDateTime
 getSortedLocalDateTimes dateTimes rev =
   if rev then
     (reverse <<< sort) dateTimes

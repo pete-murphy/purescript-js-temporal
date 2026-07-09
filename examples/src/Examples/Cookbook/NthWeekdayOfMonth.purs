@@ -9,11 +9,13 @@ import Data.Maybe (fromMaybe)
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.Duration as Duration
+import JS.Temporal.PlainDate (PlainDate)
 import JS.Temporal.PlainDate as PlainDate
+import JS.Temporal.PlainYearMonth (PlainYearMonth)
 import JS.Temporal.PlainYearMonth as PlainYearMonth
 import TryPureScript (render, withConsole)
 
-getFirstTuesday :: PlainYearMonth.PlainYearMonth -> Effect PlainDate.PlainDate
+getFirstTuesday :: PlainYearMonth -> Effect PlainDate
 getFirstTuesday queriedMonth = do
   firstOfMonth <- PlainYearMonth.toPlainDate { day: 1 } queriedMonth
   let lookupTable = [ 1, 0, 6, 5, 4, 3, 2 ]

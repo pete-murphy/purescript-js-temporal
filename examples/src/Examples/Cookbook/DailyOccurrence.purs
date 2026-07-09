@@ -8,15 +8,18 @@ import Data.Foldable (traverse_)
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.Duration as Duration
+import JS.Temporal.Instant (Instant)
 import JS.Temporal.Instant as Instant
+import JS.Temporal.PlainDate (PlainDate)
 import JS.Temporal.PlainDate as PlainDate
 import JS.Temporal.PlainDateTime as PlainDateTime
+import JS.Temporal.PlainTime (PlainTime)
 import JS.Temporal.PlainTime as PlainTime
 import JS.Temporal.ZonedDateTime as ZonedDateTime
 import TryPureScript (render, withConsole)
 
 calculateFirstFewOccurrences
-  :: PlainDate.PlainDate -> PlainTime.PlainTime -> String -> Int -> Effect (Array Instant.Instant)
+  :: PlainDate -> PlainTime -> String -> Int -> Effect (Array Instant)
 calculateFirstFewOccurrences startDate plainTime timeZone count = go startDate count []
   where
   go _ 0 acc = pure (acc)

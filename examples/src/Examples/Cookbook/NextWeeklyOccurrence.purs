@@ -9,17 +9,18 @@ import Effect.Class.Console as Console
 import JS.Temporal.Duration as Duration
 import JS.Temporal.PlainDate as PlainDate
 import JS.Temporal.PlainDateTime as PlainDateTime
+import JS.Temporal.PlainTime (PlainTime)
 import JS.Temporal.PlainTime as PlainTime
+import JS.Temporal.ZonedDateTime (ZonedDateTime)
 import JS.Temporal.ZonedDateTime as ZonedDateTime
 import TryPureScript (render, withConsole)
 
-
 nextWeeklyOccurrence
-  :: ZonedDateTime.ZonedDateTime
+  :: ZonedDateTime
   -> Int
-  -> PlainTime.PlainTime
+  -> PlainTime
   -> String
-  -> Effect ZonedDateTime.ZonedDateTime
+  -> Effect ZonedDateTime
 nextWeeklyOccurrence now weekday eventTime eventTimeZone = do
   nowInEventTimeZone <- ZonedDateTime.withTimeZone eventTimeZone now
   let plainDate = ZonedDateTime.toPlainDate nowInEventTimeZone

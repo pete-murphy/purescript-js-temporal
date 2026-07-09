@@ -9,12 +9,14 @@ import Data.Foldable (intercalate)
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.Duration as Duration
+import JS.Temporal.PlainDate (PlainDate)
 import JS.Temporal.PlainDate as PlainDate
+import JS.Temporal.PlainYearMonth (PlainYearMonth)
 import JS.Temporal.PlainYearMonth as PlainYearMonth
 import TryPureScript (render, withConsole)
 
 getWeeklyDaysInMonth
-  :: PlainYearMonth.PlainYearMonth -> Int -> Effect (Array PlainDate.PlainDate)
+  :: PlainYearMonth -> Int -> Effect (Array PlainDate)
 getWeeklyDaysInMonth yearMonth dayNumberOfTheWeek = do
   firstOfMonth <- PlainYearMonth.toPlainDate { day: 1 } yearMonth
   let daysToFirst = (7 + dayNumberOfTheWeek - PlainDate.dayOfWeek firstOfMonth) `mod` 7

@@ -6,15 +6,17 @@ import Prelude
 
 import Effect (Effect)
 import Effect.Class.Console as Console
+import JS.Temporal.Duration (Duration)
 import JS.Temporal.Duration as Duration
+import JS.Temporal.Instant (Instant)
 import JS.Temporal.Instant as Instant
 import TryPureScript (render, withConsole)
 
 getInstantBeforeOldRecord
-  :: Instant.Instant
-  -> Duration.Duration
-  -> Duration.Duration
-  -> Effect Instant.Instant
+  :: Instant
+  -> Duration
+  -> Duration
+  -> Effect Instant
 getInstantBeforeOldRecord start previousRecord noticeWindow = do
   afterRecord <- Instant.add previousRecord start
   Instant.subtract noticeWindow afterRecord

@@ -6,12 +6,13 @@ import Prelude
 
 import Effect (Effect)
 import Effect.Class.Console as Console
+import JS.Temporal.Instant (Instant)
 import JS.Temporal.Instant as Instant
 import JS.Temporal.PlainTime as PlainTime
 import JS.Temporal.ZonedDateTime as ZonedDateTime
 import TryPureScript (render, withConsole)
 
-isBusinessHours :: String -> Instant.Instant -> Effect Boolean
+isBusinessHours :: String -> Instant -> Effect Boolean
 isBusinessHours timeZone instant = do
   let zoned = Instant.toZonedDateTimeISO timeZone instant
   let localTime = ZonedDateTime.toPlainTime zoned

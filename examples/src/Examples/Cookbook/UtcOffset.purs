@@ -7,12 +7,13 @@ import Prelude
 import Data.Int as Int
 import Effect (Effect)
 import Effect.Class.Console as Console
+import JS.Temporal.Instant (Instant)
 import JS.Temporal.Instant as Instant
 import JS.Temporal.ZonedDateTime as ZonedDateTime
 import TryPureScript (render, withConsole)
 
 getUtcOffsetDifferenceSeconds
-  :: Instant.Instant -> String -> String -> Number
+  :: Instant -> String -> String -> Number
 getUtcOffsetDifferenceSeconds instant sourceTimeZone targetTimeZone =
   let
     sourceOffsetNs = ZonedDateTime.offsetNanoseconds (Instant.toZonedDateTimeISO sourceTimeZone instant)

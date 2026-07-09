@@ -3,7 +3,6 @@ module Examples.Docs.PlainDateTime where
 
 import Prelude
 
-
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Intl.DateTimeFormat as JS.Intl.DateTimeFormat

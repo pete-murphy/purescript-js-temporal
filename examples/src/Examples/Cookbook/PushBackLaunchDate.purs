@@ -7,10 +7,11 @@ import Prelude
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.Duration as Duration
+import JS.Temporal.PlainDate (PlainDate)
 import JS.Temporal.PlainDate as PlainDate
 import TryPureScript (render, withConsole)
 
-plusAndRoundToMonthStart :: PlainDate.PlainDate -> Int -> Effect PlainDate.PlainDate
+plusAndRoundToMonthStart :: PlainDate -> Int -> Effect PlainDate
 plusAndRoundToMonthStart date delayDays = do
   daysDuration <- Duration.from { days: delayDays }
   monthsDuration <- Duration.from { months: 1 }

@@ -2,7 +2,6 @@ module Test.Main (main) where
 
 import Prelude
 
-import Control.Monad.Rec.Class (Step(..), tailRecM)
 import Data.Date as Date
 import Data.Date.Gen (genDate)
 import Data.DateTime as Data.DateTime
@@ -13,10 +12,9 @@ import Data.Int as Int
 import Data.Maybe (Maybe(..))
 import Data.Time.Duration (Milliseconds(..))
 import Data.Time.Gen (genTime)
-import Data.Tuple (Tuple(..))
 import Effect (Effect)
 import Effect.Class.Console as Console
-import Effect.Exception (error, throwException)
+import Effect.Unsafe (unsafePerformEffect)
 import JS.BigInt as BigInt
 import JS.Intl.DateTimeFormat as DateTimeFormat
 import JS.Intl.DurationFormat as DurationFormat
@@ -35,9 +33,10 @@ import JS.Temporal.PlainMonthDay as PlainMonthDay
 import JS.Temporal.PlainTime as PlainTime
 import JS.Temporal.PlainYearMonth as PlainYearMonth
 import JS.Temporal.ZonedDateTime as ZonedDateTime
-import Random.LCG (randomSeed)
 import Test.Assert.Extended as Test
-import Test.QuickCheck.Gen (Gen, chooseInt, runGen)
+import Test.QuickCheck (Result(..), (===))
+import Test.QuickCheck as QuickCheck
+import Test.QuickCheck.Gen (Gen, chooseInt)
 
 main :: Effect Unit
 main = do
@@ -1035,115 +1034,47 @@ test_CalendarName = do
 test_DateTimeInterop :: Effect Unit
 test_DateTimeInterop = do
   Console.log "DateTime interop round-trips"
-  let numTests = 100
 
-  seed1 <- randomSeed
-  _ <- tailRecM
-    ( \{ remaining, state } ->
-        if remaining <= 0 then
-          pure (Done unit)
-        else do
-          let Tuple date newState = runGen genDate state
-          plain <- PlainDate.fromDate date
-          let back = PlainDate.toDate plain
-          when (back /= date)
-            (throwException (error ("PlainDate round-trip failed for " <> show date)))
-          pure (Loop { remaining: remaining - 1, state: newState })
-    )
-    { remaining: numTests, state: { newSeed: seed1, size: 10 } }
+  Console.log "  PlainDate round-trip"
+  QuickCheck.quickCheckGen do
+    date <- genDate
+    let plainDate = unsafePerformEffect (PlainDate.fromDate date)
+    pure (PlainDate.toDate plainDate === date)
 
-  seed2 <- randomSeed
-  _ <- tailRecM
-    ( \{ remaining, state } ->
-        if remaining <= 0 then
-          pure (Done unit)
-        else do
-          let Tuple time newState = runGen genTime state
-          plain <- PlainTime.fromTime time
-          let back = PlainTime.toTime plain
-          when (back /= time)
-            (throwException (error ("PlainTime round-trip failed for " <> show time)))
-          pure (Loop { remaining: remaining - 1, state: newState })
-    )
-    { remaining: numTests, state: { newSeed: seed2, size: 10 } }
+  Console.log "  PlainTime round-trip"
+  QuickCheck.quickCheckGen do
+    time <- genTime
+    let plainTime = unsafePerformEffect (PlainTime.fromTime time)
+    pure (PlainTime.toTime plainTime === time)
 
-  seed3 <- randomSeed
-  _ <- tailRecM
-    ( \{ remaining, state } ->
-        if remaining <= 0 then
-          pure (Done unit)
-        else do
-          let Tuple dateTime newState = runGen genDateTime state
-          plain <- PlainDateTime.fromDateTime dateTime
-          let back = PlainDateTime.toDateTime plain
-          when (back /= dateTime)
-            ( throwException
-                (error ("PlainDateTime round-trip failed for " <> show dateTime))
-            )
-          pure (Loop { remaining: remaining - 1, state: newState })
-    )
-    { remaining: numTests, state: { newSeed: seed3, size: 10 } }
+  Console.log "  PlainDateTime round-trip"
+  QuickCheck.quickCheckGen do
+    dateTime <- genDateTime
+    let plainDateTime = unsafePerformEffect (PlainDateTime.fromDateTime dateTime)
+    pure (PlainDateTime.toDateTime plainDateTime === dateTime)
 
-  seed4 <- randomSeed
-  _ <- tailRecM
-    ( \{ remaining, state } ->
-        if remaining <= 0 then
-          pure (Done unit)
-        else do
-          let Tuple dateTime newState = runGen genDateTime state
-          let dtInstant = DateTime.Instant.fromDateTime dateTime
-          temporalInstant <- Instant.fromDateTimeInstant dtInstant
-          case Instant.toDateTimeInstant temporalInstant of
-            Just back ->
-              when (back /= dtInstant)
-                ( throwException
-                    (error ("Instant round-trip failed for " <> show dtInstant))
-                )
-            Nothing ->
-              throwException
-                (error ("Instant.toDateTimeInstant returned Nothing for " <> show dtInstant))
-          pure (Loop { remaining: remaining - 1, state: newState })
-    )
-    { remaining: numTests, state: { newSeed: seed4, size: 10 } }
+  Console.log "  Instant round-trip"
+  QuickCheck.quickCheckGen do
+    dateTime <- genDateTime
+    let dateTimeInstant = DateTime.Instant.fromDateTime dateTime
+    let temporalInstant = unsafePerformEffect (Instant.fromDateTimeInstant dateTimeInstant)
+    pure case Instant.toDateTimeInstant temporalInstant of
+      Just roundTripped -> roundTripped === dateTimeInstant
+      Nothing -> Failed ("Instant.toDateTimeInstant returned Nothing for " <> show dateTimeInstant)
 
-  seed5 <- randomSeed
-  _ <- tailRecM
-    ( \{ remaining, state } ->
-        if remaining <= 0 then
-          pure (Done unit)
-        else do
-          let Tuple date newState = runGen genDate state
-          let components = { year: Date.year date, month: Date.month date }
-          plain <- PlainYearMonth.fromDateComponents components
-          let back = PlainYearMonth.toDateComponents plain
-          when (back /= components)
-            (throwException (error ("PlainYearMonth round-trip failed for " <> show date)))
-          pure (Loop { remaining: remaining - 1, state: newState })
-    )
-    { remaining: numTests, state: { newSeed: seed5, size: 10 } }
+  Console.log "  PlainYearMonth round-trip"
+  QuickCheck.quickCheckGen do
+    date <- genDate
+    let components = { year: Date.year date, month: Date.month date }
+    let plainYearMonth = unsafePerformEffect (PlainYearMonth.fromDateComponents components)
+    pure (PlainYearMonth.toDateComponents plainYearMonth === components)
 
-  seed6 <- randomSeed
-  _ <- tailRecM
-    ( \{ remaining, state } ->
-        if remaining <= 0 then
-          pure (Done unit)
-        else do
-          let Tuple date newState = runGen genDate state
-          let components = { month: Date.month date, day: Date.day date }
-          plain <- PlainMonthDay.fromDateComponents components
-          let back = PlainMonthDay.toDateComponents plain
-          when (back /= components)
-            (throwException (error ("PlainMonthDay round-trip failed for " <> show date)))
-          pure (Loop { remaining: remaining - 1, state: newState })
-    )
-    { remaining: numTests, state: { newSeed: seed6, size: 10 } }
-
-  Console.log ("  " <> show numTests <> " PlainDate round-trips passed")
-  Console.log ("  " <> show numTests <> " PlainTime round-trips passed")
-  Console.log ("  " <> show numTests <> " PlainDateTime round-trips passed")
-  Console.log ("  " <> show numTests <> " Instant round-trips passed")
-  Console.log ("  " <> show numTests <> " PlainYearMonth round-trips passed")
-  Console.log ("  " <> show numTests <> " PlainMonthDay round-trips passed")
+  Console.log "  PlainMonthDay round-trip"
+  QuickCheck.quickCheckGen do
+    date <- genDate
+    let components = { month: Date.month date, day: Date.day date }
+    let plainMonthDay = unsafePerformEffect (PlainMonthDay.fromDateComponents components)
+    pure (PlainMonthDay.toDateComponents plainMonthDay === components)
 
 -- Duration arithmetic commutativity: add in Temporal then convert == convert then add in datetime
 genFixedDurationComponents :: Gen { days :: Int, hours :: Int, minutes :: Int, seconds :: Int, milliseconds :: Int }
@@ -1170,82 +1101,40 @@ millisecondsPerSecond = 1000
 test_DurationArithmeticInterop :: Effect Unit
 test_DurationArithmeticInterop = do
   Console.log "Duration arithmetic interop (add commutes with conversion)"
-  let numTests = 100
 
-  seed1 <- randomSeed
-  _ <- tailRecM
-    ( \{ remaining, state } ->
-        if remaining <= 0 then
-          pure (Done unit)
-        else do
-          let Tuple dateTime newState1 = runGen genDateTime state
-          let Tuple components newState2 = runGen genFixedDurationComponents newState1
-          temporalDuration <- Duration.from components
-          let
-            totalMs :: Number
-            totalMs =
-              Int.toNumber components.days * Int.toNumber millisecondsPerDay
-                + Int.toNumber components.hours * Int.toNumber millisecondsPerHour
-                + Int.toNumber components.minutes * Int.toNumber millisecondsPerMinute
-                + Int.toNumber components.seconds * Int.toNumber millisecondsPerSecond
-                + Int.toNumber components.milliseconds
-          plain <- PlainDateTime.fromDateTime dateTime
-          resultTemporal <- PlainDateTime.add temporalDuration plain
-          let resultTemporalAsDateTime = PlainDateTime.toDateTime resultTemporal
-          case Data.DateTime.adjust (Milliseconds totalMs) dateTime of
-            Nothing -> pure (Loop { remaining: remaining - 1, state: newState2 })
-            Just resultPsDateTime -> do
-              when (resultTemporalAsDateTime /= resultPsDateTime)
-                ( throwException
-                    ( error
-                        ( "Duration add interop failed: Temporal result "
-                            <> show resultTemporalAsDateTime
-                            <> " /= datetime result "
-                            <> show resultPsDateTime
-                            <> " for dateTime "
-                            <> show dateTime
-                            <> " and duration "
-                            <> show components
-                        )
-                    )
-                )
-              pure (Loop { remaining: remaining - 1, state: newState2 })
-    )
-    { remaining: numTests, state: { newSeed: seed1, size: 10 } }
+  Console.log "  PlainDateTime.add matches Data.DateTime.adjust"
+  QuickCheck.quickCheckGen do
+    dateTime <- genDateTime
+    components <- genFixedDurationComponents
+    let temporalDuration = unsafePerformEffect (Duration.from components)
+    let
+      totalMilliseconds :: Number
+      totalMilliseconds =
+        Int.toNumber components.days * Int.toNumber millisecondsPerDay
+          + Int.toNumber components.hours * Int.toNumber millisecondsPerHour
+          + Int.toNumber components.minutes * Int.toNumber millisecondsPerMinute
+          + Int.toNumber components.seconds * Int.toNumber millisecondsPerSecond
+          + Int.toNumber components.milliseconds
+    let plainDateTime = unsafePerformEffect (PlainDateTime.fromDateTime dateTime)
+    let resultTemporal = unsafePerformEffect (PlainDateTime.add temporalDuration plainDateTime)
+    let resultTemporalAsDateTime = PlainDateTime.toDateTime resultTemporal
+    pure case Data.DateTime.adjust (Milliseconds totalMilliseconds) dateTime of
+      Nothing -> Success
+      Just resultDateTime -> resultTemporalAsDateTime === resultDateTime
 
-  seed2 <- randomSeed
-  _ <- tailRecM
-    ( \{ remaining, state } ->
-        if remaining <= 0 then
-          pure (Done unit)
-        else do
-          let Tuple components newState = runGen genFixedDurationComponents state
-          temporalDuration <- Duration.from components
-          case Duration.toMilliseconds temporalDuration of
-            Nothing -> pure (Loop { remaining: remaining - 1, state: newState })
-            Just ms -> do
-              backDuration <- Duration.fromMilliseconds ms
-              case Duration.toMilliseconds backDuration of
-                Nothing ->
-                  throwException
-                    (error ("Duration round-trip: fromMilliseconds produced duration that toMilliseconds returns Nothing"))
-                Just msBack ->
-                  when (ms /= msBack)
-                    ( throwException
-                        ( error
-                            ( "Duration round-trip failed: "
-                                <> show ms
-                                <> " /= "
-                                <> show msBack
-                            )
-                        )
-                    )
-              pure (Loop { remaining: remaining - 1, state: newState })
-    )
-    { remaining: numTests, state: { newSeed: seed2, size: 10 } }
-
-  Console.log ("  " <> show numTests <> " Duration arithmetic interop passed")
-  Console.log ("  " <> show numTests <> " Duration round-trip passed")
+  Console.log "  Duration milliseconds round-trip"
+  QuickCheck.quickCheckGen do
+    components <- genFixedDurationComponents
+    let temporalDuration = unsafePerformEffect (Duration.from components)
+    pure case Duration.toMilliseconds temporalDuration of
+      Nothing -> Success
+      Just milliseconds ->
+        let
+          roundTripped = unsafePerformEffect (Duration.fromMilliseconds milliseconds)
+        in
+          case Duration.toMilliseconds roundTripped of
+            Nothing -> Failed "Duration round-trip: fromMilliseconds produced duration that toMilliseconds returns Nothing"
+            Just millisecondsBack -> milliseconds === millisecondsBack
 
 -- Intl.DurationFormat with Temporal.Duration (DurationLike instance)
 test_IntlDurationFormat :: Effect Unit

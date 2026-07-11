@@ -47,7 +47,7 @@ fromTime time =
 -- | exampleToTime :: Effect Unit
 -- | exampleToTime = do
 -- |   time <- PlainTime.fromString "14:30:00"
--- |   Console.log (show (PlainTime.Compat.toTime time))
+-- |   Console.logShow (PlainTime.Compat.toTime time)
 -- | ```
 -- | ---
 -- | ```text

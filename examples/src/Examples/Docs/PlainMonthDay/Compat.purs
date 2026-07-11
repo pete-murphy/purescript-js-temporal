@@ -14,16 +14,16 @@ import Test.QuickCheck.Gen as Gen
 
 -- | Creates a `PlainMonthDay` from purescript-datetime `Month` and `Day`
 -- | components.
-exampleFromComponents :: Effect Unit
-exampleFromComponents = do
+exampleFromMonthAndDay :: Effect Unit
+exampleFromMonthAndDay = do
   let date = Gen.evalGen genDate genState
-  monthDay <- PlainMonthDay.Compat.fromComponents { month: Date.month date, day: Date.day date }
+  monthDay <- PlainMonthDay.Compat.fromMonthAndDay (Date.month date) (Date.day date)
   Console.log (PlainMonthDay.toString monthDay)
 
 -- | Converts a `PlainMonthDay` to its purescript-datetime `Month` and `Day`
 -- | components.
-exampleToComponents :: Effect Unit
-exampleToComponents = do
+exampleToMonthAndDay :: Effect Unit
+exampleToMonthAndDay = do
   monthDay <- PlainMonthDay.fromString "12-15"
-  let components = PlainMonthDay.Compat.toComponents monthDay
-  Console.log (show components.month <> " " <> show components.day)
+  let monthAndDay = PlainMonthDay.Compat.toMonthAndDay monthDay
+  Console.logShow monthAndDay

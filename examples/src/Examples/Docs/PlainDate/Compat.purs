@@ -24,5 +24,4 @@ exampleFromDate = do
 exampleToDate :: Effect Unit
 exampleToDate = do
   date <- PlainDate.fromString "2024-07-01"
-  let d = PlainDate.Compat.toDate date
-  Console.log ("PureScript Date year: " <> show (fromEnum (Date.year d)))
+  Console.logShow (PlainDate.Compat.toDate date)

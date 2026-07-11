@@ -22,4 +22,4 @@ exampleFromDateTime = do
 exampleToDateTime :: Effect Unit
 exampleToDateTime = do
   dt <- PlainDateTime.fromString "2024-07-01T12:00:00"
-  Console.log (show (PlainDateTime.Compat.toDateTime dt))
+  Console.logShow (PlainDateTime.Compat.toDateTime dt)

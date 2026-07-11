@@ -37,12 +37,11 @@ fromDate date = PlainDate.from { year: fromEnum (Date.year date), month: fromEnu
 -- | exampleToDate :: Effect Unit
 -- | exampleToDate = do
 -- |   date <- PlainDate.fromString "2024-07-01"
--- |   let d = PlainDate.Compat.toDate date
--- |   Console.log ("PureScript Date year: " <> show (fromEnum (Date.year d)))
+-- |   Console.logShow (PlainDate.Compat.toDate date)
 -- | ```
 -- | ---
 -- | ```text
--- | PureScript Date year: 2024
+-- | (Date (Year 2024) July (Day 1))
 -- | ```
 toDate :: PlainDate -> Date
 toDate plainDate =

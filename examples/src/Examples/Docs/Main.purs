@@ -196,8 +196,8 @@ main = do
   runExample "JS.Temporal.PlainMonthDay.toPlainDate" PlainMonthDay.exampleToPlainDate
   runExample "JS.Temporal.PlainMonthDay.toStringWithOptions" PlainMonthDay.exampleToStringWithOptions
   runExample "JS.Temporal.PlainMonthDay.toString" PlainMonthDay.exampleToString
-  runExample "JS.Temporal.PlainMonthDay.Compat.fromComponents" PlainMonthDay.Compat.exampleFromComponents
-  runExample "JS.Temporal.PlainMonthDay.Compat.toComponents" PlainMonthDay.Compat.exampleToComponents
+  runExample "JS.Temporal.PlainMonthDay.Compat.fromMonthAndDay" PlainMonthDay.Compat.exampleFromMonthAndDay
+  runExample "JS.Temporal.PlainMonthDay.Compat.toMonthAndDay" PlainMonthDay.Compat.exampleToMonthAndDay
   runExample "JS.Temporal.PlainTime.fromWithOptions" PlainTime.exampleFromWithOptions
   runExample "JS.Temporal.PlainTime.from" PlainTime.exampleFrom
   runExample "JS.Temporal.PlainTime.fromStringWithOptions" PlainTime.exampleFromStringWithOptions
@@ -248,8 +248,8 @@ main = do
   runExample "JS.Temporal.PlainYearMonth.since" PlainYearMonth.exampleSince
   runExample "JS.Temporal.PlainYearMonth.toStringWithOptions" PlainYearMonth.exampleToStringWithOptions
   runExample "JS.Temporal.PlainYearMonth.toString" PlainYearMonth.exampleToString
-  runExample "JS.Temporal.PlainYearMonth.Compat.fromComponents" PlainYearMonth.Compat.exampleFromComponents
-  runExample "JS.Temporal.PlainYearMonth.Compat.toComponents" PlainYearMonth.Compat.exampleToComponents
+  runExample "JS.Temporal.PlainYearMonth.Compat.fromYearAndMonth" PlainYearMonth.Compat.exampleFromYearAndMonth
+  runExample "JS.Temporal.PlainYearMonth.Compat.toYearAndMonth" PlainYearMonth.Compat.exampleToYearAndMonth
   runExample "JS.Temporal.ZonedDateTime.fromWithOptions" ZonedDateTime.exampleFromWithOptions
   runExample "JS.Temporal.ZonedDateTime.from" ZonedDateTime.exampleFrom
   runExample "JS.Temporal.ZonedDateTime.fromStringWithOptions" ZonedDateTime.exampleFromStringWithOptions

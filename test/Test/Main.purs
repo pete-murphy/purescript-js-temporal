@@ -1071,15 +1071,15 @@ test_DateTimeInterop = do
   QuickCheck.quickCheckGen do
     date <- genDate
     let components = { year: Date.year date, month: Date.month date }
-    let plainYearMonth = unsafePerformEffect (PlainYearMonth.Compat.fromComponents components)
-    pure (PlainYearMonth.Compat.toComponents plainYearMonth === components)
+    let plainYearMonth = unsafePerformEffect (PlainYearMonth.Compat.fromYearAndMonth components.year components.month)
+    pure (PlainYearMonth.Compat.toYearAndMonth plainYearMonth === components)
 
   Console.log "  PlainMonthDay round-trip"
   QuickCheck.quickCheckGen do
     date <- genDate
     let components = { month: Date.month date, day: Date.day date }
-    let plainMonthDay = unsafePerformEffect (PlainMonthDay.Compat.fromComponents components)
-    pure (PlainMonthDay.Compat.toComponents plainMonthDay === components)
+    let plainMonthDay = unsafePerformEffect (PlainMonthDay.Compat.fromMonthAndDay components.month components.day)
+    pure (PlainMonthDay.Compat.toMonthAndDay plainMonthDay === components)
 
 -- Duration arithmetic commutativity: add in Temporal then convert == convert then add in datetime
 genFixedDurationComponents :: Gen { days :: Int, hours :: Int, minutes :: Int, seconds :: Int, milliseconds :: Int }

@@ -20,7 +20,6 @@ module JS.Temporal.PlainDate
   , era
   , eraYear
   , fromWithOptions
-  , fromDate
   , fromStringWithOptions
   , fromString
   , from
@@ -33,7 +32,6 @@ module JS.Temporal.PlainDate
   , since
   , subtractWithOptions
   , subtract
-  , toDate
   , toPlainDateTime
   , toPlainMonthDay
   , toZonedDateTimeWithPlainTime
@@ -55,12 +53,9 @@ import Prelude hiding (add, compare)
 
 import ConvertableOptions (class ConvertOption, class ConvertOptionsWithDefaults)
 import ConvertableOptions as ConvertableOptions
-import Data.Date (Date)
-import Data.Date as Date
-import Data.Enum (fromEnum, toEnum)
 import Data.Function.Uncurried (Fn1, Fn2)
 import Data.Function.Uncurried as Function.Uncurried
-import Data.Maybe (Maybe, fromJust)
+import Data.Maybe (Maybe)
 import Data.Nullable (Nullable, toMaybe)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3)
@@ -80,7 +75,6 @@ import JS.Temporal.PlainMonthDay.Internal (PlainMonthDay)
 import JS.Temporal.PlainTime.Internal (PlainTime)
 import JS.Temporal.PlainYearMonth.Internal (PlainYearMonth)
 import JS.Temporal.ZonedDateTime.Internal (ZonedDateTime)
-import Partial.Unsafe (unsafePartial)
 import Prim.Row (class Union)
 import Unsafe.Coerce as Unsafe.Coerce
 
@@ -726,7 +720,7 @@ foreign import _untilWithOptions :: forall r. EffectFn3 { | r } PlainDate PlainD
 -- | ```
 -- | ---
 -- | ```text
--- | 228 days until Christmas 2026
+-- | 167 days until Christmas 2026
 -- | ```
 untilWithOptions
   :: forall provided
@@ -827,44 +821,6 @@ foreign import _since :: EffectFn2 PlainDate PlainDate Duration
 -- | ```
 since :: PlainDate -> PlainDate -> Effect Duration
 since = Effect.Uncurried.runEffectFn2 _since
-
--- Conversions
-
--- | Converts a purescript-datetime `Date` to a `PlainDate`.
--- |
--- | ```purescript
--- | exampleFromDate :: Effect Unit
--- | exampleFromDate = do
--- |   date <- PlainDate.fromString "2024-07-01"
--- |   roundTripped <- PlainDate.fromDate (PlainDate.toDate date)
--- |   Console.log (PlainDate.toString roundTripped)
--- | ```
--- | ---
--- | ```text
--- | 2024-07-01
--- | ```
-fromDate :: Date -> Effect PlainDate
-fromDate date = from { year: fromEnum (Date.year date), month: fromEnum (Date.month date), day: fromEnum (Date.day date) }
-
--- | Converts a `PlainDate` to a purescript-datetime `Date`.
--- |
--- | ```purescript
--- | exampleToDate :: Effect Unit
--- | exampleToDate = do
--- |   date <- PlainDate.fromString "2024-07-01"
--- |   let d = PlainDate.toDate date
--- |   Console.log ("PureScript Date year: " <> show (fromEnum (Date.year d)))
--- | ```
--- | ---
--- | ```text
--- | PureScript Date year: 2024
--- | ```
-toDate :: PlainDate -> Date
-toDate plainDate =
-  Date.canonicalDate
-    (unsafePartial fromJust (toEnum (year plainDate)))
-    (unsafePartial fromJust (toEnum (month plainDate)))
-    (unsafePartial fromJust (toEnum (day plainDate)))
 
 foreign import _toPlainYearMonth :: Fn1 PlainDate PlainYearMonth
 

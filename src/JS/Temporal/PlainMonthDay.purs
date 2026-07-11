@@ -19,8 +19,6 @@ module JS.Temporal.PlainMonthDay
   , with
   -- * Conversions
   , toPlainDate
-  , fromDateComponents
-  , toDateComponents
   -- * Serialization
   , toStringWithOptions
   , toString
@@ -33,11 +31,8 @@ import Prelude
 
 import ConvertableOptions (class ConvertOption, class ConvertOptionsWithDefaults)
 import ConvertableOptions as ConvertableOptions
-import Data.Date (Day, Month)
-import Data.Enum (fromEnum, toEnum)
 import Data.Function.Uncurried (Fn2)
 import Data.Function.Uncurried as Function.Uncurried
-import Data.Maybe (fromJust)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3)
 import Effect.Uncurried as Effect.Uncurried
@@ -47,7 +42,6 @@ import JS.Temporal.Options.Overflow (Overflow)
 import JS.Temporal.Options.Overflow as Overflow
 import JS.Temporal.PlainDate.Internal (PlainDate)
 import JS.Temporal.PlainMonthDay.Internal (PlainMonthDay)
-import Partial.Unsafe (unsafePartial)
 import Prim.Row (class Union)
 import Unsafe.Coerce as Unsafe.Coerce
 
@@ -320,51 +314,6 @@ foreign import _toPlainDate :: EffectFn2 { year :: Int } PlainMonthDay PlainDate
 -- | ```
 toPlainDate :: { year :: Int } -> PlainMonthDay -> Effect PlainDate
 toPlainDate = Effect.Uncurried.runEffectFn2 _toPlainDate
-
--- | Creates a `PlainMonthDay` from purescript-datetime `Month` and `Day` components.
--- |
--- | ```purescript
--- | exampleFromDateComponents :: Effect Unit
--- | exampleFromDateComponents = do
--- |   monthDay <- PlainMonthDay.fromString "12-15"
--- |   roundTripped <- PlainMonthDay.fromDateComponents (PlainMonthDay.toDateComponents monthDay)
--- |   Console.log (PlainMonthDay.toString roundTripped)
--- | ```
--- | ---
--- | ```text
--- | 12-15
--- | ```
-fromDateComponents :: { month :: Month, day :: Day } -> Effect PlainMonthDay
-fromDateComponents components = from { month: fromEnum components.month, day: fromEnum components.day }
-
--- The ISO month number, obtained via a reference year since PlainMonthDay has
--- no `month` property (1972 is the ISO reference year used by the Temporal
--- spec: the first leap year of the Unix epoch).
-foreign import _isoMonth :: PlainMonthDay -> Int
-
--- | Converts a `PlainMonthDay` to its purescript-datetime `Month` and `Day` components.
--- |
--- | Only meaningful for the ISO 8601 calendar: the month is recovered via a
--- | reference year (see `_isoMonth`), and `toEnum` assumes a Gregorian 1–12
--- | month. For a non-iso8601 calendar this may throw. `Month` and `Day` are
--- | bounded, so values outside their ranges will also throw.
--- |
--- | ```purescript
--- | exampleToDateComponents :: Effect Unit
--- | exampleToDateComponents = do
--- |   monthDay <- PlainMonthDay.fromString "12-15"
--- |   let components = PlainMonthDay.toDateComponents monthDay
--- |   Console.log (show components.month <> " " <> show components.day)
--- | ```
--- | ---
--- | ```text
--- | December (Day 15)
--- | ```
-toDateComponents :: PlainMonthDay -> { month :: Month, day :: Day }
-toDateComponents plainMonthDay =
-  { month: unsafePartial fromJust (toEnum (_isoMonth plainMonthDay))
-  , day: unsafePartial fromJust (toEnum (day plainMonthDay))
-  }
 
 -- Comparison
 

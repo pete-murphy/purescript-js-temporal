@@ -14,13 +14,20 @@ import Effect (Effect)
 import Effect.Class.Console as Console
 import Effect.Exception as Effect.Exception
 import Examples.Docs.Duration as Duration
+import Examples.Docs.Duration.Compat as Duration.Compat
 import Examples.Docs.Instant as Instant
+import Examples.Docs.Instant.Compat as Instant.Compat
 import Examples.Docs.Now as Now
 import Examples.Docs.PlainDate as PlainDate
+import Examples.Docs.PlainDate.Compat as PlainDate.Compat
 import Examples.Docs.PlainDateTime as PlainDateTime
+import Examples.Docs.PlainDateTime.Compat as PlainDateTime.Compat
 import Examples.Docs.PlainMonthDay as PlainMonthDay
+import Examples.Docs.PlainMonthDay.Compat as PlainMonthDay.Compat
 import Examples.Docs.PlainTime as PlainTime
+import Examples.Docs.PlainTime.Compat as PlainTime.Compat
 import Examples.Docs.PlainYearMonth as PlainYearMonth
+import Examples.Docs.PlainYearMonth.Compat as PlainYearMonth.Compat
 import Examples.Docs.ZonedDateTime as ZonedDateTime
 
 runExample :: String -> Effect Unit -> Effect Unit
@@ -60,12 +67,11 @@ main = do
   runExample "JS.Temporal.Duration.round" Duration.exampleRound
   runExample "JS.Temporal.Duration.toString" Duration.exampleToString
   runExample "JS.Temporal.Duration.toStringWithOptions" Duration.exampleToStringWithOptions
-  runExample "JS.Temporal.Duration.fromMilliseconds" Duration.exampleFromMilliseconds
-  runExample "JS.Temporal.Duration.toMilliseconds" Duration.exampleToMilliseconds
+  runExample "JS.Temporal.Duration.Compat.fromMilliseconds" Duration.Compat.exampleFromMilliseconds
+  runExample "JS.Temporal.Duration.Compat.toMilliseconds" Duration.Compat.exampleToMilliseconds
   runExample "JS.Temporal.Instant.fromString" Instant.exampleFromString
   runExample "JS.Temporal.Instant.fromEpochMilliseconds" Instant.exampleFromEpochMilliseconds
   runExample "JS.Temporal.Instant.fromEpochNanoseconds" Instant.exampleFromEpochNanoseconds
-  runExample "JS.Temporal.Instant.fromJSDate" Instant.exampleFromJSDate
   runExample "JS.Temporal.Instant.epochMilliseconds" Instant.exampleEpochMilliseconds
   runExample "JS.Temporal.Instant.epochNanoseconds" Instant.exampleEpochNanoseconds
   runExample "JS.Temporal.Instant.add" Instant.exampleAdd
@@ -75,11 +81,13 @@ main = do
   runExample "JS.Temporal.Instant.sinceWithOptions" Instant.exampleSinceWithOptions
   runExample "JS.Temporal.Instant.since" Instant.exampleSince
   runExample "JS.Temporal.Instant.round" Instant.exampleRound
-  runExample "JS.Temporal.Instant.fromDateTimeInstant" Instant.exampleFromDateTimeInstant
-  runExample "JS.Temporal.Instant.toDateTimeInstant" Instant.exampleToDateTimeInstant
   runExample "JS.Temporal.Instant.toZonedDateTimeISO" Instant.exampleToZonedDateTimeISO
   runExample "JS.Temporal.Instant.toStringWithOptions" Instant.exampleToStringWithOptions
   runExample "JS.Temporal.Instant.toString" Instant.exampleToString
+  runExample "JS.Temporal.Instant.Compat.fromInstant" Instant.Compat.exampleFromInstant
+  runExample "JS.Temporal.Instant.Compat.toInstant" Instant.Compat.exampleToInstant
+  runExample "JS.Temporal.Instant.Compat.fromJSDate" Instant.Compat.exampleFromJSDate
+  runExample "JS.Temporal.Instant.Compat.toJSDate" Instant.Compat.exampleToJSDate
   runExample "JS.Temporal.Now.instant" Now.exampleInstant
   runExample "JS.Temporal.Now.plainDateISO" Now.examplePlainDateISO
   runExample "JS.Temporal.Now.plainDateISOWithTimeZone" Now.examplePlainDateISOWithTimeZone
@@ -92,7 +100,6 @@ main = do
   runExample "JS.Temporal.Now.timeZoneId" Now.exampleTimeZoneId
   runExample "JS.Temporal.PlainDate.fromWithOptions" PlainDate.exampleFromWithOptions
   runExample "JS.Temporal.PlainDate.from" PlainDate.exampleFrom
-  runExample "JS.Temporal.PlainDate.fromDate" PlainDate.exampleFromDate
   runExample "JS.Temporal.PlainDate.fromStringWithOptions" PlainDate.exampleFromStringWithOptions
   runExample "JS.Temporal.PlainDate.fromString" PlainDate.exampleFromString
   runExample "JS.Temporal.PlainDate.year" PlainDate.exampleYear
@@ -122,7 +129,6 @@ main = do
   runExample "JS.Temporal.PlainDate.until" PlainDate.exampleUntil
   runExample "JS.Temporal.PlainDate.sinceWithOptions" PlainDate.exampleSinceWithOptions
   runExample "JS.Temporal.PlainDate.since" PlainDate.exampleSince
-  runExample "JS.Temporal.PlainDate.toDate" PlainDate.exampleToDate
   runExample "JS.Temporal.PlainDate.toPlainDateTime" PlainDate.exampleToPlainDateTime
   runExample "JS.Temporal.PlainDate.toPlainMonthDay" PlainDate.exampleToPlainMonthDay
   runExample "JS.Temporal.PlainDate.toPlainYearMonth" PlainDate.exampleToPlainYearMonth
@@ -130,6 +136,8 @@ main = do
   runExample "JS.Temporal.PlainDate.toZonedDateTime" PlainDate.exampleToZonedDateTime
   runExample "JS.Temporal.PlainDate.toStringWithOptions" PlainDate.exampleToStringWithOptions
   runExample "JS.Temporal.PlainDate.toString" PlainDate.exampleToString
+  runExample "JS.Temporal.PlainDate.Compat.fromDate" PlainDate.Compat.exampleFromDate
+  runExample "JS.Temporal.PlainDate.Compat.toDate" PlainDate.Compat.exampleToDate
   runExample "JS.Temporal.PlainDateTime.fromWithOptions" PlainDateTime.exampleFromWithOptions
   runExample "JS.Temporal.PlainDateTime.from" PlainDateTime.exampleFrom
   runExample "JS.Temporal.PlainDateTime.fromStringWithOptions" PlainDateTime.exampleFromStringWithOptions
@@ -171,11 +179,11 @@ main = do
   runExample "JS.Temporal.PlainDateTime.round" PlainDateTime.exampleRound
   runExample "JS.Temporal.PlainDateTime.toStringWithOptions" PlainDateTime.exampleToStringWithOptions
   runExample "JS.Temporal.PlainDateTime.toString" PlainDateTime.exampleToString
-  runExample "JS.Temporal.PlainDateTime.fromDateTime" PlainDateTime.exampleFromDateTime
-  runExample "JS.Temporal.PlainDateTime.toDateTime" PlainDateTime.exampleToDateTime
   runExample "JS.Temporal.PlainDateTime.toPlainDate" PlainDateTime.exampleToPlainDate
   runExample "JS.Temporal.PlainDateTime.toPlainTime" PlainDateTime.exampleToPlainTime
   runExample "JS.Temporal.PlainDateTime.toZonedDateTime" PlainDateTime.exampleToZonedDateTime
+  runExample "JS.Temporal.PlainDateTime.Compat.fromDateTime" PlainDateTime.Compat.exampleFromDateTime
+  runExample "JS.Temporal.PlainDateTime.Compat.toDateTime" PlainDateTime.Compat.exampleToDateTime
   runExample "JS.Temporal.PlainMonthDay.fromWithOptions" PlainMonthDay.exampleFromWithOptions
   runExample "JS.Temporal.PlainMonthDay.from" PlainMonthDay.exampleFrom
   runExample "JS.Temporal.PlainMonthDay.fromStringWithOptions" PlainMonthDay.exampleFromStringWithOptions
@@ -186,10 +194,10 @@ main = do
   runExample "JS.Temporal.PlainMonthDay.withWithOptions" PlainMonthDay.exampleWithWithOptions
   runExample "JS.Temporal.PlainMonthDay.with" PlainMonthDay.exampleWith
   runExample "JS.Temporal.PlainMonthDay.toPlainDate" PlainMonthDay.exampleToPlainDate
-  runExample "JS.Temporal.PlainMonthDay.fromDateComponents" PlainMonthDay.exampleFromDateComponents
-  runExample "JS.Temporal.PlainMonthDay.toDateComponents" PlainMonthDay.exampleToDateComponents
   runExample "JS.Temporal.PlainMonthDay.toStringWithOptions" PlainMonthDay.exampleToStringWithOptions
   runExample "JS.Temporal.PlainMonthDay.toString" PlainMonthDay.exampleToString
+  runExample "JS.Temporal.PlainMonthDay.Compat.fromComponents" PlainMonthDay.Compat.exampleFromComponents
+  runExample "JS.Temporal.PlainMonthDay.Compat.toComponents" PlainMonthDay.Compat.exampleToComponents
   runExample "JS.Temporal.PlainTime.fromWithOptions" PlainTime.exampleFromWithOptions
   runExample "JS.Temporal.PlainTime.from" PlainTime.exampleFrom
   runExample "JS.Temporal.PlainTime.fromStringWithOptions" PlainTime.exampleFromStringWithOptions
@@ -209,10 +217,10 @@ main = do
   runExample "JS.Temporal.PlainTime.sinceWithOptions" PlainTime.exampleSinceWithOptions
   runExample "JS.Temporal.PlainTime.since" PlainTime.exampleSince
   runExample "JS.Temporal.PlainTime.round" PlainTime.exampleRound
-  runExample "JS.Temporal.PlainTime.fromTime" PlainTime.exampleFromTime
-  runExample "JS.Temporal.PlainTime.toTime" PlainTime.exampleToTime
   runExample "JS.Temporal.PlainTime.toStringWithOptions" PlainTime.exampleToStringWithOptions
   runExample "JS.Temporal.PlainTime.toString" PlainTime.exampleToString
+  runExample "JS.Temporal.PlainTime.Compat.fromTime" PlainTime.Compat.exampleFromTime
+  runExample "JS.Temporal.PlainTime.Compat.toTime" PlainTime.Compat.exampleToTime
   runExample "JS.Temporal.PlainYearMonth.fromWithOptions" PlainYearMonth.exampleFromWithOptions
   runExample "JS.Temporal.PlainYearMonth.from" PlainYearMonth.exampleFrom
   runExample "JS.Temporal.PlainYearMonth.fromStringWithOptions" PlainYearMonth.exampleFromStringWithOptions
@@ -234,14 +242,14 @@ main = do
   runExample "JS.Temporal.PlainYearMonth.withWithOptions" PlainYearMonth.exampleWithWithOptions
   runExample "JS.Temporal.PlainYearMonth.with" PlainYearMonth.exampleWith
   runExample "JS.Temporal.PlainYearMonth.toPlainDate" PlainYearMonth.exampleToPlainDate
-  runExample "JS.Temporal.PlainYearMonth.fromDateComponents" PlainYearMonth.exampleFromDateComponents
-  runExample "JS.Temporal.PlainYearMonth.toDateComponents" PlainYearMonth.exampleToDateComponents
   runExample "JS.Temporal.PlainYearMonth.untilWithOptions" PlainYearMonth.exampleUntilWithOptions
   runExample "JS.Temporal.PlainYearMonth.until" PlainYearMonth.exampleUntil
   runExample "JS.Temporal.PlainYearMonth.sinceWithOptions" PlainYearMonth.exampleSinceWithOptions
   runExample "JS.Temporal.PlainYearMonth.since" PlainYearMonth.exampleSince
   runExample "JS.Temporal.PlainYearMonth.toStringWithOptions" PlainYearMonth.exampleToStringWithOptions
   runExample "JS.Temporal.PlainYearMonth.toString" PlainYearMonth.exampleToString
+  runExample "JS.Temporal.PlainYearMonth.Compat.fromComponents" PlainYearMonth.Compat.exampleFromComponents
+  runExample "JS.Temporal.PlainYearMonth.Compat.toComponents" PlainYearMonth.Compat.exampleToComponents
   runExample "JS.Temporal.ZonedDateTime.fromWithOptions" ZonedDateTime.exampleFromWithOptions
   runExample "JS.Temporal.ZonedDateTime.from" ZonedDateTime.exampleFrom
   runExample "JS.Temporal.ZonedDateTime.fromStringWithOptions" ZonedDateTime.exampleFromStringWithOptions

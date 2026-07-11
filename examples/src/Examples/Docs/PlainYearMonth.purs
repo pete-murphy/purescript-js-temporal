@@ -156,20 +156,6 @@ exampleToPlainDate = do
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
   Console.log (JS.Intl.DateTimeFormat.format formatter firstDay)
 
--- | Creates a `PlainYearMonth` from purescript-datetime `Year` and `Month` components.
-exampleFromDateComponents :: Effect Unit
-exampleFromDateComponents = do
-  yearMonth <- PlainYearMonth.fromString "2024-06"
-  roundTripped <- PlainYearMonth.fromDateComponents (PlainYearMonth.toDateComponents yearMonth)
-  Console.log (PlainYearMonth.toString roundTripped)
-
--- | Converts a `PlainYearMonth` to its purescript-datetime `Year` and `Month` components.
-exampleToDateComponents :: Effect Unit
-exampleToDateComponents = do
-  yearMonth <- PlainYearMonth.fromString "2024-06"
-  let components = PlainYearMonth.toDateComponents yearMonth
-  Console.log (show components.year <> ", " <> show components.month)
-
 -- | Duration from `subject` (last arg) until `other` (second arg). Arg order: `untilWithOptions options other subject`.
 exampleUntilWithOptions :: Effect Unit
 exampleUntilWithOptions = do

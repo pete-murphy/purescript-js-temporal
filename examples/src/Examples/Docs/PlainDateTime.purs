@@ -313,19 +313,6 @@ exampleToString = do
   dateTime <- PlainDateTime.fromString "2024-01-15T09:30:00"
   Console.log (PlainDateTime.toString dateTime)
 
--- | Converts a purescript-datetime `DateTime` to a `PlainDateTime`.
-exampleFromDateTime :: Effect Unit
-exampleFromDateTime = do
-  dt <- PlainDateTime.fromString "2024-07-01T12:00:00"
-  roundTripped <- PlainDateTime.fromDateTime (PlainDateTime.toDateTime dt)
-  Console.log (PlainDateTime.toString roundTripped)
-
--- | Converts a `PlainDateTime` to a purescript-datetime `DateTime`.
-exampleToDateTime :: Effect Unit
-exampleToDateTime = do
-  dt <- PlainDateTime.fromString "2024-07-01T12:00:00"
-  Console.log (show (PlainDateTime.toDateTime dt))
-
 -- | Extracts the date component.
 exampleToPlainDate :: Effect Unit
 exampleToPlainDate = do

@@ -151,21 +151,6 @@ exampleRound = do
   rounded <- PlainTime.round { smallestUnit: TemporalUnit.Minute } time
   Console.log (PlainTime.toString rounded)
 
--- | Converts a purescript-datetime `Time` to a `PlainTime`. Microsecond and
--- | nanosecond components are set to zero.
-exampleFromTime :: Effect Unit
-exampleFromTime = do
-  time <- PlainTime.fromString "14:30:00"
-  roundTripped <- PlainTime.fromTime (PlainTime.toTime time)
-  Console.log (PlainTime.toString roundTripped)
-
--- | Converts a `PlainTime` to a purescript-datetime `Time`.
--- | Microsecond and nanosecond are dropped (treated as zero).
-exampleToTime :: Effect Unit
-exampleToTime = do
-  time <- PlainTime.fromString "14:30:00"
-  Console.log (show (PlainTime.toTime time))
-
 -- | Serializes to ISO 8601 time format. Options: fractionalSecondDigits, smallestUnit, roundingMode.
 exampleToStringWithOptions :: Effect Unit
 exampleToStringWithOptions = do

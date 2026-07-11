@@ -30,9 +30,6 @@ module JS.Temporal.PlainTime
   , since
   -- * Round
   , round
-  -- * Conversions
-  , fromTime
-  , toTime
   -- * Serialization
   , toStringWithOptions
   , toString
@@ -47,12 +44,8 @@ import Prelude hiding (add, compare)
 
 import ConvertableOptions (class ConvertOption, class ConvertOptionsWithDefaults)
 import ConvertableOptions as ConvertableOptions
-import Data.Enum (fromEnum, toEnum)
 import Data.Function.Uncurried (Fn2)
 import Data.Function.Uncurried as Function.Uncurried
-import Data.Maybe (fromJust)
-import Data.Time (Time(..))
-import Data.Time as Time
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3)
 import Effect.Uncurried as Effect.Uncurried
@@ -66,7 +59,6 @@ import JS.Temporal.Options.RoundingMode as RoundingMode
 import JS.Temporal.Options.TemporalUnit (TemporalUnit)
 import JS.Temporal.Options.TemporalUnit as TemporalUnit
 import JS.Temporal.PlainTime.Internal (PlainTime)
-import Partial.Unsafe (unsafePartial)
 import Prim.Row (class Union)
 import Unsafe.Coerce as Unsafe.Coerce
 
@@ -556,54 +548,6 @@ foreign import _since :: EffectFn2 PlainTime PlainTime Duration
 -- | ```
 since :: PlainTime -> PlainTime -> Effect Duration
 since = Effect.Uncurried.runEffectFn2 _since
-
--- Conversions
-
--- | Converts a purescript-datetime `Time` to a `PlainTime`. Microsecond and
--- | nanosecond components are set to zero.
--- |
--- | ```purescript
--- | exampleFromTime :: Effect Unit
--- | exampleFromTime = do
--- |   time <- PlainTime.fromString "14:30:00"
--- |   roundTripped <- PlainTime.fromTime (PlainTime.toTime time)
--- |   Console.log (PlainTime.toString roundTripped)
--- | ```
--- | ---
--- | ```text
--- | 14:30:00
--- | ```
-fromTime :: Time -> Effect PlainTime
-fromTime time =
-  from
-    { hour: fromEnum (Time.hour time)
-    , minute: fromEnum (Time.minute time)
-    , second: fromEnum (Time.second time)
-    , millisecond: fromEnum (Time.millisecond time)
-    }
-
--- | Converts a `PlainTime` to a purescript-datetime `Time`.
--- | Microsecond and nanosecond are dropped (treated as zero).
--- |
--- | ```purescript
--- | exampleToTime :: Effect Unit
--- | exampleToTime = do
--- |   time <- PlainTime.fromString "14:30:00"
--- |   Console.log (show (PlainTime.toTime time))
--- | ```
--- | ---
--- | ```text
--- | (Time (Hour 14) (Minute 30) (Second 0) (Millisecond 0))
--- | ```
-toTime :: PlainTime -> Time
-toTime plain =
-  unsafePartial fromJust
-    ( Time
-        <$> toEnum (hour plain)
-        <*> toEnum (minute plain)
-        <*> toEnum (second plain)
-        <*> toEnum (millisecond plain)
-    )
 
 -- Round
 

@@ -55,8 +55,6 @@ module JS.Temporal.PlainDateTime
   , toStringWithOptions
   , toString
   -- * Conversions
-  , fromDateTime
-  , toDateTime
   , toPlainDate
   , toPlainTime
   , toZonedDateTime
@@ -71,8 +69,6 @@ import Prelude hiding (add, compare)
 
 import ConvertableOptions (class ConvertOption, class ConvertOptionsWithDefaults)
 import ConvertableOptions as ConvertableOptions
-import Data.DateTime (DateTime(..))
-import Data.DateTime as DateTime
 import Data.Function.Uncurried (Fn1, Fn2)
 import Data.Function.Uncurried as Function.Uncurried
 import Data.Maybe (Maybe)
@@ -91,10 +87,8 @@ import JS.Temporal.Options.RoundingMode (RoundingMode)
 import JS.Temporal.Options.RoundingMode as RoundingMode
 import JS.Temporal.Options.TemporalUnit (TemporalUnit)
 import JS.Temporal.Options.TemporalUnit as TemporalUnit
-import JS.Temporal.PlainDate as PlainDate
 import JS.Temporal.PlainDate.Internal (PlainDate)
 import JS.Temporal.PlainDateTime.Internal (PlainDateTime)
-import JS.Temporal.PlainTime as PlainTime
 import JS.Temporal.PlainTime.Internal (PlainTime)
 import JS.Temporal.ZonedDateTime.Internal (ZonedDateTime)
 import Prim.Row (class Union)
@@ -863,7 +857,7 @@ foreign import _untilWithOptions :: forall r. EffectFn3 { | r } PlainDateTime Pl
 -- | ```
 -- | ---
 -- | ```text
--- | 324 days until next billing
+-- | 263 days until next billing
 -- | ```
 untilWithOptions
   :: forall provided
@@ -1118,45 +1112,6 @@ toStringWithOptions providedOptions plainDateTime =
     plainDateTime
 
 -- Instances (Eq, Ord, Show from Internal)
-
--- Conversions
-
--- | Converts a purescript-datetime `DateTime` to a `PlainDateTime`.
--- |
--- | ```purescript
--- | exampleFromDateTime :: Effect Unit
--- | exampleFromDateTime = do
--- |   dt <- PlainDateTime.fromString "2024-07-01T12:00:00"
--- |   roundTripped <- PlainDateTime.fromDateTime (PlainDateTime.toDateTime dt)
--- |   Console.log (PlainDateTime.toString roundTripped)
--- | ```
--- | ---
--- | ```text
--- | 2024-07-01T12:00:00
--- | ```
-fromDateTime :: DateTime -> Effect PlainDateTime
-fromDateTime dateTime = do
-  plainDate <- PlainDate.fromDate (DateTime.date dateTime)
-  plainTime <- PlainTime.fromTime (DateTime.time dateTime)
-  pure (PlainDate.toPlainDateTime plainTime plainDate)
-
--- | Converts a `PlainDateTime` to a purescript-datetime `DateTime`.
--- |
--- | ```purescript
--- | exampleToDateTime :: Effect Unit
--- | exampleToDateTime = do
--- |   dt <- PlainDateTime.fromString "2024-07-01T12:00:00"
--- |   Console.log (show (PlainDateTime.toDateTime dt))
--- | ```
--- | ---
--- | ```text
--- | (DateTime (Date (Year 2024) July (Day 1)) (Time (Hour 12) (Minute 0) (Second 0) (Millisecond 0)))
--- | ```
-toDateTime :: PlainDateTime -> DateTime
-toDateTime plainDateTime =
-  DateTime
-    (PlainDate.toDate (toPlainDate plainDateTime))
-    (PlainTime.toTime (toPlainTime plainDateTime))
 
 foreign import _toPlainDate :: Fn1 PlainDateTime PlainDate
 

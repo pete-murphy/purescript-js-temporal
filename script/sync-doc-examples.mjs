@@ -17,7 +17,7 @@
 
 import { execSync } from "child_process";
 import { readFileSync, readdirSync, writeFileSync } from "fs";
-import { basename, join } from "path";
+import { join } from "path";
 import { pathToFileURL } from "url";
 
 const ROOT = new URL("..", import.meta.url).pathname;
@@ -77,7 +77,10 @@ function runDocsRunnerAndParseOutput() {
  * e.g. .../Examples/Docs/Instant.purs -> "JS.Temporal.Instant"
  */
 function docsFileToModule(filePath) {
-  const name = basename(filePath, ".purs");
+  const name = filePath
+    .slice(DOCS_DIR.length + 1)
+    .replace(/\.purs$/, "")
+    .replaceAll("/", ".");
   return `JS.Temporal.${name}`;
 }
 
@@ -513,8 +516,7 @@ function generateMainModule(docFiles) {
 
   for (const fileName of docFiles) {
     const docFilePath = join(DOCS_DIR, fileName);
-    const name = basename(fileName, ".purs");
-    const docsModuleName = name; // e.g. "Duration"
+    const docsModuleName = fileName.replace(/\.purs$/, "").replaceAll("/", "."); // e.g. "Duration", "Duration.Compat"
     const examples = extractExamples(docFilePath);
 
     for (const example of examples) {
@@ -596,7 +598,7 @@ function generateMainModule(docFiles) {
 }
 
 function main() {
-  const docFiles = readdirSync(DOCS_DIR)
+  const docFiles = readdirSync(DOCS_DIR, { recursive: true })
     .filter((fileName) => fileName.endsWith(".purs") && fileName !== "Main.purs");
 
   // Step 1: Generate Main.purs from discovered examples

@@ -9,7 +9,6 @@ module JS.Temporal.Instant
   , fromString
   , fromEpochMilliseconds
   , fromEpochNanoseconds
-  , fromJSDate
   -- * Properties
   , epochMilliseconds
   , epochNanoseconds
@@ -24,8 +23,6 @@ module JS.Temporal.Instant
   -- * Round
   , round
   -- * Conversions
-  , fromDateTimeInstant
-  , toDateTimeInstant
   , toZonedDateTimeISO
   -- * Serialization
   , toStringWithOptions
@@ -40,14 +37,8 @@ import Prelude hiding (add, compare)
 
 import ConvertableOptions (class ConvertOption, class ConvertOptionsWithDefaults)
 import ConvertableOptions as ConvertableOptions
-import Data.DateTime.Instant as DateTime.Instant
 import Data.Function.Uncurried (Fn2)
 import Data.Function.Uncurried as Function.Uncurried
-import Data.Generic.Rep (from)
-import Data.JSDate (JSDate)
-import Data.Maybe (Maybe)
-import Data.Newtype (unwrap)
-import Data.Time.Duration (Milliseconds(..))
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3)
 import Effect.Uncurried as Effect.Uncurried
@@ -117,24 +108,6 @@ foreign import _fromEpochNanoseconds :: EffectFn1 BigInt Instant
 -- | ```
 fromEpochNanoseconds :: BigInt -> Effect Instant
 fromEpochNanoseconds = Effect.Uncurried.runEffectFn1 _fromEpochNanoseconds
-
-foreign import _fromJSDate :: EffectFn1 JSDate Instant
-
--- | Creates an Instant from a JavaScript Date.
--- |
--- | ```purescript
--- | exampleFromJSDate :: Effect Unit
--- | exampleFromJSDate = do
--- |   jsDate <- JSDate.parse "2024-01-15T12:00:00Z"
--- |   instant <- Instant.fromJSDate jsDate
--- |   Console.log (Instant.toString instant)
--- | ```
--- | ---
--- | ```text
--- | 2024-01-15T12:00:00Z
--- | ```
-fromJSDate :: JSDate -> Effect Instant
-fromJSDate = Effect.Uncurried.runEffectFn1 _fromJSDate
 
 -- Properties
 
@@ -427,40 +400,6 @@ round providedOptions instant =
     instant
 
 -- Conversions
-
--- | Converts a purescript-datetime `Instant` to a Temporal `Instant`.
--- |
--- | ```purescript
--- | exampleFromDateTimeInstant :: Effect Unit
--- | exampleFromDateTimeInstant = do
--- |   let dtInstant = DateTime.Instant.fromDateTime bottom
--- |   instant <- Instant.fromDateTimeInstant dtInstant
--- |   Console.log (Instant.toString instant)
--- | ```
--- | ---
--- | ```text
--- | -271820-01-01T00:00:00Z
--- | ```
-fromDateTimeInstant :: DateTime.Instant.Instant -> Effect Instant
-fromDateTimeInstant instant = fromEpochMilliseconds (unwrap (DateTime.Instant.unInstant instant))
-
--- | Converts a Temporal `Instant` to a purescript-datetime `Instant`.
--- | Returns `Nothing` if the value is outside the datetime Instant range.
--- |
--- | ```purescript
--- | exampleToDateTimeInstant :: Effect Unit
--- | exampleToDateTimeInstant = do
--- |   instant <- Instant.fromString "2024-01-15T12:00:00Z"
--- |   case Instant.toDateTimeInstant instant of
--- |     Just dtInstant -> Console.log (show dtInstant)
--- |     Nothing -> Console.log "Out of range"
--- | ```
--- | ---
--- | ```text
--- | (Instant (Milliseconds 1705320000000.0))
--- | ```
-toDateTimeInstant :: Instant -> Maybe DateTime.Instant.Instant
-toDateTimeInstant instant = DateTime.Instant.instant (Milliseconds (epochMilliseconds instant))
 
 foreign import _toZonedDateTimeISO :: Fn2 String Instant ZonedDateTime
 

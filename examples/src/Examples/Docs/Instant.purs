@@ -3,9 +3,6 @@ module Examples.Docs.Instant where
 
 import Prelude
 
-import Data.DateTime.Instant as DateTime.Instant
-import Data.JSDate as JSDate
-import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.BigInt as BigInt
@@ -36,13 +33,6 @@ exampleFromEpochMilliseconds = do
 exampleFromEpochNanoseconds :: Effect Unit
 exampleFromEpochNanoseconds = do
   instant <- Instant.fromEpochNanoseconds (BigInt.fromInt 1000000000)
-  Console.log (Instant.toString instant)
-
--- | Creates an Instant from a JavaScript Date.
-exampleFromJSDate :: Effect Unit
-exampleFromJSDate = do
-  jsDate <- JSDate.parse "2024-01-15T12:00:00Z"
-  instant <- Instant.fromJSDate jsDate
   Console.log (Instant.toString instant)
 
 -- | Milliseconds since the Unix epoch.
@@ -119,22 +109,6 @@ exampleRound = do
     }
     instant
   Console.log (Instant.toString rounded)
-
--- | Converts a purescript-datetime `Instant` to a Temporal `Instant`.
-exampleFromDateTimeInstant :: Effect Unit
-exampleFromDateTimeInstant = do
-  let dtInstant = DateTime.Instant.fromDateTime bottom
-  instant <- Instant.fromDateTimeInstant dtInstant
-  Console.log (Instant.toString instant)
-
--- | Converts a Temporal `Instant` to a purescript-datetime `Instant`.
--- | Returns `Nothing` if the value is outside the datetime Instant range.
-exampleToDateTimeInstant :: Effect Unit
-exampleToDateTimeInstant = do
-  instant <- Instant.fromString "2024-01-15T12:00:00Z"
-  case Instant.toDateTimeInstant instant of
-    Just dtInstant -> Console.log (show dtInstant)
-    Nothing -> Console.log "Out of range"
 
 -- | Converts the instant to a ZonedDateTime in the given time zone (e.g. `"America/New_York"`).
 exampleToZonedDateTimeISO :: Effect Unit

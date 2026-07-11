@@ -96,20 +96,30 @@ All Temporal types that represent a point in time (`PlainDate`, `PlainTime`, `Pl
 
 ## `datetime` interop
 
-The library provides conversion functions between `js-temporal` types and [`datetime`](https://pursuit.purescript.org/packages/purescript-datetime) types, so you can integrate with existing code that uses `Data.Date`, `Data.Time`, `Data.DateTime`, or `Data.DateTime.Instant`.
+Each Temporal type has a `Compat` submodule with conversion functions to and from [`datetime`](https://pursuit.purescript.org/packages/purescript-datetime) types, so you can integrate with existing code that uses `Data.Date`, `Data.Time`, `Data.DateTime`, or `Data.DateTime.Instant`. The convention follows the parent modules: `from*` constructs the Temporal type, `to*` converts out of it.
 
-| `js-temporal`                       | `datetime`                        |
-| ----------------------------------- | --------------------------------- |
-| `PlainDate.(to\|from)Date`          | `Data.Date.Date`                  |
-| `PlainTime.(to\|from)Time`          | `Data.Time.Time`                  |
-| `PlainDateTime.(to\|from)DateTime`  | `Data.DateTime.DateTime`          |
-| `Instant.(to\|from)DateTimeInstant` | `Data.DateTime.Instant`           |
-| `Duration.(to\|from)Milliseconds`   | `Data.Time.Duration.Milliseconds` |
+| Module                            | Converts to/from                     |
+| --------------------------------- | ------------------------------------ |
+| `PlainDate.Compat.(from\|to)Date` | `Data.Date.Date`                     |
+| `PlainTime.Compat.(from\|to)Time` | `Data.Time.Time`                     |
+| `PlainDateTime.Compat.(from\|to)DateTime` | `Data.DateTime.DateTime`     |
+| `Instant.Compat.(from\|to)Instant` | `Data.DateTime.Instant.Instant`     |
+| `Duration.Compat.(from\|to)Milliseconds` | `Data.Time.Duration.Milliseconds` |
+| `PlainYearMonth.Compat.(from\|to)Components` | `{ year :: Year, month :: Month }` |
+| `PlainMonthDay.Compat.(from\|to)Components` | `{ month :: Month, day :: Day }` |
 
-Each module exports `fromX` / `toX` functions for its corresponding type — for example, `PlainDate.fromDate` and `PlainDate.toDate`. All conversions round-trip at the precision supported by `datetime` (milliseconds). Microsecond and nanosecond components are dropped when converting to `datetime` types.
+```purescript
+import JS.Temporal.PlainDate.Compat as PlainDate.Compat
 
-`Duration.fromMilliseconds` and `Duration.toMilliseconds` support fixed-unit durations only (days, hours, minutes, seconds, milliseconds); calendar units (years, months, weeks) are not supported.
+do
+  plainDate <- PlainDate.Compat.fromDate date
+  let date' = PlainDate.Compat.toDate plainDate
+```
 
-`PlainYearMonth` and `PlainMonthDay` can be converted to and from their `Data.Date.Component` parts with `(to|from)DateComponents` — for example, `PlainYearMonth.toDateComponents :: PlainYearMonth -> { year :: Year, month :: Month }`.
+All conversions round-trip at the precision supported by `datetime` (milliseconds). Microsecond and nanosecond components are dropped when converting to `datetime` types.
 
-`ZonedDateTime` has no `datetime` equivalent.
+`Duration.Compat` supports fixed-unit durations only (days, hours, minutes, seconds, milliseconds); calendar units (years, months, weeks) are not supported.
+
+`Instant.Compat` additionally converts to and from the legacy JavaScript `Date` with `(from|to)JSDate` (via [`js-date`](https://pursuit.purescript.org/packages/purescript-js-date)).
+
+`ZonedDateTime` has no `datetime` equivalent, so there is no `ZonedDateTime.Compat`.

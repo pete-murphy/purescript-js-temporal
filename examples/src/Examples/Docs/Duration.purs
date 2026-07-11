@@ -3,8 +3,6 @@ module Examples.Docs.Duration where
 
 import Prelude
 
-import Data.Maybe (Maybe(..))
-import Data.Time.Duration (Milliseconds(..))
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Intl.DurationFormat as JS.Intl.DurationFormat
@@ -198,19 +196,3 @@ exampleToStringWithOptions :: Effect Unit
 exampleToStringWithOptions = do
   duration <- Duration.from { hours: 2, minutes: 30, seconds: 15, milliseconds: 400 }
   Console.log (Duration.toStringWithOptions { smallestUnit: TemporalUnit.Second } duration)
-
--- | Creates a Temporal Duration from purescript-datetime `Milliseconds`.
-exampleFromMilliseconds :: Effect Unit
-exampleFromMilliseconds = do
-  duration <- Duration.fromMilliseconds (Milliseconds 5000.0)
-  Console.log (Duration.toString duration)
-
--- | Converts a Temporal Duration to purescript-datetime `Milliseconds`. Returns
--- | `Nothing` if the duration contains calendar units (years, months, weeks).
--- | Microseconds and nanoseconds are dropped.
-exampleToMilliseconds :: Effect Unit
-exampleToMilliseconds = do
-  duration <- Duration.from { seconds: 5 }
-  case Duration.toMilliseconds duration of
-    Just (Milliseconds ms) -> Console.log ("Milliseconds: " <> show ms)
-    Nothing -> Console.log "Cannot convert (has calendar units)"

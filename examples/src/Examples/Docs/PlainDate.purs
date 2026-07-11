@@ -3,8 +3,6 @@ module Examples.Docs.PlainDate where
 
 import Prelude
 
-import Data.Date as Date
-import Data.Enum (fromEnum)
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Intl.DateTimeFormat as JS.Intl.DateTimeFormat
@@ -37,13 +35,6 @@ exampleFrom = do
   date <- PlainDate.from { year: 2024, month: 7, day: 1 }
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
   Console.log (JS.Intl.DateTimeFormat.format formatter date)
-
--- | Converts a purescript-datetime `Date` to a `PlainDate`.
-exampleFromDate :: Effect Unit
-exampleFromDate = do
-  date <- PlainDate.fromString "2024-07-01"
-  roundTripped <- PlainDate.fromDate (PlainDate.toDate date)
-  Console.log (PlainDate.toString roundTripped)
 
 -- | Creates a PlainDate from an RFC 9557 / ISO 8601 date string (e.g. `"2024-01-15"`).
 -- | Options: overflow.
@@ -254,13 +245,6 @@ exampleSince = do
   end <- PlainDate.fromString "2024-03-15"
   elapsed <- PlainDate.since start end
   Console.log (Duration.toString elapsed)
-
--- | Converts a `PlainDate` to a purescript-datetime `Date`.
-exampleToDate :: Effect Unit
-exampleToDate = do
-  date <- PlainDate.fromString "2024-07-01"
-  let d = PlainDate.toDate date
-  Console.log ("PureScript Date year: " <> show (fromEnum (Date.year d)))
 
 -- | Combines a `PlainTime` with this date to form a `PlainDateTime`.
 exampleToPlainDateTime :: Effect Unit

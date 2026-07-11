@@ -17,7 +17,7 @@
  */
 
 import { readFileSync, readdirSync } from "fs";
-import { join, basename } from "path";
+import { join } from "path";
 
 const ROOT = new URL("..", import.meta.url).pathname;
 const SRC_DIR = join(ROOT, "src", "JS", "Temporal");
@@ -125,16 +125,19 @@ export function exampleNameToExport(exampleName) {
  * Find all module pairs: { name, srcPath, docsPath }
  */
 function discoverModulePairs() {
-  const srcFiles = readdirSync(SRC_DIR)
+  const srcFiles = readdirSync(SRC_DIR, { recursive: true })
     .filter((f) => f.endsWith(".purs"))
-    .filter((f) => !f.includes("Internal"));
+    .filter((f) => !f.includes("Internal"))
+    .filter((f) => !f.startsWith("Options"));
 
-  const docsFiles = new Set(readdirSync(DOCS_DIR));
+  const docsFiles = new Set(
+    readdirSync(DOCS_DIR, { recursive: true }).filter((f) => f.endsWith(".purs"))
+  );
 
   const pairs = [];
   for (const srcFile of srcFiles) {
-    const name = basename(srcFile, ".purs");
-    const docsFile = `${name}.purs`;
+    const name = srcFile.replace(/\.purs$/, "").replaceAll("/", ".");
+    const docsFile = srcFile;
     if (docsFiles.has(docsFile)) {
       pairs.push({
         name,

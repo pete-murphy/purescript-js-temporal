@@ -20,7 +20,9 @@ import JS.Intl.DateTimeFormat as DateTimeFormat
 import JS.Intl.DurationFormat as DurationFormat
 import JS.Intl.Locale as Locale
 import JS.Temporal.Duration as Duration
+import JS.Temporal.Duration.Compat as Duration.Compat
 import JS.Temporal.Instant as Instant
+import JS.Temporal.Instant.Compat as Instant.Compat
 import JS.Temporal.Now as Now
 import JS.Temporal.Options.CalendarName as CalendarName
 import JS.Temporal.Options.Disambiguation as Disambiguation
@@ -28,10 +30,15 @@ import JS.Temporal.Options.Overflow as Overflow
 import JS.Temporal.Options.RoundingMode as RoundingMode
 import JS.Temporal.Options.TemporalUnit as TemporalUnit
 import JS.Temporal.PlainDate as PlainDate
+import JS.Temporal.PlainDate.Compat as PlainDate.Compat
 import JS.Temporal.PlainDateTime as PlainDateTime
+import JS.Temporal.PlainDateTime.Compat as PlainDateTime.Compat
 import JS.Temporal.PlainMonthDay as PlainMonthDay
+import JS.Temporal.PlainMonthDay.Compat as PlainMonthDay.Compat
 import JS.Temporal.PlainTime as PlainTime
+import JS.Temporal.PlainTime.Compat as PlainTime.Compat
 import JS.Temporal.PlainYearMonth as PlainYearMonth
+import JS.Temporal.PlainYearMonth.Compat as PlainYearMonth.Compat
 import JS.Temporal.ZonedDateTime as ZonedDateTime
 import Test.Assert.Extended as Test
 import Test.QuickCheck (Result(..), (===))
@@ -1038,43 +1045,43 @@ test_DateTimeInterop = do
   Console.log "  PlainDate round-trip"
   QuickCheck.quickCheckGen do
     date <- genDate
-    let plainDate = unsafePerformEffect (PlainDate.fromDate date)
-    pure (PlainDate.toDate plainDate === date)
+    let plainDate = unsafePerformEffect (PlainDate.Compat.fromDate date)
+    pure (PlainDate.Compat.toDate plainDate === date)
 
   Console.log "  PlainTime round-trip"
   QuickCheck.quickCheckGen do
     time <- genTime
-    let plainTime = unsafePerformEffect (PlainTime.fromTime time)
-    pure (PlainTime.toTime plainTime === time)
+    let plainTime = unsafePerformEffect (PlainTime.Compat.fromTime time)
+    pure (PlainTime.Compat.toTime plainTime === time)
 
   Console.log "  PlainDateTime round-trip"
   QuickCheck.quickCheckGen do
     dateTime <- genDateTime
-    let plainDateTime = unsafePerformEffect (PlainDateTime.fromDateTime dateTime)
-    pure (PlainDateTime.toDateTime plainDateTime === dateTime)
+    let plainDateTime = unsafePerformEffect (PlainDateTime.Compat.fromDateTime dateTime)
+    pure (PlainDateTime.Compat.toDateTime plainDateTime === dateTime)
 
   Console.log "  Instant round-trip"
   QuickCheck.quickCheckGen do
     dateTime <- genDateTime
     let dateTimeInstant = DateTime.Instant.fromDateTime dateTime
-    let temporalInstant = unsafePerformEffect (Instant.fromDateTimeInstant dateTimeInstant)
-    pure case Instant.toDateTimeInstant temporalInstant of
+    let temporalInstant = unsafePerformEffect (Instant.Compat.fromInstant dateTimeInstant)
+    pure case Instant.Compat.toInstant temporalInstant of
       Just roundTripped -> roundTripped === dateTimeInstant
-      Nothing -> Failed ("Instant.toDateTimeInstant returned Nothing for " <> show dateTimeInstant)
+      Nothing -> Failed ("Instant.Compat.toInstant returned Nothing for " <> show dateTimeInstant)
 
   Console.log "  PlainYearMonth round-trip"
   QuickCheck.quickCheckGen do
     date <- genDate
     let components = { year: Date.year date, month: Date.month date }
-    let plainYearMonth = unsafePerformEffect (PlainYearMonth.fromDateComponents components)
-    pure (PlainYearMonth.toDateComponents plainYearMonth === components)
+    let plainYearMonth = unsafePerformEffect (PlainYearMonth.Compat.fromComponents components)
+    pure (PlainYearMonth.Compat.toComponents plainYearMonth === components)
 
   Console.log "  PlainMonthDay round-trip"
   QuickCheck.quickCheckGen do
     date <- genDate
     let components = { month: Date.month date, day: Date.day date }
-    let plainMonthDay = unsafePerformEffect (PlainMonthDay.fromDateComponents components)
-    pure (PlainMonthDay.toDateComponents plainMonthDay === components)
+    let plainMonthDay = unsafePerformEffect (PlainMonthDay.Compat.fromComponents components)
+    pure (PlainMonthDay.Compat.toComponents plainMonthDay === components)
 
 -- Duration arithmetic commutativity: add in Temporal then convert == convert then add in datetime
 genFixedDurationComponents :: Gen { days :: Int, hours :: Int, minutes :: Int, seconds :: Int, milliseconds :: Int }
@@ -1115,9 +1122,9 @@ test_DurationArithmeticInterop = do
           + Int.toNumber components.minutes * Int.toNumber millisecondsPerMinute
           + Int.toNumber components.seconds * Int.toNumber millisecondsPerSecond
           + Int.toNumber components.milliseconds
-    let plainDateTime = unsafePerformEffect (PlainDateTime.fromDateTime dateTime)
+    let plainDateTime = unsafePerformEffect (PlainDateTime.Compat.fromDateTime dateTime)
     let resultTemporal = unsafePerformEffect (PlainDateTime.add temporalDuration plainDateTime)
-    let resultTemporalAsDateTime = PlainDateTime.toDateTime resultTemporal
+    let resultTemporalAsDateTime = PlainDateTime.Compat.toDateTime resultTemporal
     pure case Data.DateTime.adjust (Milliseconds totalMilliseconds) dateTime of
       Nothing -> Success
       Just resultDateTime -> resultTemporalAsDateTime === resultDateTime
@@ -1126,13 +1133,13 @@ test_DurationArithmeticInterop = do
   QuickCheck.quickCheckGen do
     components <- genFixedDurationComponents
     let temporalDuration = unsafePerformEffect (Duration.from components)
-    pure case Duration.toMilliseconds temporalDuration of
+    pure case Duration.Compat.toMilliseconds temporalDuration of
       Nothing -> Success
       Just milliseconds ->
         let
-          roundTripped = unsafePerformEffect (Duration.fromMilliseconds milliseconds)
+          roundTripped = unsafePerformEffect (Duration.Compat.fromMilliseconds milliseconds)
         in
-          case Duration.toMilliseconds roundTripped of
+          case Duration.Compat.toMilliseconds roundTripped of
             Nothing -> Failed "Duration round-trip: fromMilliseconds produced duration that toMilliseconds returns Nothing"
             Just millisecondsBack -> milliseconds === millisecondsBack
 

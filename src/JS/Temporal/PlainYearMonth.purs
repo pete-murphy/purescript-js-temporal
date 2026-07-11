@@ -31,6 +31,8 @@ module JS.Temporal.PlainYearMonth
   , with
   -- * Conversions
   , toPlainDate
+  , fromDateComponents
+  , toDateComponents
   -- * Difference
   , untilWithOptions
   , until
@@ -49,9 +51,11 @@ import Prelude hiding (add, compare)
 
 import ConvertableOptions (class ConvertOption, class ConvertOptionsWithDefaults)
 import ConvertableOptions as ConvertableOptions
+import Data.Date (Month, Year)
+import Data.Enum (fromEnum, toEnum)
 import Data.Function.Uncurried (Fn2)
 import Data.Function.Uncurried as Function.Uncurried
-import Data.Maybe (Maybe)
+import Data.Maybe (Maybe, fromJust)
 import Data.Nullable (Nullable, toMaybe)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3)
@@ -67,6 +71,7 @@ import JS.Temporal.Options.TemporalUnit (TemporalUnit)
 import JS.Temporal.Options.TemporalUnit as TemporalUnit
 import JS.Temporal.PlainDate.Internal (PlainDate)
 import JS.Temporal.PlainYearMonth.Internal (PlainYearMonth)
+import Partial.Unsafe (unsafePartial)
 import Prim.Row (class Union)
 import Unsafe.Coerce as Unsafe.Coerce
 
@@ -558,6 +563,45 @@ foreign import _toPlainDate :: EffectFn2 { day :: Int } PlainYearMonth PlainDate
 -- | ```
 toPlainDate :: { day :: Int } -> PlainYearMonth -> Effect PlainDate
 toPlainDate = Effect.Uncurried.runEffectFn2 _toPlainDate
+
+-- | Creates a `PlainYearMonth` from purescript-datetime `Year` and `Month` components.
+-- |
+-- | ```purescript
+-- | exampleFromDateComponents :: Effect Unit
+-- | exampleFromDateComponents = do
+-- |   yearMonth <- PlainYearMonth.fromString "2024-06"
+-- |   roundTripped <- PlainYearMonth.fromDateComponents (PlainYearMonth.toDateComponents yearMonth)
+-- |   Console.log (PlainYearMonth.toString roundTripped)
+-- | ```
+-- | ---
+-- | ```text
+-- | 2024-06
+-- | ```
+fromDateComponents :: { year :: Year, month :: Month } -> Effect PlainYearMonth
+fromDateComponents components = from { year: fromEnum components.year, month: fromEnum components.month }
+
+-- | Converts a `PlainYearMonth` to its purescript-datetime `Year` and `Month` components.
+-- |
+-- | Only meaningful for the ISO 8601 calendar: `toEnum` assumes a Gregorian 1–12
+-- | month, and `Year` is bounded (−271820..275759). For a non-iso8601 calendar,
+-- | or a year outside that range, this may throw.
+-- |
+-- | ```purescript
+-- | exampleToDateComponents :: Effect Unit
+-- | exampleToDateComponents = do
+-- |   yearMonth <- PlainYearMonth.fromString "2024-06"
+-- |   let components = PlainYearMonth.toDateComponents yearMonth
+-- |   Console.log (show components.year <> ", " <> show components.month)
+-- | ```
+-- | ---
+-- | ```text
+-- | (Year 2024), June
+-- | ```
+toDateComponents :: PlainYearMonth -> { year :: Year, month :: Month }
+toDateComponents plainYearMonth =
+  { year: unsafePartial fromJust (toEnum (year plainYearMonth))
+  , month: unsafePartial fromJust (toEnum (month plainYearMonth))
+  }
 
 -- Difference
 

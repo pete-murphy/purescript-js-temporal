@@ -98,16 +98,18 @@ All Temporal types that represent a point in time (`PlainDate`, `PlainTime`, `Pl
 
 The library provides conversion functions between `js-temporal` types and [`datetime`](https://pursuit.purescript.org/packages/purescript-datetime) types, so you can integrate with existing code that uses `Data.Date`, `Data.Time`, `Data.DateTime`, or `Data.DateTime.Instant`.
 
-| `js-temporal`   | `datetime`                        |
-| --------------- | --------------------------------- |
-| `PlainDate`     | `Data.Date.Date`                  |
-| `PlainTime`     | `Data.Time.Time`                  |
-| `PlainDateTime` | `Data.DateTime.DateTime`          |
-| `Instant`       | `Data.DateTime.Instant`           |
-| `Duration`      | `Data.Time.Duration.Milliseconds` |
+| `js-temporal`                       | `datetime`                        |
+| ----------------------------------- | --------------------------------- |
+| `PlainDate.(to\|from)Date`          | `Data.Date.Date`                  |
+| `PlainTime.(to\|from)Time`          | `Data.Time.Time`                  |
+| `PlainDateTime.(to\|from)DateTime`  | `Data.DateTime.DateTime`          |
+| `Instant.(to\|from)DateTimeInstant` | `Data.DateTime.Instant`           |
+| `Duration.(to\|from)Milliseconds`   | `Data.Time.Duration.Milliseconds` |
 
 Each module exports `fromX` / `toX` functions for its corresponding type — for example, `PlainDate.fromDate` and `PlainDate.toDate`. All conversions round-trip at the precision supported by `datetime` (milliseconds). Microsecond and nanosecond components are dropped when converting to `datetime` types.
 
 `Duration.fromMilliseconds` and `Duration.toMilliseconds` support fixed-unit durations only (days, hours, minutes, seconds, milliseconds); calendar units (years, months, weeks) are not supported.
 
-`ZonedDateTime`, `PlainYearMonth`, and `PlainMonthDay` have no `datetime` equivalents.
+`PlainYearMonth` and `PlainMonthDay` can be converted to and from their `Data.Date.Component` parts with `(to|from)DateComponents` — for example, `PlainYearMonth.toDateComponents :: PlainYearMonth -> { year :: Year, month :: Month }`.
+
+`ZonedDateTime` has no `datetime` equivalent.

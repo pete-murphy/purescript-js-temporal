@@ -186,6 +186,8 @@ main = do
   runExample "JS.Temporal.PlainMonthDay.withWithOptions" PlainMonthDay.exampleWithWithOptions
   runExample "JS.Temporal.PlainMonthDay.with" PlainMonthDay.exampleWith
   runExample "JS.Temporal.PlainMonthDay.toPlainDate" PlainMonthDay.exampleToPlainDate
+  runExample "JS.Temporal.PlainMonthDay.fromDateComponents" PlainMonthDay.exampleFromDateComponents
+  runExample "JS.Temporal.PlainMonthDay.toDateComponents" PlainMonthDay.exampleToDateComponents
   runExample "JS.Temporal.PlainMonthDay.toStringWithOptions" PlainMonthDay.exampleToStringWithOptions
   runExample "JS.Temporal.PlainMonthDay.toString" PlainMonthDay.exampleToString
   runExample "JS.Temporal.PlainTime.fromWithOptions" PlainTime.exampleFromWithOptions
@@ -232,6 +234,8 @@ main = do
   runExample "JS.Temporal.PlainYearMonth.withWithOptions" PlainYearMonth.exampleWithWithOptions
   runExample "JS.Temporal.PlainYearMonth.with" PlainYearMonth.exampleWith
   runExample "JS.Temporal.PlainYearMonth.toPlainDate" PlainYearMonth.exampleToPlainDate
+  runExample "JS.Temporal.PlainYearMonth.fromDateComponents" PlainYearMonth.exampleFromDateComponents
+  runExample "JS.Temporal.PlainYearMonth.toDateComponents" PlainYearMonth.exampleToDateComponents
   runExample "JS.Temporal.PlainYearMonth.untilWithOptions" PlainYearMonth.exampleUntilWithOptions
   runExample "JS.Temporal.PlainYearMonth.until" PlainYearMonth.exampleUntil
   runExample "JS.Temporal.PlainYearMonth.sinceWithOptions" PlainYearMonth.exampleSinceWithOptions

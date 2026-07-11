@@ -79,6 +79,20 @@ exampleToPlainDate = do
   formatter <- JS.Intl.DateTimeFormat.new [ locale ] { dateStyle: "long" }
   Console.log ("Birthday in 2030: " <> JS.Intl.DateTimeFormat.format formatter birthdayIn2030)
 
+-- | Creates a `PlainMonthDay` from purescript-datetime `Month` and `Day` components.
+exampleFromDateComponents :: Effect Unit
+exampleFromDateComponents = do
+  monthDay <- PlainMonthDay.fromString "12-15"
+  roundTripped <- PlainMonthDay.fromDateComponents (PlainMonthDay.toDateComponents monthDay)
+  Console.log (PlainMonthDay.toString roundTripped)
+
+-- | Converts a `PlainMonthDay` to its purescript-datetime `Month` and `Day` components.
+exampleToDateComponents :: Effect Unit
+exampleToDateComponents = do
+  monthDay <- PlainMonthDay.fromString "12-15"
+  let components = PlainMonthDay.toDateComponents monthDay
+  Console.log (show components.month <> " " <> show components.day)
+
 -- | Serializes to ISO 8601 month-day format. Options: calendarName.
 exampleToStringWithOptions :: Effect Unit
 exampleToStringWithOptions = do

@@ -3,6 +3,7 @@ module Test.Main (main) where
 import Prelude
 
 import Control.Monad.Rec.Class (Step(..), tailRecM)
+import Data.Date as Date
 import Data.Date.Gen (genDate)
 import Data.DateTime as Data.DateTime
 import Data.DateTime.Gen (genDateTime)
@@ -1105,10 +1106,44 @@ test_DateTimeInterop = do
     )
     { remaining: numTests, state: { newSeed: seed4, size: 10 } }
 
+  seed5 <- randomSeed
+  _ <- tailRecM
+    ( \{ remaining, state } ->
+        if remaining <= 0 then
+          pure (Done unit)
+        else do
+          let Tuple date newState = runGen genDate state
+          let components = { year: Date.year date, month: Date.month date }
+          plain <- PlainYearMonth.fromDateComponents components
+          let back = PlainYearMonth.toDateComponents plain
+          when (back /= components)
+            (throwException (error ("PlainYearMonth round-trip failed for " <> show date)))
+          pure (Loop { remaining: remaining - 1, state: newState })
+    )
+    { remaining: numTests, state: { newSeed: seed5, size: 10 } }
+
+  seed6 <- randomSeed
+  _ <- tailRecM
+    ( \{ remaining, state } ->
+        if remaining <= 0 then
+          pure (Done unit)
+        else do
+          let Tuple date newState = runGen genDate state
+          let components = { month: Date.month date, day: Date.day date }
+          plain <- PlainMonthDay.fromDateComponents components
+          let back = PlainMonthDay.toDateComponents plain
+          when (back /= components)
+            (throwException (error ("PlainMonthDay round-trip failed for " <> show date)))
+          pure (Loop { remaining: remaining - 1, state: newState })
+    )
+    { remaining: numTests, state: { newSeed: seed6, size: 10 } }
+
   Console.log ("  " <> show numTests <> " PlainDate round-trips passed")
   Console.log ("  " <> show numTests <> " PlainTime round-trips passed")
   Console.log ("  " <> show numTests <> " PlainDateTime round-trips passed")
   Console.log ("  " <> show numTests <> " Instant round-trips passed")
+  Console.log ("  " <> show numTests <> " PlainYearMonth round-trips passed")
+  Console.log ("  " <> show numTests <> " PlainMonthDay round-trips passed")
 
 -- Duration arithmetic commutativity: add in Temporal then convert == convert then add in datetime
 genFixedDurationComponents :: Gen { days :: Int, hours :: Int, minutes :: Int, seconds :: Int, milliseconds :: Int }

@@ -25,13 +25,13 @@ import Partial.Unsafe (unsafePartial)
 -- | ```purescript
 -- | exampleFromInstant :: Effect Unit
 -- | exampleFromInstant = do
--- |   let dateTimeInstant = DateTime.Instant.fromDateTime bottom
--- |   instant <- Instant.Compat.fromInstant dateTimeInstant
+-- |   let dateTime = Gen.evalGen genDateTime genState
+-- |   instant <- Instant.Compat.fromInstant (DateTime.Instant.fromDateTime dateTime)
 -- |   Console.log (Instant.toString instant)
 -- | ```
 -- | ---
 -- | ```text
--- | -271820-01-01T00:00:00Z
+-- | 1984-05-21T06:36:54.368Z
 -- | ```
 fromInstant :: DateTime.Instant.Instant -> Effect Instant
 fromInstant dateTimeInstant = Instant.fromEpochMilliseconds (unwrap (DateTime.Instant.unInstant dateTimeInstant))

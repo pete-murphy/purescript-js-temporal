@@ -22,13 +22,13 @@ import JS.Temporal.PlainTime.Compat as PlainTime.Compat
 -- | ```purescript
 -- | exampleFromDateTime :: Effect Unit
 -- | exampleFromDateTime = do
--- |   dt <- PlainDateTime.fromString "2024-07-01T12:00:00"
--- |   roundTripped <- PlainDateTime.Compat.fromDateTime (PlainDateTime.Compat.toDateTime dt)
--- |   Console.log (PlainDateTime.toString roundTripped)
+-- |   let dateTime = Gen.evalGen genDateTime genState
+-- |   plainDateTime <- PlainDateTime.Compat.fromDateTime dateTime
+-- |   Console.log (PlainDateTime.toString plainDateTime)
 -- | ```
 -- | ---
 -- | ```text
--- | 2024-07-01T12:00:00
+-- | 1984-05-21T06:36:54.368
 -- | ```
 fromDateTime :: DateTime -> Effect PlainDateTime
 fromDateTime dateTime = do

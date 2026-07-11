@@ -3,18 +3,21 @@ module Examples.Docs.Instant.Compat where
 
 import Prelude
 
+import Data.DateTime.Gen (genDateTime)
 import Data.DateTime.Instant as DateTime.Instant
 import Data.JSDate as JSDate
 import Effect (Effect)
 import Effect.Class.Console as Console
+import Examples.Docs.GenState (genState)
 import JS.Temporal.Instant as Instant
 import JS.Temporal.Instant.Compat as Instant.Compat
+import Test.QuickCheck.Gen as Gen
 
 -- | Converts a purescript-datetime `Instant` to a Temporal `Instant`.
 exampleFromInstant :: Effect Unit
 exampleFromInstant = do
-  let dateTimeInstant = DateTime.Instant.fromDateTime bottom
-  instant <- Instant.Compat.fromInstant dateTimeInstant
+  let dateTime = Gen.evalGen genDateTime genState
+  instant <- Instant.Compat.fromInstant (DateTime.Instant.fromDateTime dateTime)
   Console.log (Instant.toString instant)
 
 -- | Converts a Temporal `Instant` to a purescript-datetime `Instant`.

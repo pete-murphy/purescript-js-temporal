@@ -23,13 +23,13 @@ import Partial.Unsafe (unsafePartial)
 -- | ```purescript
 -- | exampleFromTime :: Effect Unit
 -- | exampleFromTime = do
--- |   time <- PlainTime.fromString "14:30:00"
--- |   roundTripped <- PlainTime.Compat.fromTime (PlainTime.Compat.toTime time)
--- |   Console.log (PlainTime.toString roundTripped)
+-- |   let time = Gen.evalGen genTime genState
+-- |   plainTime <- PlainTime.Compat.fromTime time
+-- |   Console.log (PlainTime.toString plainTime)
 -- | ```
 -- | ---
 -- | ```text
--- | 14:30:00
+-- | 06:15:42.936
 -- | ```
 fromTime :: Time -> Effect PlainTime
 fromTime time =

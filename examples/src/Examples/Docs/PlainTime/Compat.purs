@@ -3,18 +3,21 @@ module Examples.Docs.PlainTime.Compat where
 
 import Prelude
 
+import Data.Time.Gen (genTime)
 import Effect (Effect)
 import Effect.Class.Console as Console
+import Examples.Docs.GenState (genState)
 import JS.Temporal.PlainTime as PlainTime
 import JS.Temporal.PlainTime.Compat as PlainTime.Compat
+import Test.QuickCheck.Gen as Gen
 
 -- | Converts a purescript-datetime `Time` to a `PlainTime`. Microsecond and
 -- | nanosecond components are set to zero.
 exampleFromTime :: Effect Unit
 exampleFromTime = do
-  time <- PlainTime.fromString "14:30:00"
-  roundTripped <- PlainTime.Compat.fromTime (PlainTime.Compat.toTime time)
-  Console.log (PlainTime.toString roundTripped)
+  let time = Gen.evalGen genTime genState
+  plainTime <- PlainTime.Compat.fromTime time
+  Console.log (PlainTime.toString plainTime)
 
 -- | Converts a `PlainTime` to a purescript-datetime `Time`.
 -- | Microsecond and nanosecond are dropped (treated as zero).

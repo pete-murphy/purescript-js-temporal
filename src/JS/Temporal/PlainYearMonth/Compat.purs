@@ -24,13 +24,13 @@ type Components = { year :: Year, month :: Month }
 -- | ```purescript
 -- | exampleFromComponents :: Effect Unit
 -- | exampleFromComponents = do
--- |   yearMonth <- PlainYearMonth.fromString "2024-06"
--- |   roundTripped <- PlainYearMonth.Compat.fromComponents (PlainYearMonth.Compat.toComponents yearMonth)
--- |   Console.log (PlainYearMonth.toString roundTripped)
+-- |   let date = Gen.evalGen genDate genState
+-- |   yearMonth <- PlainYearMonth.Compat.fromComponents { year: Date.year date, month: Date.month date }
+-- |   Console.log (PlainYearMonth.toString yearMonth)
 -- | ```
 -- | ---
 -- | ```text
--- | 2024-06
+-- | 1984-05
 -- | ```
 fromComponents :: Components -> Effect PlainYearMonth
 fromComponents components = PlainYearMonth.from { year: fromEnum components.year, month: fromEnum components.month }

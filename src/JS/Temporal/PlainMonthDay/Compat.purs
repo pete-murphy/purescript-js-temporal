@@ -29,13 +29,13 @@ foreign import _isoMonth :: PlainMonthDay -> Int
 -- | ```purescript
 -- | exampleFromComponents :: Effect Unit
 -- | exampleFromComponents = do
--- |   monthDay <- PlainMonthDay.fromString "12-15"
--- |   roundTripped <- PlainMonthDay.Compat.fromComponents (PlainMonthDay.Compat.toComponents monthDay)
--- |   Console.log (PlainMonthDay.toString roundTripped)
+-- |   let date = Gen.evalGen genDate genState
+-- |   monthDay <- PlainMonthDay.Compat.fromComponents { month: Date.month date, day: Date.day date }
+-- |   Console.log (PlainMonthDay.toString monthDay)
 -- | ```
 -- | ---
 -- | ```text
--- | 12-15
+-- | 05-21
 -- | ```
 fromComponents :: Components -> Effect PlainMonthDay
 fromComponents components = PlainMonthDay.from { month: fromEnum components.month, day: fromEnum components.day }

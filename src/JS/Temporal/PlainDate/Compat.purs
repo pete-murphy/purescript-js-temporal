@@ -20,13 +20,13 @@ import Partial.Unsafe (unsafePartial)
 -- | ```purescript
 -- | exampleFromDate :: Effect Unit
 -- | exampleFromDate = do
--- |   date <- PlainDate.fromString "2024-07-01"
--- |   roundTripped <- PlainDate.Compat.fromDate (PlainDate.Compat.toDate date)
--- |   Console.log (PlainDate.toString roundTripped)
+-- |   let date = Gen.evalGen genDate genState
+-- |   plainDate <- PlainDate.Compat.fromDate date
+-- |   Console.log (PlainDate.toString plainDate)
 -- | ```
 -- | ---
 -- | ```text
--- | 2024-07-01
+-- | 1984-05-21
 -- | ```
 fromDate :: Date -> Effect PlainDate
 fromDate date = PlainDate.from { year: fromEnum (Date.year date), month: fromEnum (Date.month date), day: fromEnum (Date.day date) }

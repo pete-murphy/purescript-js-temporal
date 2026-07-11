@@ -1065,9 +1065,7 @@ test_DateTimeInterop = do
     dateTime <- genDateTime
     let dateTimeInstant = DateTime.Instant.fromDateTime dateTime
     let temporalInstant = unsafePerformEffect (Instant.Compat.fromInstant dateTimeInstant)
-    pure case Instant.Compat.toInstant temporalInstant of
-      Just roundTripped -> roundTripped === dateTimeInstant
-      Nothing -> Failed ("Instant.Compat.toInstant returned Nothing for " <> show dateTimeInstant)
+    pure (Instant.Compat.toInstant temporalInstant === dateTimeInstant)
 
   Console.log "  PlainYearMonth round-trip"
   QuickCheck.quickCheckGen do

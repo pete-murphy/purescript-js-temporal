@@ -5,7 +5,6 @@ import Prelude
 
 import Data.DateTime.Instant as DateTime.Instant
 import Data.JSDate as JSDate
-import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Class.Console as Console
 import JS.Temporal.Instant as Instant
@@ -19,13 +18,10 @@ exampleFromInstant = do
   Console.log (Instant.toString instant)
 
 -- | Converts a Temporal `Instant` to a purescript-datetime `Instant`.
--- | Returns `Nothing` if the value is outside the datetime `Instant` range.
 exampleToInstant :: Effect Unit
 exampleToInstant = do
   instant <- Instant.fromString "2024-01-15T12:00:00Z"
-  case Instant.Compat.toInstant instant of
-    Just dateTimeInstant -> Console.log (show dateTimeInstant)
-    Nothing -> Console.log "Out of range"
+  Console.logShow (Instant.Compat.toInstant instant)
 
 -- | Creates a Temporal `Instant` from a JavaScript `Date`.
 exampleFromJSDate :: Effect Unit

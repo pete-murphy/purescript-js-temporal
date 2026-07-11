@@ -12,12 +12,13 @@ module JS.Temporal.Instant.Compat
 import Data.DateTime.Instant as DateTime.Instant
 import Data.JSDate (JSDate)
 import Data.JSDate as JSDate
-import Data.Maybe (Maybe)
+import Data.Maybe (fromJust)
 import Data.Newtype (unwrap)
 import Data.Time.Duration (Milliseconds(..))
 import Effect (Effect)
 import JS.Temporal.Instant as Instant
 import JS.Temporal.Instant.Internal (Instant)
+import Partial.Unsafe (unsafePartial)
 
 -- | Converts a purescript-datetime `Instant` to a Temporal `Instant`.
 -- |
@@ -36,22 +37,19 @@ fromInstant :: DateTime.Instant.Instant -> Effect Instant
 fromInstant dateTimeInstant = Instant.fromEpochMilliseconds (unwrap (DateTime.Instant.unInstant dateTimeInstant))
 
 -- | Converts a Temporal `Instant` to a purescript-datetime `Instant`.
--- | Returns `Nothing` if the value is outside the datetime `Instant` range.
 -- |
 -- | ```purescript
 -- | exampleToInstant :: Effect Unit
 -- | exampleToInstant = do
 -- |   instant <- Instant.fromString "2024-01-15T12:00:00Z"
--- |   case Instant.Compat.toInstant instant of
--- |     Just dateTimeInstant -> Console.log (show dateTimeInstant)
--- |     Nothing -> Console.log "Out of range"
+-- |   Console.logShow (Instant.Compat.toInstant instant)
 -- | ```
 -- | ---
 -- | ```text
 -- | (Instant (Milliseconds 1705320000000.0))
 -- | ```
-toInstant :: Instant -> Maybe DateTime.Instant.Instant
-toInstant instant = DateTime.Instant.instant (Milliseconds (Instant.epochMilliseconds instant))
+toInstant :: Instant -> DateTime.Instant.Instant
+toInstant instant = unsafePartial fromJust (DateTime.Instant.instant (Milliseconds (Instant.epochMilliseconds instant)))
 
 -- | Creates a Temporal `Instant` from a JavaScript `Date`.
 -- |

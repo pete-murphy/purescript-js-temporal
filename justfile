@@ -13,11 +13,6 @@
 run-examples:
     NODE_OPTIONS="--import=$(pwd)/script/register-temporal-polyfill.mjs" spago run -p js-temporal-examples
 
-@view-docs:
-    spago docs -f html
-    pandoc -s --metadata title="js-temporal" -o generated-docs/html/README.html README.md
-    open generated-docs/html/README.html generated-docs/html/index.html
-
 # Check that every exported function has a corresponding doc example and vice-versa.
 check-doc-examples:
     node script/check-doc-examples.mjs
